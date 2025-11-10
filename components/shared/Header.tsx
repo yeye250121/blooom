@@ -26,8 +26,8 @@ export default function Header() {
             <Link href="/landing" className="text-gray-700 hover:text-purple-600 transition">
               상담 신청
             </Link>
-            <Link href="/admin" className="text-gray-700 hover:text-purple-600 transition">
-              관리자
+            <Link href="/partners" className="text-gray-700 hover:text-purple-600 transition">
+              파트너
             </Link>
           </nav>
 
@@ -40,7 +40,7 @@ export default function Header() {
               상담하기
             </a>
             <Link
-              href="/admin/login"
+              href="/partners/login"
               className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
             >
               로그인
@@ -82,14 +82,14 @@ export default function Header() {
               상담 신청
             </Link>
             <Link
-              href="/admin"
+              href="/partners"
               className="block px-3 py-2 text-gray-700 hover:bg-purple-50 rounded-md"
               onClick={() => setIsMenuOpen(false)}
             >
-              관리자
+              파트너
             </Link>
             <Link
-              href="/admin/login"
+              href="/partners/login"
               className="block px-3 py-2 text-purple-600 font-medium hover:bg-purple-50 rounded-md"
               onClick={() => setIsMenuOpen(false)}
             >

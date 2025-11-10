@@ -1,15 +1,18 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import Navigation from '@/app/landing/components/Navigation';
-import Hero from '@/app/landing/components/Hero';
 import ConsultationForm from '@/app/landing/components/ConsultationForm';
 import HowToParticipate from '@/app/landing/components/HowToParticipate';
 import SpecialBenefits from '@/app/landing/components/SpecialBenefits';
+import Hero from '@/app/landing/components/Hero';
 import Features from '@/app/landing/components/Features';
-import Footer from '@/components/shared/Footer';
+import Footer from '@/app/landing/components/Footer';
 
 export default function Home() {
+  const searchParams = useSearchParams();
+  const marketerCode = searchParams.get('code');
+
   return (
     <>
       {/* Kakao Pixel */}
@@ -27,7 +30,7 @@ export default function Home() {
       <Script src="/config.js" strategy="beforeInteractive" />
 
       <main>
-        <ConsultationForm />
+        <ConsultationForm marketerCode={marketerCode || undefined} />
         <section className="hero-image">
           <img
             src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/%5B%EC%B5%9C%EC%A2%85%5D%20-%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80%20%2818%29.jpg"

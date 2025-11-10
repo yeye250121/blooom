@@ -187,15 +187,23 @@ export default function ConsultationForm({ marketerCode }: ConsultationFormProps
       </section>
 
       {/* Form JavaScript */}
-      <Script id="form-script" strategy="afterInteractive">
-        {`
+      <Script
+        id="form-script"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
         // API Base URL - 설정에서 가져오기
         const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || '';
 
         // 마케터 코드
         const MARKETER_CODE = ${marketerCode ? `'${marketerCode}'` : 'null'};
 
-        // 유입 URL 추적 (최초 1회만 저장)
+        // 유입 URL 추적 (최초 1회만 저장)`
+        }}
+      >
+      </Script>
+      <Script id="form-logic" strategy="afterInteractive">
+        {`
         // 비유: 손님이 우리 가게에 처음 들어올 때 "어디서 오셨어요?"를 물어보는 것과 같습니다
         function getOrSetReferrerUrl() {
             const STORAGE_KEY = 'initial_referrer';
@@ -419,12 +427,11 @@ export default function ConsultationForm({ marketerCode }: ConsultationFormProps
                 installLocation: formData.installLocation,
                 installCount: formData.installCount,
                 privacyConsent: formData.privacyConsent,
-                submittedAt: formData.submittedAt,
-                marketerCode: MARKETER_CODE
+                submittedAt: formData.submittedAt
             };
 
             try {
-                const response = await fetch(\`\${API_BASE_URL}/landing/api/inquiry\`, {
+                const response = await fetch(\`\${API_BASE_URL}/api/inquiry\`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

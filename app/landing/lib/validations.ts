@@ -38,10 +38,11 @@ export const inquiryFormSchema = z.object({
     }),
 });
 
-// API 요청 스키마 (referrerUrl, submittedAt 포함)
+// API 요청 스키마 (referrerUrl, submittedAt, marketerCode 포함)
 export const inquiryRequestSchema = inquiryFormSchema.extend({
   referrerUrl: z.string().optional(),
   submittedAt: z.string().datetime().optional(),
+  marketerCode: z.string().optional(),
 });
 
 export type InquiryFormData = z.infer<typeof inquiryFormSchema>;

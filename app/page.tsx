@@ -12,7 +12,7 @@ export default function HomePage() {
               성공적인 마케팅 네트워크를 구축하세요
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-purple-100">
-              4,772명의 마케터가 선택한 N-Level 마케팅 플랫폼
+              4,772명의 파트너가 선택한 N-Level 마케팅 플랫폼
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -22,10 +22,10 @@ export default function HomePage() {
                 무료 상담 신청하기
               </Link>
               <Link
-                href="/admin"
+                href="/partners"
                 className="bg-purple-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-400 transition border-2 border-white inline-block text-center"
               >
-                마케터 등록하기
+                파트너 등록하기
               </Link>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-5xl font-bold mb-2">4,772명</div>
-              <div className="text-xl text-purple-200">누적 마케터 수</div>
+              <div className="text-xl text-purple-200">누적 파트너 수</div>
             </div>
             <div>
               <div className="text-5xl font-bold mb-2">2:1</div>
@@ -131,7 +131,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
                 1
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">회원 가입</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">파트너 가입</h3>
               <p className="text-gray-600">
                 추천인 코드로 간편하게 가입하고 네트워크에 참여하세요
               </p>
@@ -144,7 +144,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">교육 수강</h3>
               <p className="text-gray-600">
-                체계적인 마케팅 교육으로 전문 마케터로 성장하세요
+                체계적인 마케팅 교육으로 전문 파트너로 성장하세요
               </p>
             </div>
 
@@ -179,10 +179,10 @@ export default function HomePage() {
               무료 상담 신청
             </Link>
             <Link
-              href="/admin"
+              href="/partners"
               className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-purple-600 transition inline-block"
             >
-              관리자 페이지 바로가기
+              파트너 페이지 바로가기
             </Link>
           </div>
         </div>
