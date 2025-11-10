@@ -22,7 +22,14 @@ export default function LeadsPage() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
+  const [landingUrl, setLandingUrl] = useState('')
   const user = useAuthStore((state) => state.user)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && user?.uniqueCode) {
+      setLandingUrl(`${window.location.origin}/${user.uniqueCode}`)
+    }
+  }, [user?.uniqueCode])
 
   useEffect(() => {
     fetchInquiries()
@@ -87,15 +94,17 @@ export default function LeadsPage() {
           <h1 className="text-3xl font-semibold text-gray-800">문의 관리</h1>
           <p className="mt-2 text-sm text-gray-600">
             내 랜딩페이지: <span className="font-mono text-blue-600">
-              {window.location.origin}/{user?.uniqueCode}
+              {landingUrl || '로딩 중...'}
             </span>
-            <button
-              onClick={() => copyToClipboard(`${window.location.origin}/${user?.uniqueCode}`)}
-              className="ml-2 text-blue-600 hover:text-blue-700"
-              title="URL 복사"
-            >
-              📋
-            </button>
+            {landingUrl && (
+              <button
+                onClick={() => copyToClipboard(landingUrl)}
+                className="ml-2 text-blue-600 hover:text-blue-700"
+                title="URL 복사"
+              >
+                📋
+              </button>
+            )}
           </p>
         </div>
       </div>
