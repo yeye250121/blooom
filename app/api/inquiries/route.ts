@@ -54,15 +54,24 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = (page - 1) * limit
 
-    // 문의 목록 조회 (임시: 모든 문의 조회)
+    // 먼저 모든 문의의 marketer_code 확인 (디버깅)
+    const { data: allInquiries } = await supabase
+      .from('inquiries')
+      .select('id, marketer_code')
+      .limit(5)
+
+    console.log('Sample marketer_codes from DB:', allInquiries?.map(i => `"${i.marketer_code}"`))
+    console.log('Comparing with user code:', `"${user.unique_code}"`)
+
+    // 문의 목록 조회 (본인의 마케터 코드로 필터링)
     const { data: inquiries, error, count } = await supabase
       .from('inquiries')
       .select('*', { count: 'exact' })
-      // .eq('marketer_code', user.unique_code) // 임시 주석 처리
+      .eq('marketer_code', user.unique_code)
       .order('submitted_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    console.log('Query result:', { inquiries, error, count })
+    console.log('Filtered query result:', { count, inquiriesLength: inquiries?.length })
 
     if (error) {
       console.error('문의 조회 오류:', error)
