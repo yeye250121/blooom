@@ -22,14 +22,12 @@ export default function LeadsPage() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
-  const [landingUrl, setLandingUrl] = useState('')
+  const [mounted, setMounted] = useState(false)
   const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && user?.uniqueCode) {
-      setLandingUrl(`${window.location.origin}/${user.uniqueCode}`)
-    }
-  }, [user?.uniqueCode])
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     fetchInquiries()
@@ -76,7 +74,7 @@ export default function LeadsPage() {
     alert('복사되었습니다!')
   }
 
-  if (loading && inquiries.length === 0) {
+  if (!mounted || (loading && inquiries.length === 0)) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-center">
@@ -87,6 +85,8 @@ export default function LeadsPage() {
     )
   }
 
+  const landingUrl = `${window.location.origin}/${user?.uniqueCode}`
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -94,17 +94,15 @@ export default function LeadsPage() {
           <h1 className="text-3xl font-semibold text-gray-800">문의 관리</h1>
           <p className="mt-2 text-sm text-gray-600">
             내 랜딩페이지: <span className="font-mono text-blue-600">
-              {landingUrl || '로딩 중...'}
+              {landingUrl}
             </span>
-            {landingUrl && (
-              <button
-                onClick={() => copyToClipboard(landingUrl)}
-                className="ml-2 text-blue-600 hover:text-blue-700"
-                title="URL 복사"
-              >
-                📋
-              </button>
-            )}
+            <button
+              onClick={() => copyToClipboard(landingUrl)}
+              className="ml-2 text-blue-600 hover:text-blue-700"
+              title="URL 복사"
+            >
+              📋
+            </button>
           </p>
         </div>
       </div>
