@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import api from '@/app/admin/lib/api'
-import { useAuthStore } from '@/app/admin/store/authStore'
+import api from '@/app/partners/lib/api'
+import { useAuthStore } from '@/app/partners/store/authStore'
 
 interface Inquiry {
   id: string
