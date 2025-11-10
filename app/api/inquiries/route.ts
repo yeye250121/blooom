@@ -54,11 +54,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = (page - 1) * limit
 
-    // 문의 목록 조회 (본인의 마케터 코드로 필터링)
+    // 문의 목록 조회 (임시: 모든 문의 조회)
     const { data: inquiries, error, count } = await supabase
       .from('inquiries')
       .select('*', { count: 'exact' })
-      .eq('marketer_code', user.unique_code)
+      // .eq('marketer_code', user.unique_code) // 임시 주석 처리
       .order('submitted_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
