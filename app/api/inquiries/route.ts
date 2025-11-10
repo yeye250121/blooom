@@ -46,6 +46,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    console.log('User unique_code:', user.unique_code)
+
     // URL 쿼리 파라미터
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
@@ -59,6 +61,8 @@ export async function GET(request: NextRequest) {
       .eq('marketer_code', user.unique_code)
       .order('submitted_at', { ascending: false })
       .range(offset, offset + limit - 1)
+
+    console.log('Query result:', { inquiries, error, count })
 
     if (error) {
       console.error('문의 조회 오류:', error)
