@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import ConsultationForm from '@/app/landing/components/ConsultationForm';
@@ -9,7 +10,7 @@ import Hero from '@/app/landing/components/Hero';
 import Features from '@/app/landing/components/Features';
 import Footer from '@/app/landing/components/Footer';
 
-export default function Home() {
+function LandingContent() {
   const searchParams = useSearchParams();
   const marketerCode = searchParams.get('code');
 
@@ -44,5 +45,13 @@ export default function Home() {
         <Footer />
       </main>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LandingContent />
+    </Suspense>
   );
 }
