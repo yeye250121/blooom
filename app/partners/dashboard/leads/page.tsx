@@ -85,25 +85,29 @@ export default function LeadsPage() {
     )
   }
 
-  const landingUrl = `${window.location.origin}/${user?.uniqueCode}`
+  const landingUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/${user?.uniqueCode}`
+    : ''
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-semibold text-gray-800">문의 관리</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            내 랜딩페이지: <span className="font-mono text-blue-600">
-              {landingUrl}
-            </span>
-            <button
-              onClick={() => copyToClipboard(landingUrl)}
-              className="ml-2 text-blue-600 hover:text-blue-700"
-              title="URL 복사"
-            >
-              📋
-            </button>
-          </p>
+          {landingUrl && (
+            <p className="mt-2 text-sm text-gray-600">
+              내 랜딩페이지: <span className="font-mono text-blue-600">
+                {landingUrl}
+              </span>
+              <button
+                onClick={() => copyToClipboard(landingUrl)}
+                className="ml-2 text-blue-600 hover:text-blue-700"
+                title="URL 복사"
+              >
+                📋
+              </button>
+            </p>
+          )}
         </div>
       </div>
 
