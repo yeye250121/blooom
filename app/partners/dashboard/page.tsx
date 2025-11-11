@@ -39,28 +39,28 @@ export default function DashboardPage() {
         </h2>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
           <Link
-            href="/dashboard/leads"
+            href="/partners/dashboard/leads"
             className="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             <h3 className="text-lg font-semibold text-gray-800">문의 관리</h3>
             <p className="text-gray-600 mt-2">고객 DB 및 리드 관리</p>
           </Link>
           <Link
-            href="/dashboard/network"
+            href="/partners/dashboard/network"
             className="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             <h3 className="text-lg font-semibold text-gray-800">하위 파트너 관리</h3>
             <p className="text-gray-600 mt-2">내 조직도 확인</p>
           </Link>
           <Link
-            href="/dashboard/commissions"
+            href="/partners/dashboard/commissions"
             className="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             <h3 className="text-lg font-semibold text-gray-800">수수료 요약</h3>
             <p className="text-gray-600 mt-2">정산 내역 확인</p>
           </Link>
           <Link
-            href="/dashboard/education"
+            href="/partners/dashboard/education"
             className="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
           >
             <h3 className="text-lg font-semibold text-gray-800">영업 가이드</h3>
