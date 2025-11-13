@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import jwt from 'jsonwebtoken'
 
 export const dynamic = 'force-dynamic'
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const decoded: any = jwt.verify(token, JWT_SECRET)
 
     // 사용자의 마케터 코드 가져오기
-    const { data: user } = await supabase
+    const { data: user } = await supabaseAdmin
       .from('users')
       .select('unique_code')
       .eq('id', decoded.id)
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     // 먼저 모든 문의의 marketer_code 확인 (디버깅)
-    const { data: allInquiries } = await supabase
+    const { data: allInquiries } = await supabaseAdmin
       .from('inquiries')
       .select('id, marketer_code')
       .limit(5)
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     console.log('Comparing with user code:', `"${user.unique_code}"`)
 
     // 문의 목록 조회 (본인의 마케터 코드로 필터링)
-    const { data: inquiries, error, count } = await supabase
+    const { data: inquiries, error, count } = await supabaseAdmin
       .from('inquiries')
       .select('*', { count: 'exact' })
       .eq('marketer_code', user.unique_code)
