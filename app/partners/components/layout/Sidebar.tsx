@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+// navigation 배열은 실물 안내 표지판 목록과 같아서, 링크 이름과 목적지를 한 번에 관리할 수 있습니다.
 const navigation = [
   { name: '대시보드', href: '/partners/dashboard' },
   { name: '문의 관리', href: '/partners/dashboard/leads' },
   { name: '하위 파트너', href: '/partners/dashboard/network' },
-  { name: '수수료 요약', href: '/partners/dashboard/commissions' },
-  { name: '영업 가이드', href: '/partners/dashboard/education' },
+  { name: '수수료 관리', href: '/partners/dashboard/commissions' },
+  { name: '파트너스 가이드', href: '/partners/dashboard/partners-guide' },
   { name: '내 정보', href: '/partners/dashboard/my-page' },
 ]
 

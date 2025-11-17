@@ -49,6 +49,8 @@ async function generateUniqueCode(referrerCode?: string): Promise<string> {
 export async function POST(request: NextRequest) {
   try {
     const { loginId, password, nickname, referrerCode, level = 1 } = await request.json()
+    // 추천인 코드를 미리 정돈해두면, 고객명부를 정리할 때 이름을 예쁘게 써 넣는 것처럼 이후 로직이 깔끔해집니다.
+    const normalizedReferrerCode = referrerCode?.trim().toUpperCase()
 
     if (!loginId || !password || !nickname) {
       return NextResponse.json(
@@ -72,11 +74,11 @@ export async function POST(request: NextRequest) {
     }
 
     // 추천인 코드 검증 (있는 경우에만)
-    if (referrerCode) {
+    if (normalizedReferrerCode) {
       const { data: referrer } = await supabase
         .from('users')
         .select('id, unique_code')
-        .eq('unique_code', referrerCode)
+        .eq('unique_code', normalizedReferrerCode)
         .single()
 
       if (!referrer) {
@@ -96,7 +98,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 고유 코드 자동 생성 (추천인 코드 기반)
-    const uniqueCode = await generateUniqueCode(referrerCode)
+    const uniqueCode = await generateUniqueCode(normalizedReferrerCode)
 
     // 비밀번호 해싱
     const passwordHash = await bcrypt.hash(password, 10)
@@ -110,6 +112,8 @@ export async function POST(request: NextRequest) {
           password_hash: passwordHash,
           nickname,
           unique_code: uniqueCode,
+          // referrer_code는 가계도에서 부모 노드를 기록하듯 상위 파트너를 추적하기 위한 정보입니다.
+          referrer_code: normalizedReferrerCode || null,
           level,
         },
       ])

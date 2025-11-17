@@ -89,11 +89,20 @@ export default function LeadsPage() {
     ? `${window.location.origin}/${user?.uniqueCode}`
     : ''
 
+  const isAdmin = user?.uniqueCode?.startsWith('S')
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-800">문의 관리</h1>
+          <h1 className="text-3xl font-semibold text-gray-800">
+            문의 관리
+            {isAdmin && (
+              <span className="ml-3 px-3 py-1 text-sm bg-red-100 text-red-700 rounded-full font-medium">
+                관리자 모드 (전체 문의)
+              </span>
+            )}
+          </h1>
           {landingUrl && (
             <p className="mt-2 text-sm text-gray-600">
               내 랜딩페이지: <span className="font-mono text-blue-600">
@@ -133,6 +142,11 @@ export default function LeadsPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     설치 대수
                   </th>
+                  {isAdmin && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      담당 마케터
+                    </th>
+                  )}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     유입 경로
                   </th>
@@ -159,6 +173,13 @@ export default function LeadsPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {inquiry.install_count}대
                     </td>
+                    {isAdmin && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className="px-2 py-1 bg-gray-100 rounded text-xs font-mono">
+                          {inquiry.marketer_code || '미배정'}
+                        </span>
+                      </td>
+                    )}
                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
                       {inquiry.referrer_url || '직접 접속'}
                     </td>

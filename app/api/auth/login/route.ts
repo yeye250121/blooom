@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         id: user.id,
         loginId: user.login_id,
         level: user.level,
+        uniqueCode: user.unique_code,
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -59,6 +60,12 @@ export async function POST(request: NextRequest) {
       uniqueCode: user.unique_code,
       level: user.level,
     }
+
+    console.log('로그인 성공:', {
+      loginId: user.login_id,
+      uniqueCode: user.unique_code,
+      isAdmin: user.unique_code.startsWith('S'),
+    })
 
     return NextResponse.json({
       access_token: token,

@@ -54,24 +54,28 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = (page - 1) * limit
 
-    // 먼저 모든 문의의 marketer_code 확인 (디버깅)
-    const { data: allInquiries } = await supabaseAdmin
-      .from('inquiries')
-      .select('id, marketer_code')
-      .limit(5)
+    // S 코드는 관리자 권한으로 모든 문의 조회, 일반 유저는 자신의 문의만 조회
+    const isAdmin = user.unique_code.startsWith('S')
 
-    console.log('Sample marketer_codes from DB:', allInquiries?.map(i => `"${i.marketer_code}"`))
-    console.log('Comparing with user code:', `"${user.unique_code}"`)
-
-    // 문의 목록 조회 (본인의 마케터 코드로 필터링)
-    const { data: inquiries, error, count } = await supabaseAdmin
+    let query = supabaseAdmin
       .from('inquiries')
       .select('*', { count: 'exact' })
-      .eq('marketer_code', user.unique_code)
+
+    // 일반 유저는 자신의 마케터 코드로 필터링
+    if (!isAdmin) {
+      query = query.eq('marketer_code', user.unique_code)
+    }
+
+    const { data: inquiries, error, count } = await query
       .order('submitted_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    console.log('Filtered query result:', { count, inquiriesLength: inquiries?.length })
+    console.log('Query result:', {
+      isAdmin,
+      uniqueCode: user.unique_code,
+      count,
+      inquiriesLength: inquiries?.length
+    })
 
     if (error) {
       console.error('문의 조회 오류:', error)

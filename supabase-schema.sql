@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   nickname TEXT NOT NULL,
   unique_code TEXT UNIQUE NOT NULL,
+  referrer_code TEXT REFERENCES users(unique_code), -- 추천 코드 = 가계도처럼 상위 파트너를 연결하는 끈
   level INTEGER NOT NULL DEFAULT 1 CHECK (level >= 1),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
@@ -31,8 +32,26 @@ CREATE TABLE IF NOT EXISTS users (
 -- 인덱스 생성
 CREATE INDEX idx_users_login_id ON users(login_id);
 CREATE INDEX idx_users_unique_code ON users(unique_code);
+CREATE INDEX idx_users_referrer_code ON users(referrer_code);
 
--- 3. Row Level Security (RLS) 정책 설정
+-- 3. 파트너 가이드(partner_guides) 테이블
+CREATE TABLE IF NOT EXISTS partner_guides (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  content TEXT NOT NULL,
+  resource_url TEXT,
+  resource_type TEXT DEFAULT 'text',
+  display_order INTEGER DEFAULT 1,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- 가이드 정렬 최적화
+CREATE INDEX idx_partner_guides_order ON partner_guides(display_order);
+
+-- 4. Row Level Security (RLS) 정책 설정
 
 -- inquiries 테이블 RLS 활성화
 ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
@@ -64,7 +83,7 @@ CREATE POLICY "Users can update their own data"
   FOR UPDATE
   USING (auth.uid()::text = id::text);
 
--- 4. 트리거 - updated_at 자동 업데이트
+-- 5. 트리거 - updated_at 자동 업데이트
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -78,7 +97,7 @@ CREATE TRIGGER update_users_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- 5. 초기 데모 데이터 (선택사항)
+-- 6. 초기 데모 데이터 (선택사항)
 -- 비밀번호: demo123 (bcrypt hash)
 INSERT INTO users (login_id, password_hash, nickname, unique_code, level)
 VALUES (

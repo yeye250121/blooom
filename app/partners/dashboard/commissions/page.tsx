@@ -1,157 +1,89 @@
 'use client'
 
-import { useState } from 'react'
+// 수수료 대시보드는 가계부처럼 날짜·금액·상태를 한눈에 정리하는 것이 핵심입니다.
+const payoutSchedule = {
+  nextDate: '2024-11-15',
+  nextAmount: 420000,
+  note: '전월 확정 건 일괄 지급 예정',
+}
 
-// Mock 데이터
-const mockCommissions = [
-  {
-    id: 1,
-    sourceMarketer: '김팀장',
-    product: 'CCTV 기본형',
-    saleAmount: 1500000,
-    commissionAmount: 150000,
-    status: 'CONFIRMED',
-    createdAt: '2024-11-01',
-  },
-  {
-    id: 2,
-    sourceMarketer: '이과장',
-    product: 'KT 인터넷 1기가',
-    saleAmount: 800000,
-    commissionAmount: 80000,
-    status: 'PENDING',
-    createdAt: '2024-11-03',
-  },
-  {
-    id: 3,
-    sourceMarketer: '박대리',
-    product: 'LG U+ 인터넷',
-    saleAmount: 900000,
-    commissionAmount: 90000,
-    status: 'PAID',
-    createdAt: '2024-10-28',
-  },
+const payoutHistory = [
+  { id: 1, date: '2024-10-28', amount: 380000, memo: '10월 3주차 확정분', status: '지급완료' },
+  { id: 2, date: '2024-10-21', amount: 250000, memo: '고객 설치 완료분 지급', status: '지급완료' },
+  { id: 3, date: '2024-10-14', amount: 195000, memo: '직접 계약 2건 확정', status: '지급완료' },
 ]
 
-const statusColors: any = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  CONFIRMED: 'bg-blue-100 text-blue-800',
-  PAID: 'bg-green-100 text-green-800',
-}
-
-const statusLabels: any = {
-  PENDING: '대기중',
-  CONFIRMED: '확정',
-  PAID: '지급완료',
-}
-
 export default function CommissionsPage() {
-  const [commissions] = useState(mockCommissions)
-
-  // 수수료 요약
-  const pending = commissions
-    .filter((c) => c.status === 'PENDING')
-    .reduce((sum, c) => sum + c.commissionAmount, 0)
-  const confirmed = commissions
-    .filter((c) => c.status === 'CONFIRMED')
-    .reduce((sum, c) => sum + c.commissionAmount, 0)
-  const paid = commissions
-    .filter((c) => c.status === 'PAID')
-    .reduce((sum, c) => sum + c.commissionAmount, 0)
-
   return (
     <div>
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">수수료 요약</h1>
+      <h1 className="text-3xl font-semibold text-gray-800 mb-6">수수료 관리</h1>
+      <p className="text-gray-600 mb-8">
+        다음 지급일과 최근 지급 내역을 확인하고, 필요한 메모를 곧바로 남겨보세요.
+      </p>
 
-      {/* 수수료 요약 카드 */}
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-gray-500 text-sm font-medium">지급 대기</h3>
-          <p className="text-2xl font-bold text-yellow-600 mt-2">
-            {pending.toLocaleString()}원
+      <section className="grid gap-6 grid-cols-1 lg:grid-cols-3 mb-10">
+        <div className="bg-white rounded-2xl shadow p-6 border">
+          <h3 className="text-gray-500 text-sm font-medium">다음 지급일</h3>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{payoutSchedule.nextDate}</p>
+          <p className="text-sm text-gray-600 mt-3">{payoutSchedule.note}</p>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-6 border">
+          <h3 className="text-gray-500 text-sm font-medium">예정 금액</h3>
+          <p className="text-3xl font-bold text-blue-600 mt-2">
+            {payoutSchedule.nextAmount.toLocaleString()}원
           </p>
+          <p className="text-sm text-gray-600 mt-3">확정 상태 기준</p>
         </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-gray-500 text-sm font-medium">인출 가능</h3>
-          <p className="text-2xl font-bold text-primary-600 mt-2">
-            {confirmed.toLocaleString()}원
+        <div className="bg-white rounded-2xl shadow p-6 border">
+          <h3 className="text-gray-500 text-sm font-medium">최근 지급</h3>
+          <p className="text-3xl font-bold text-green-600 mt-2">
+            {payoutHistory[0].amount.toLocaleString()}원
           </p>
+          <p className="text-sm text-gray-600 mt-3">{payoutHistory[0].date}</p>
         </div>
+      </section>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-gray-500 text-sm font-medium">지급 완료</h3>
-          <p className="text-2xl font-bold text-green-600 mt-2">
-            {paid.toLocaleString()}원
-          </p>
+      <section className="bg-white rounded-2xl shadow overflow-hidden border">
+        <div className="px-6 py-4 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">지급 내역</h2>
         </div>
-      </div>
-
-      {/* 수수료 내역 */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">수수료 내역</h2>
-        </div>
-
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                발생일
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                하위 마케터
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                상품
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                판매금액
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                수수료
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                상태
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {commissions.map((commission) => (
-              <tr key={commission.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {commission.createdAt}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {commission.sourceMarketer}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {commission.product}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {commission.saleAmount.toLocaleString()}원
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary-600">
-                  {commission.commissionAmount.toLocaleString()}원
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      statusColors[commission.status]
-                    }`}
-                  >
-                    {statusLabels[commission.status]}
-                  </span>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  지급일
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  금액
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  비고
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  상태
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-4 text-sm text-gray-500">
-        총 {commissions.length}건의 수수료 내역
-      </div>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {payoutHistory.map((history) => (
+                <tr key={history.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{history.date}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                    {history.amount.toLocaleString()}원
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{history.memo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                      {history.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   )
 }

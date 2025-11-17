@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Blooom - N-Level 마케팅 네트워크 플랫폼",
-  description: "CCTV/인터넷 서비스 판매를 위한 다단계 마케팅 관리 플랫폼",
+  title: "Blooom",
+  description: "집에서 딸깍, 수익으로.",
 };
 
 export default function RootLayout({
