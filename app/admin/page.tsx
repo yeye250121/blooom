@@ -113,7 +113,8 @@ export default function AdminPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         console.error('관리자 API 오류:', errorData)
-        throw new Error('관리자 인증이 필요합니다. 다시 로그인해주세요.')
+        // 서버가 보내준 구체적인 에러 메시지를 보여줍니다. (디버깅용)
+        throw new Error(errorData.message || errorData.details || '데이터를 불러오는 중 오류가 발생했습니다.')
       }
 
       const data = (await response.json()) as AdminOverview
