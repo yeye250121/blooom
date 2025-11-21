@@ -1,16 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase-admin'
+import { createClient } from '@supabase/supabase-js'
 import { getAdminContext } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 0 // 중요: 0초마다 재검증 = 즉시 만료 = 절대 캐시하지 않음
-export const fetchCache = 'force-no-store' // 중요: fetch 요청 결과도 저장하지 않음
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 export async function GET(request: NextRequest) {
   const admin = getAdminContext(request)
   if (!admin) {
     return NextResponse.json({ message: '관리자 인증이 필요합니다' }, { status: 401 })
   }
+
+  // 중요: 요청이 올 때마다 매번 새로운 클라이언트를 생성합니다. (런타임 환경변수 로딩 보장)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+    global: {
+      headers: { 'Cache-Control': 'no-store' },
+    },
+  })
 
   try {
     // 각각의 select 호출은 다른 창고에서 재고표를 가져오는 것과 같으므로 순서대로 수행해도 충분합니다.
