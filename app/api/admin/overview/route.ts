@@ -62,6 +62,8 @@ export async function GET(request: NextRequest) {
       debug: {
         envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + '...',
         hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+        // 범인 찾기: 가져온 데이터들의 ID와 날짜를 모두 기록합니다.
+        inquiryIds: inquiries?.map(i => ({ id: i.id.substring(0, 8), date: i.submitted_at })),
         usersCount: users?.length,
         inquiriesCount: inquiries?.length,
         timestamp: new Date().toISOString(),
