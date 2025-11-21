@@ -43,6 +43,13 @@ export async function GET(request: NextRequest) {
       users: users || [],
       inquiries: inquiries || [],
       guides: guides || [],
+      debug: {
+        envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + '...',
+        hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+        usersCount: users?.length,
+        inquiriesCount: inquiries?.length,
+        timestamp: new Date().toISOString(),
+      }
     }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',

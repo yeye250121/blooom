@@ -36,6 +36,7 @@ interface AdminOverview {
   users: AdminUser[]
   inquiries: AdminInquiry[]
   guides: AdminGuide[]
+  debug?: any // 디버깅용 정보
 }
 
 interface AdminAuthState {
@@ -631,6 +632,13 @@ export default function AdminPage() {
               </div>
             </div>
           </section>
+
+          {overview.debug && (
+            <div className="p-4 bg-gray-100 text-xs font-mono rounded-lg break-all">
+              <h4 className="font-bold mb-2">🔍 시스템 진단 정보 (개발자용)</h4>
+              <pre>{JSON.stringify(overview.debug, null, 2)}</pre>
+            </div>
+          )}
         </>
       )}
     </div>
