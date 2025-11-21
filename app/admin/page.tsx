@@ -99,8 +99,12 @@ export default function AdminPage() {
 
       // fetch는 배달 대행을 호출해 자료를 수거해 오는 과정과 비슷합니다.
       const response = await fetch('/api/admin/overview', {
+        cache: 'no-store', // 중요: 브라우저나 Next.js가 예전 데이터를 기억하지 않도록 강제합니다.
         headers: {
           Authorization: `Bearer ${auth.token}`,
+          // Pragma와 Cache-Control 헤더로 이중 안전장치를 겁니다.
+          'Pragma': 'no-cache',
+          'Cache-Control': 'no-cache',
         },
       })
 
@@ -196,9 +200,12 @@ export default function AdminPage() {
 
     const response = await fetch(url, {
       ...options,
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${auth.token}`,
+        'Pragma': 'no-cache',
+        'Cache-Control': 'no-cache',
         ...(options.headers || {}),
       },
     })

@@ -43,6 +43,12 @@ export async function GET(request: NextRequest) {
       users: users || [],
       inquiries: inquiries || [],
       guides: guides || [],
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
     })
   } catch (error) {
     return NextResponse.json(

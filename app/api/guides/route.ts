@@ -63,9 +63,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 요청 데이터
-    const { title, category, content, resourceUrl } = await request.json()
+    const body = await request.json()
+    console.log('[가이드 생성] 요청 데이터:', body)
+
+    const { title, category, content, resourceUrl } = body
 
     if (!title || !category || !content) {
+      console.log('[가이드 생성] 필수 필드 누락:', { title, category, content })
       return NextResponse.json(
         { message: '제목, 카테고리, 내용은 필수입니다' },
         { status: 400 }
@@ -73,36 +77,48 @@ export async function POST(request: NextRequest) {
     }
 
     // 현재 최대 display_order 조회
-    const { data: maxOrderData } = await supabaseAdmin
+    console.log('[가이드 생성] display_order 조회 시작')
+    const { data: maxOrderData, error: maxOrderError } = await supabaseAdmin
       .from('partner_guides')
       .select('display_order')
       .order('display_order', { ascending: false })
       .limit(1)
 
+    if (maxOrderError) {
+      console.error('[가이드 생성] display_order 조회 오류:', maxOrderError)
+    }
+
     const nextOrder = (maxOrderData?.[0]?.display_order || 0) + 1
+    console.log('[가이드 생성] 다음 display_order:', nextOrder)
 
     // 가이드 생성
+    const insertData = {
+      title,
+      category,
+      content,
+      resource_url: resourceUrl || null,
+      resource_type: resourceUrl ? 'url' : 'text',
+      display_order: nextOrder,
+      is_active: true,
+    }
+    console.log('[가이드 생성] 삽입할 데이터:', insertData)
+
     const { data, error } = await supabaseAdmin
       .from('partner_guides')
-      .insert({
-        title,
-        category,
-        content,
-        resource_url: resourceUrl || null,
-        resource_type: resourceUrl ? 'url' : 'text',
-        display_order: nextOrder,
-        is_active: true,
-      })
+      .insert(insertData)
       .select()
       .single()
 
     if (error) {
-      console.error('가이드 생성 오류:', error)
+      console.error('[가이드 생성] DB 삽입 오류:', error)
+      console.error('[가이드 생성] 에러 상세:', JSON.stringify(error, null, 2))
       return NextResponse.json(
-        { message: '가이드 생성에 실패했습니다' },
+        { message: '가이드 생성에 실패했습니다', error: error.message },
         { status: 500 }
       )
     }
+
+    console.log('[가이드 생성] 성공:', data)
 
     return NextResponse.json({
       message: '가이드가 생성되었습니다',
