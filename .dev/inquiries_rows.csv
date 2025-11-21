@@ -1,0 +1,11 @@
+id,referrer_url,phone_number,install_location,install_count,privacy_consent,submitted_at,created_at,marketer_code
+37f9c660-2428-4418-9bfc-dd657b56d891,https://blog.naver.com/PostView.naver?blogId=tlsghkfks&logNo=224073995394&redirect=Dlog&widgetTypeCall=true&topReferer=https%3A%2F%2Fsearch.naver.com%2Fsearch.naver%3Fwhere%3Dnexearch%26sm%3Dtop_hty%26fbm%3D0%26ie%3Dutf8%26query%3D%25EC%2584%25B8%25EC%25BD%25A4%2B%25EC%259C%2584%25EC%2595%25BD%25EA%25B8%2588%26ackey%3Dcxe8h5xm&trackingCode=nx&directAccess=false,01011111111,테스트,4,true,2025-11-19 10:51:57.185+00,2025-11-19 10:51:58.264297+00,A00001
+3819b178-0586-45b3-85a4-f2e5bd498245,https://blog.naver.com/PostList.naver?blogId=tlsghkfks&widgetTypeCall=true&topReferer=https%3A%2F%2Fwww.naver.com%2F&trackingCode=naver_main&directAccess=true,01022222222,sd,1,true,2025-11-21 08:46:32.014+00,2025-11-21 08:46:30.361604+00,A00001
+3c2cd80a-0ef2-4f20-8208-b9081d062e22,직접 접속,01011111111,sd,1,true,2025-11-10 15:03:26.618+00,2025-11-10 15:03:29.137323+00,A00001
+8d690dd9-7bef-48f0-94e3-4a1bbf5cac1f,https://blog.naver.com/PostList.naver?blogId=tlsghkfks&widgetTypeCall=true&topReferer=https%3A%2F%2Fwww.naver.com%2F&trackingCode=naver_main&directAccess=true,01011111111,sd,1,true,2025-11-21 08:45:53.536+00,2025-11-21 08:45:52.392534+00,A00001
+93a983b3-95e9-454a-a6a1-2a487e86fd56,직접 접속,01011111111,sd,1,true,2025-11-11 10:50:16.52+00,2025-11-11 10:50:16.369465+00,A00005
+a4754d0d-789a-48d4-816b-4c4e8ebdec3f,직접 접속,01011111111,sd,2,true,2025-11-10 15:31:46.801+00,2025-11-10 15:31:48.677485+00,A00004
+c0b52d5b-39d7-4a57-9cda-3cf55917d34c,직접 접속,01022222222,테스트,2,true,2025-11-13 03:45:59.761+00,2025-11-13 03:45:59.709968+00,A00004
+d66da47b-cd16-4e67-bfa4-e807c81ca0a0,https://m.blog.naver.com/tlsghkfks/224079208214,01086827822,수지가마로강정,2,true,2025-11-21 04:19:30.611+00,2025-11-21 04:19:33.888482+00,A00001
+ef48dc4b-97e0-461f-a8b4-2af7dc464210,직접 접속,01011111111,sd,1,true,2025-11-13 03:44:16.553+00,2025-11-13 03:44:17.826549+00,A00004
+fd7ee3bc-cd52-4ccb-ac91-dad8cf8c3463,직접 접속,01044444444,테스트,2,true,2025-11-19 04:13:56.37+00,2025-11-19 04:13:58.405233+00,A00002

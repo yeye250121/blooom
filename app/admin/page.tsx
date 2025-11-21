@@ -2,6 +2,8 @@
 
 import { FormEvent, useEffect, useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 interface AdminUser {
   id: string
   login_id: string
@@ -54,6 +56,7 @@ const ADMIN_STORAGE_KEY = 'admin-auth'
 
 export default function AdminPage() {
   // useState는 책상 위에 놓인 부기장처럼, 값을 적어두고 계속 참고할 수 있게 해줍니다.
+  const router = useRouter()
   const [auth, setAuth] = useState<AdminAuthState | null>(null)
   const [loginForm, setLoginForm] = useState({ loginId: '', password: '' })
   const [overview, setOverview] = useState<AdminOverview | null>(null)
@@ -353,7 +356,10 @@ export default function AdminPage() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => fetchOverview()}
+            onClick={() => {
+              router.refresh() // 서버 컴포넌트 데이터를 강제로 새로고침
+              fetchOverview()
+            }}
             className="px-4 py-2 border rounded-lg hover:bg-gray-50"
           >
             새로고침

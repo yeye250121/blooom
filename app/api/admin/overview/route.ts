@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getAdminContext } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0 // 중요: 0초마다 재검증 = 즉시 만료 = 절대 캐시하지 않음
+export const fetchCache = 'force-no-store' // 중요: fetch 요청 결과도 저장하지 않음
 
 export async function GET(request: NextRequest) {
   const admin = getAdminContext(request)
