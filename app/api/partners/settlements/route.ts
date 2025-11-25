@@ -14,28 +14,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '인증이 필요합니다' }, { status: 401 })
     }
 
-    // Get only published guides
-    const { data: guides, error } = await supabaseAdmin
-      .from('guides')
-      .select('id, title, slug, created_at, updated_at')
-      .eq('is_published', true)
-      .order('updated_at', { ascending: false })
+    // Get settlements for the current user
+    const { data: settlements, error } = await supabaseAdmin
+      .from('settlements')
+      .select('id, partner_code, settlement_date, file_name, file_path, created_at')
+      .eq('partner_code', user.uniqueCode)
+      .order('settlement_date', { ascending: false })
 
     if (error) {
       throw error
     }
 
     return NextResponse.json({
-      guides: (guides || []).map((guide) => ({
-        id: guide.id,
-        title: guide.title,
-        slug: guide.slug,
-        createdAt: guide.created_at,
-        updatedAt: guide.updated_at,
+      settlements: (settlements || []).map((settlement) => ({
+        id: settlement.id,
+        settlementDate: settlement.settlement_date,
+        fileName: settlement.file_name,
+        createdAt: settlement.created_at,
       })),
     })
   } catch (error) {
-    console.error('Guides list error:', error)
+    console.error('Settlements list error:', error)
     return NextResponse.json(
       { error: '서버 오류가 발생했습니다' },
       { status: 500 }

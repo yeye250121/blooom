@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { generateToken } from '@/lib/auth'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this'
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,13 +9,13 @@ export async function POST(request: NextRequest) {
 
     if (!loginId || !password) {
       return NextResponse.json(
-        { message: '로그인 ID와 비밀번호를 입력해주세요' },
+        { error: '아이디와 비밀번호를 입력해주세요' },
         { status: 400 }
       )
     }
 
     // 사용자 조회
-    const { data: user, error } = await supabase
+    const { data: user, error } = await supabaseAdmin
       .from('users')
       .select('*')
       .eq('login_id', loginId)
@@ -25,56 +23,44 @@ export async function POST(request: NextRequest) {
 
     if (error || !user) {
       return NextResponse.json(
-        { message: '아이디 또는 비밀번호가 일치하지 않습니다' },
+        { error: '아이디 또는 비밀번호가 일치하지 않습니다' },
         { status: 401 }
       )
     }
 
     // 비밀번호 검증
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash)
+    const isValidPassword = await bcrypt.compare(password, user.password_hash)
 
-    if (!isPasswordValid) {
+    if (!isValidPassword) {
       return NextResponse.json(
-        { message: '아이디 또는 비밀번호가 일치하지 않습니다' },
+        { error: '아이디 또는 비밀번호가 일치하지 않습니다' },
         { status: 401 }
       )
     }
 
     // JWT 토큰 생성
-    const token = jwt.sign(
-      {
-        id: user.id,
-        loginId: user.login_id,
-        level: user.level,
-        uniqueCode: user.unique_code,
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    )
-
-    // 사용자 정보 (비밀번호 제외)
-    const marketer = {
+    const token = generateToken({
       id: user.id,
       loginId: user.login_id,
-      nickname: user.nickname,
       uniqueCode: user.unique_code,
-      level: user.level,
-    }
-
-    console.log('로그인 성공:', {
-      loginId: user.login_id,
-      uniqueCode: user.unique_code,
-      isAdmin: user.unique_code.startsWith('S'),
+      nickname: user.nickname || '',
+      level: user.level || 1,
     })
 
     return NextResponse.json({
-      access_token: token,
-      marketer,
+      token,
+      user: {
+        id: user.id,
+        loginId: user.login_id,
+        nickname: user.nickname,
+        uniqueCode: user.unique_code,
+        level: user.level,
+      },
     })
   } catch (error) {
-    console.error('로그인 오류:', error)
+    console.error('[Login] Error:', error)
     return NextResponse.json(
-      { message: '서버 오류가 발생했습니다' },
+      { error: '로그인 처리 중 오류가 발생했습니다' },
       { status: 500 }
     )
   }

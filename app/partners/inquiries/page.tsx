@@ -1,0 +1,379 @@
+'use client'
+
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useAuthStore } from '@/lib/partners/store'
+import api from '@/lib/partners/api'
+import BottomNav from '@/components/partners/BottomNav'
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  Phone,
+  MapPin,
+  Package,
+  User,
+  ChevronDown,
+  Loader2,
+  ArrowLeft,
+} from 'lucide-react'
+
+interface Inquiry {
+  id: string
+  phone_number: string
+  install_location: string
+  install_count: number
+  marketer_code: string
+  status: 'new' | 'in_progress' | 'contracted' | 'cancelled'
+  submitted_at: string
+  canEdit: boolean
+}
+
+const STATUS_CONFIG = {
+  new: { label: '신규', color: 'bg-status-new' },
+  in_progress: { label: '상담중', color: 'bg-status-progress' },
+  contracted: { label: '계약완료', color: 'bg-status-done' },
+  cancelled: { label: '취소', color: 'bg-status-cancelled' },
+}
+
+function InquiriesContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { user, isAuthenticated } = useAuthStore()
+
+  // URL에서 partnerCode 파라미터 확인 (하위 파트너 문의 보기)
+  const partnerCodeFilter = searchParams.get('partnerCode')
+
+  const [inquiries, setInquiries] = useState<Inquiry[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  // 검색
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // 필터
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [onlyMine, setOnlyMine] = useState(false)
+
+  // 페이지네이션
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/partners/login')
+      return
+    }
+    fetchInquiries()
+  }, [page, statusFilter, onlyMine, partnerCodeFilter])
+
+  const fetchInquiries = async () => {
+    setIsLoading(true)
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '20',
+        ...(statusFilter !== 'all' && { status: statusFilter }),
+        ...(onlyMine && { onlyMine: 'true' }),
+        ...(searchQuery && { search: searchQuery }),
+        ...(partnerCodeFilter && { partnerCode: partnerCodeFilter }),
+      })
+
+      const response = await api.get(`/inquiries?${params}`)
+      setInquiries(response.data.data || [])
+      setTotalPages(response.data.pagination.totalPages)
+    } catch (error) {
+      console.error('문의 목록 조회 실패:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSearch = () => {
+    setPage(1)
+    fetchInquiries()
+    setIsSearchOpen(false)
+  }
+
+  const handleStatusChange = async (inquiryId: string, newStatus: string) => {
+    try {
+      await api.patch(`/inquiries/${inquiryId}`, { status: newStatus })
+      setInquiries((prev) =>
+        prev.map((inq) =>
+          inq.id === inquiryId ? { ...inq, status: newStatus as Inquiry['status'] } : inq
+        )
+      )
+    } catch (error: any) {
+      alert(error.response?.data?.error || '상태 변경에 실패했습니다')
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+    return `${month}/${day} ${hours}:${minutes}`
+  }
+
+  return (
+    <div className="min-h-screen bg-bg-primary pb-20">
+      {/* 헤더 */}
+      <div className="bg-bg-card px-6 py-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {partnerCodeFilter && (
+              <button
+                onClick={() => router.push('/partners/inquiries')}
+                className="text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            )}
+            <h1 className="text-title text-text-primary">
+              {partnerCodeFilter ? `${partnerCodeFilter} 문의` : '문의 관리'}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="text-text-secondary hover:text-text-primary transition-colors"
+            >
+              <Search className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="text-text-secondary hover:text-text-primary transition-colors"
+            >
+              <SlidersHorizontal className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 필터 패널 */}
+      {isFilterOpen && (
+        <div className="bg-bg-card px-6 py-4 border-t border-bg-primary">
+          <div className="mb-4">
+            <p className="text-caption text-text-secondary mb-3">상태</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { value: 'all', label: '전체' },
+                { value: 'new', label: '신규' },
+                { value: 'in_progress', label: '상담중' },
+                { value: 'contracted', label: '계약완료' },
+                { value: 'cancelled', label: '취소' },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setStatusFilter(option.value)
+                    setPage(1)
+                  }}
+                  className={`px-4 py-2 rounded-full text-caption transition-colors ${
+                    statusFilter === option.value
+                      ? 'bg-action-primary text-white'
+                      : 'bg-bg-primary text-text-secondary'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-caption text-text-secondary">내 문의만 보기</span>
+            <button
+              onClick={() => {
+                setOnlyMine(!onlyMine)
+                setPage(1)
+              }}
+              className={`w-12 h-7 rounded-full transition-colors relative ${
+                onlyMine ? 'bg-action-primary' : 'bg-text-tertiary'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
+                  onlyMine ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 문의 목록 */}
+      <div className="px-4 py-4">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 text-action-primary animate-spin" />
+          </div>
+        ) : inquiries.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-text-secondary">문의가 없습니다</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {inquiries.map((inquiry) => (
+              <div
+                key={inquiry.id}
+                className="bg-bg-card rounded-card overflow-hidden"
+              >
+                {/* 카드 헤더 (항상 표시) */}
+                <button
+                  onClick={() =>
+                    setExpandedId(expandedId === inquiry.id ? null : inquiry.id)
+                  }
+                  className="w-full px-5 py-4 text-left"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-body text-text-primary truncate">
+                        {inquiry.install_location}
+                      </p>
+                      <p className="text-caption text-text-secondary mt-1">
+                        {formatDate(inquiry.submitted_at)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-3">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          STATUS_CONFIG[inquiry.status].color
+                        }`}
+                      />
+                      <span className="text-caption text-text-secondary">
+                        {STATUS_CONFIG[inquiry.status].label}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+
+                {/* 카드 상세 (펼쳐졌을 때) */}
+                {expandedId === inquiry.id && (
+                  <div className="px-5 pb-5 pt-2 bg-bg-primary">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-4 h-4 text-text-tertiary" />
+                        <span className="text-body text-text-primary">
+                          {inquiry.phone_number}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <MapPin className="w-4 h-4 text-text-tertiary" />
+                        <span className="text-body text-text-primary">
+                          {inquiry.install_location}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Package className="w-4 h-4 text-text-tertiary" />
+                        <span className="text-body text-text-primary">
+                          설치 수량: {inquiry.install_count}대
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <User className="w-4 h-4 text-text-tertiary" />
+                        <span className="text-body text-text-primary">
+                          담당: {inquiry.marketer_code}
+                          {inquiry.canEdit && (
+                            <span className="text-action-primary ml-1">(나)</span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 상태 변경 드롭다운 */}
+                    {inquiry.canEdit && (
+                      <div className="mt-4 pt-4 border-t border-bg-card">
+                        <p className="text-caption text-text-secondary mb-2">
+                          상태 변경
+                        </p>
+                        <div className="relative">
+                          <select
+                            value={inquiry.status}
+                            onChange={(e) =>
+                              handleStatusChange(inquiry.id, e.target.value)
+                            }
+                            className="w-full px-4 py-3 bg-bg-card rounded-button text-body text-text-primary appearance-none cursor-pointer"
+                          >
+                            <option value="new">신규</option>
+                            <option value="in_progress">상담중</option>
+                            <option value="contracted">계약완료</option>
+                            <option value="cancelled">취소</option>
+                          </select>
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary pointer-events-none" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 더보기 버튼 */}
+        {!isLoading && page < totalPages && (
+          <button
+            onClick={() => setPage(page + 1)}
+            className="w-full mt-4 py-4 bg-bg-card rounded-card text-body text-action-primary font-medium"
+          >
+            더보기
+          </button>
+        )}
+      </div>
+
+      {/* 검색 오버레이 */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-overlay"
+            onClick={() => setIsSearchOpen(false)}
+          />
+          <div className="absolute top-0 left-0 right-0 bg-bg-card p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-tertiary" />
+                <input
+                  type="text"
+                  placeholder="전화번호, 설치위치 검색"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  autoFocus
+                  className="w-full pl-12 pr-4 py-4 bg-bg-primary rounded-input text-body text-text-primary placeholder:text-text-tertiary"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchQuery('')
+                  setIsSearchOpen(false)
+                }}
+                className="text-text-secondary"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default function InquiriesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center pb-20">
+        <Loader2 className="w-8 h-8 text-action-primary animate-spin" />
+      </div>
+    }>
+      <InquiriesContent />
+    </Suspense>
+  )
+}
