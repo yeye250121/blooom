@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getUserContext } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 
 /**
  * 하위 파트너 트리 조회 (재귀)

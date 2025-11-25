@@ -79,6 +79,7 @@ function InquiriesContent() {
         ...(onlyMine && { onlyMine: 'true' }),
         ...(searchQuery && { search: searchQuery }),
         ...(partnerCodeFilter && { partnerCode: partnerCodeFilter }),
+        _t: Date.now().toString(),
       })
 
       const response = await api.get(`/inquiries?${params}`)
