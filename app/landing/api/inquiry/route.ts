@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { inquiryRequestSchema } from '@/app/landing/lib/validations';
 import { appendInquiryToSheet } from '@/app/landing/lib/google-sheets';
 import { sendSlackNotification } from '@/app/landing/lib/slack';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,8 +23,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Supabase에 저장
-    const { data, error } = await supabase
+    // Supabase에 저장 (서버사이드이므로 admin client 사용)
+    const { data, error } = await supabaseAdmin
       .from('inquiries')
       .insert([
         {

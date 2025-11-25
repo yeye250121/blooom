@@ -36,7 +36,7 @@ export default function LoginPage() {
         {/* 로고/타이틀 */}
         <div className="text-center mb-10">
           <h1 className="text-heading text-text-primary mb-2">Blooom</h1>
-          <p className="text-body text-text-secondary">파트너 관리 시스템</p>
+          <p className="text-body text-text-secondary">파트너스 로그인</p>
         </div>
 
         {/* 로그인 폼 */}
