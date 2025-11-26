@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/partners/store'
 import api from '@/lib/partners/api'
-import BottomNav from '@/components/partners/BottomNav'
-import { Copy, Check, ChevronRight, X, Loader2, FileText } from 'lucide-react'
+import PartnerLayout from '@/components/partners/PartnerLayout'
+import { Copy, Check, ChevronRight, X, Loader2, FileText, User, Key, LogOut, ExternalLink } from 'lucide-react'
 
 export default function MyPage() {
   const router = useRouter()
@@ -13,13 +13,13 @@ export default function MyPage() {
 
   const [copied, setCopied] = useState(false)
 
-  // 닉네임 변경 바텀시트
-  const [isNicknameSheetOpen, setIsNicknameSheetOpen] = useState(false)
+  // 닉네임 변경 모달
+  const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false)
   const [newNickname, setNewNickname] = useState('')
   const [isNicknameLoading, setIsNicknameLoading] = useState(false)
 
-  // 비밀번호 변경 바텀시트
-  const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false)
+  // 비밀번호 변경 모달
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -62,7 +62,7 @@ export default function MyPage() {
         })
       }
 
-      setIsNicknameSheetOpen(false)
+      setIsNicknameModalOpen(false)
       setNewNickname('')
     } catch (error: any) {
       alert(error.response?.data?.error || '닉네임 변경에 실패했습니다')
@@ -96,7 +96,7 @@ export default function MyPage() {
         newPassword,
       })
 
-      setIsPasswordSheetOpen(false)
+      setIsPasswordModalOpen(false)
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
@@ -109,91 +109,213 @@ export default function MyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary pb-20">
-      {/* 프로필 섹션 */}
-      <div className="bg-bg-card px-6 py-8">
-        <h1 className="text-heading text-text-primary">
-          {user?.nickname || '파트너'}
-        </h1>
-        <p className="text-body text-text-secondary mt-1">{user?.uniqueCode}</p>
+    <PartnerLayout title="마이페이지">
+      {/* 데스크탑 레이아웃 */}
+      <div className="hidden lg:block">
+        <div className="max-w-3xl">
+          {/* 프로필 카드 */}
+          <div className="bg-bg-card rounded-card p-8 mb-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-text-primary mb-1">
+                  {user?.nickname || '파트너'}
+                </h1>
+                <p className="text-body text-text-secondary">{user?.uniqueCode}</p>
+              </div>
+              <div className="w-16 h-16 bg-action-primary/10 rounded-full flex items-center justify-center">
+                <User className="w-8 h-8 text-action-primary" />
+              </div>
+            </div>
 
-        <button
-          onClick={handleCopyLink}
-          className="flex items-center gap-2 mt-4 text-body text-text-secondary"
-        >
-          <span>blooom.kr/{user?.uniqueCode}</span>
-          {copied ? (
-            <Check className="w-5 h-5 text-status-done" />
-          ) : (
-            <Copy className="w-5 h-5" />
-          )}
-        </button>
-      </div>
-
-      {/* 정산서 메뉴 */}
-      <div className="mt-3 bg-bg-card">
-        <button
-          onClick={() => router.push('/partners/settlements')}
-          className="w-full px-6 py-4 flex items-center justify-between"
-        >
-          <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-action-primary" />
-            <span className="text-body text-text-primary">내 정산서 확인하기</span>
+            <div className="mt-6 p-4 bg-bg-primary rounded-button flex items-center justify-between">
+              <div>
+                <p className="text-caption text-text-tertiary mb-1">나의 추천 링크</p>
+                <p className="text-body text-text-primary">blooom.kr/{user?.uniqueCode}</p>
+              </div>
+              <button
+                onClick={handleCopyLink}
+                className={`px-4 py-2 rounded-button text-body font-medium transition-colors flex items-center gap-2 ${
+                  copied
+                    ? 'bg-status-done/10 text-status-done'
+                    : 'bg-action-primary/10 text-action-primary hover:bg-action-primary/20'
+                }`}
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-5 h-5" />
+                    복사됨
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-5 h-5" />
+                    복사
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-text-tertiary" />
-        </button>
+
+          {/* 메뉴 카드 */}
+          <div className="bg-bg-card rounded-card overflow-hidden mb-6">
+            <button
+              onClick={() => router.push('/partners/settlements')}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-action-primary/10 rounded-full flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-action-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="text-body text-text-primary font-medium">내 정산서 확인하기</p>
+                  <p className="text-caption text-text-tertiary">월별 정산 내역을 확인하세요</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-tertiary" />
+            </button>
+          </div>
+
+          {/* 설정 카드 */}
+          <div className="bg-bg-card rounded-card overflow-hidden mb-6">
+            <button
+              onClick={() => {
+                setNewNickname(user?.nickname || '')
+                setIsNicknameModalOpen(true)
+              }}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-bg-primary rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-text-secondary" />
+                </div>
+                <span className="text-body text-text-primary">닉네임 변경</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-tertiary" />
+            </button>
+
+            <div className="h-px bg-border mx-6" />
+
+            <button
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-bg-primary rounded-full flex items-center justify-center">
+                  <Key className="w-5 h-5 text-text-secondary" />
+                </div>
+                <span className="text-body text-text-primary">비밀번호 변경</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-tertiary" />
+            </button>
+          </div>
+
+          {/* 로그아웃 */}
+          <div className="bg-bg-card rounded-card overflow-hidden">
+            <button
+              onClick={handleLogout}
+              className="w-full px-6 py-5 flex items-center gap-4 hover:bg-bg-primary transition-colors"
+            >
+              <div className="w-10 h-10 bg-error/10 rounded-full flex items-center justify-center">
+                <LogOut className="w-5 h-5 text-error" />
+              </div>
+              <span className="text-body text-error">로그아웃</span>
+            </button>
+          </div>
+
+          {/* 버전 정보 */}
+          <div className="mt-8 text-center">
+            <p className="text-small text-text-tertiary">버전 1.0.0</p>
+          </div>
+        </div>
       </div>
 
-      {/* 설정 메뉴 */}
-      <div className="mt-3 bg-bg-card">
-        <button
-          onClick={() => {
-            setNewNickname(user?.nickname || '')
-            setIsNicknameSheetOpen(true)
-          }}
-          className="w-full px-6 py-4 flex items-center justify-between"
-        >
-          <span className="text-body text-text-primary">닉네임 변경</span>
-          <ChevronRight className="w-5 h-5 text-text-tertiary" />
-        </button>
+      {/* 모바일 레이아웃 */}
+      <div className="lg:hidden">
+        {/* 프로필 섹션 */}
+        <div className="bg-bg-card px-6 py-8">
+          <h1 className="text-heading text-text-primary">
+            {user?.nickname || '파트너'}
+          </h1>
+          <p className="text-body text-text-secondary mt-1">{user?.uniqueCode}</p>
 
-        <div className="h-px bg-bg-primary mx-6" />
+          <button
+            onClick={handleCopyLink}
+            className="flex items-center gap-2 mt-4 text-body text-text-secondary"
+          >
+            <span>blooom.kr/{user?.uniqueCode}</span>
+            {copied ? (
+              <Check className="w-5 h-5 text-status-done" />
+            ) : (
+              <Copy className="w-5 h-5" />
+            )}
+          </button>
+        </div>
 
-        <button
-          onClick={() => setIsPasswordSheetOpen(true)}
-          className="w-full px-6 py-4 flex items-center justify-between"
-        >
-          <span className="text-body text-text-primary">비밀번호 변경</span>
-          <ChevronRight className="w-5 h-5 text-text-tertiary" />
-        </button>
+        {/* 정산서 메뉴 */}
+        <div className="mt-3 bg-bg-card">
+          <button
+            onClick={() => router.push('/partners/settlements')}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-action-primary" />
+              <span className="text-body text-text-primary">내 정산서 확인하기</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+          </button>
+        </div>
+
+        {/* 설정 메뉴 */}
+        <div className="mt-3 bg-bg-card">
+          <button
+            onClick={() => {
+              setNewNickname(user?.nickname || '')
+              setIsNicknameModalOpen(true)
+            }}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <span className="text-body text-text-primary">닉네임 변경</span>
+            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+          </button>
+
+          <div className="h-px bg-bg-primary mx-6" />
+
+          <button
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <span className="text-body text-text-primary">비밀번호 변경</span>
+            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+          </button>
+        </div>
+
+        {/* 로그아웃 */}
+        <div className="mt-3 bg-bg-card">
+          <button
+            onClick={handleLogout}
+            className="w-full px-6 py-4 text-left"
+          >
+            <span className="text-body text-error">로그아웃</span>
+          </button>
+        </div>
+
+        {/* 버전 정보 */}
+        <div className="mt-8 text-center">
+          <p className="text-small text-text-tertiary">버전 1.0.0</p>
+        </div>
       </div>
 
-      {/* 로그아웃 */}
-      <div className="mt-3 bg-bg-card">
-        <button
-          onClick={handleLogout}
-          className="w-full px-6 py-4 text-left"
-        >
-          <span className="text-body text-error">로그아웃</span>
-        </button>
-      </div>
-
-      {/* 버전 정보 */}
-      <div className="mt-8 text-center">
-        <p className="text-small text-text-tertiary">버전 1.0.0</p>
-      </div>
-
-      {/* 닉네임 변경 바텀시트 */}
-      {isNicknameSheetOpen && (
-        <div className="fixed inset-0 z-50">
+      {/* 닉네임 변경 모달 - 데스크탑/모바일 공통 */}
+      {isNicknameModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:items-center">
           <div
             className="absolute inset-0 bg-overlay"
-            onClick={() => setIsNicknameSheetOpen(false)}
+            onClick={() => setIsNicknameModalOpen(false)}
           />
-          <div className="absolute bottom-0 left-0 right-0 bg-bg-card rounded-t-[20px] p-6 animate-slide-up">
+          {/* 데스크탑: 가운데 모달 / 모바일: 바텀시트 */}
+          <div className="absolute bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-bg-card rounded-t-[20px] lg:rounded-card p-6 lg:w-[400px] animate-slide-up lg:animate-none">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-title text-text-primary">닉네임 변경</h2>
-              <button onClick={() => setIsNicknameSheetOpen(false)}>
+              <button onClick={() => setIsNicknameModalOpen(false)}>
                 <X className="w-6 h-6 text-text-secondary" />
               </button>
             </div>
@@ -221,17 +343,18 @@ export default function MyPage() {
         </div>
       )}
 
-      {/* 비밀번호 변경 바텀시트 */}
-      {isPasswordSheetOpen && (
-        <div className="fixed inset-0 z-50">
+      {/* 비밀번호 변경 모달 - 데스크탑/모바일 공통 */}
+      {isPasswordModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:items-center">
           <div
             className="absolute inset-0 bg-overlay"
-            onClick={() => setIsPasswordSheetOpen(false)}
+            onClick={() => setIsPasswordModalOpen(false)}
           />
-          <div className="absolute bottom-0 left-0 right-0 bg-bg-card rounded-t-[20px] p-6 animate-slide-up">
+          {/* 데스크탑: 가운데 모달 / 모바일: 바텀시트 */}
+          <div className="absolute bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-bg-card rounded-t-[20px] lg:rounded-card p-6 lg:w-[400px] animate-slide-up lg:animate-none">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-title text-text-primary">비밀번호 변경</h2>
-              <button onClick={() => setIsPasswordSheetOpen(false)}>
+              <button onClick={() => setIsPasswordModalOpen(false)}>
                 <X className="w-6 h-6 text-text-secondary" />
               </button>
             </div>
@@ -278,8 +401,6 @@ export default function MyPage() {
           </div>
         </div>
       )}
-
-      <BottomNav />
-    </div>
+    </PartnerLayout>
   )
 }

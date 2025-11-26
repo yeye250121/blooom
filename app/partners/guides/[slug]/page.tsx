@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '@/lib/partners/store'
 import api from '@/lib/partners/api'
+import PartnerLayout from '@/components/partners/PartnerLayout'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 
 interface Guide {
@@ -54,25 +55,18 @@ export default function GuideDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-action-primary animate-spin" />
-      </div>
+      <PartnerLayout title="교육자료" showBackButton onBack={() => router.push('/partners/guides')}>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-action-primary animate-spin" />
+        </div>
+      </PartnerLayout>
     )
   }
 
   if (error || !guide) {
     return (
-      <div className="min-h-screen bg-bg-primary">
-        <div className="bg-bg-card px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
-          <button
-            onClick={() => router.back()}
-            className="p-2 -ml-2 text-text-secondary hover:text-text-primary transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-title text-text-primary">교육자료</h1>
-        </div>
-        <div className="p-4">
+      <PartnerLayout title="교육자료" showBackButton onBack={() => router.push('/partners/guides')}>
+        <div className="p-4 lg:p-0">
           <div className="bg-bg-card rounded-card p-8 text-center">
             <p className="text-body text-text-secondary">{error || '가이드를 찾을 수 없습니다'}</p>
             <button
@@ -83,38 +77,69 @@ export default function GuideDetailPage() {
             </button>
           </div>
         </div>
-      </div>
+      </PartnerLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      {/* Header */}
-      <div className="bg-bg-card px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
+    <PartnerLayout title={guide.title} showBackButton onBack={() => router.push('/partners/guides')}>
+      {/* 데스크탑 레이아웃 */}
+      <div className="hidden lg:block">
+        {/* 뒤로가기 */}
         <button
-          onClick={() => router.back()}
-          className="p-2 -ml-2 text-text-secondary hover:text-text-primary transition-colors"
+          onClick={() => router.push('/partners/guides')}
+          className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors mb-6"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="w-5 h-5" />
+          <span>가이드 목록</span>
         </button>
-        <h1 className="text-title text-text-primary truncate flex-1">{guide.title}</h1>
-      </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <div className="bg-bg-card rounded-card p-6">
-          <div className="mb-4 pb-4 border-b border-border">
-            <h2 className="text-heading text-text-primary mb-2">{guide.title}</h2>
-            <p className="text-small text-text-tertiary">
+        {/* 콘텐츠 */}
+        <div className="bg-bg-card rounded-card p-8 max-w-4xl">
+          <div className="mb-6 pb-6 border-b border-border">
+            <h1 className="text-2xl font-bold text-text-primary mb-3">{guide.title}</h1>
+            <p className="text-caption text-text-tertiary">
               최종 수정: {formatDate(guide.updatedAt)}
             </p>
           </div>
 
           {/* TipTap content rendering */}
           <div
-            className="tiptap-content prose prose-sm max-w-none text-text-primary"
+            className="tiptap-content prose prose-lg max-w-none text-text-primary"
             dangerouslySetInnerHTML={{ __html: guide.content }}
           />
+        </div>
+      </div>
+
+      {/* 모바일 레이아웃 */}
+      <div className="lg:hidden">
+        {/* Header */}
+        <div className="bg-bg-card px-4 py-4 flex items-center gap-3 sticky top-14 z-10">
+          <button
+            onClick={() => router.back()}
+            className="p-2 -ml-2 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-title text-text-primary truncate flex-1">{guide.title}</h1>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          <div className="bg-bg-card rounded-card p-6">
+            <div className="mb-4 pb-4 border-b border-border">
+              <h2 className="text-heading text-text-primary mb-2">{guide.title}</h2>
+              <p className="text-small text-text-tertiary">
+                최종 수정: {formatDate(guide.updatedAt)}
+              </p>
+            </div>
+
+            {/* TipTap content rendering */}
+            <div
+              className="tiptap-content prose prose-sm max-w-none text-text-primary"
+              dangerouslySetInnerHTML={{ __html: guide.content }}
+            />
+          </div>
         </div>
       </div>
 
@@ -170,7 +195,18 @@ export default function GuideDetailPage() {
         .tiptap-content em {
           font-style: italic;
         }
+        @media (min-width: 1024px) {
+          .tiptap-content h1 {
+            font-size: 1.875rem;
+          }
+          .tiptap-content h2 {
+            font-size: 1.5rem;
+          }
+          .tiptap-content h3 {
+            font-size: 1.25rem;
+          }
+        }
       `}</style>
-    </div>
+    </PartnerLayout>
   )
 }
