@@ -701,6 +701,8 @@ input.error {
   margin: 0 auto;
 }
 
+/* 예약 시스템 스타일은 Tailwind CSS로 이동됨 */
+
 /* Responsive */
 @media (min-width: 768px) {
   .hero h1 {

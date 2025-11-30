@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import ConsultationForm from '@/app/landing/components/ConsultationForm';
+import ReservationForm from '@/app/landing/components/ReservationForm';
 import HowToParticipate from '@/app/landing/components/HowToParticipate';
 import SpecialBenefits from '@/app/landing/components/SpecialBenefits';
 import Hero from '@/app/landing/components/Hero';
@@ -31,7 +31,7 @@ function LandingContent() {
       <Script src="/config.js" strategy="beforeInteractive" />
 
       <main>
-        <ConsultationForm marketerCode={marketerCode || undefined} />
+        <ReservationForm marketerCode={marketerCode || undefined} />
         <section className="hero-image">
           <img
             src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/%5B%EC%B5%9C%EC%A2%85%5D%20-%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80%20%2818%29.jpg"

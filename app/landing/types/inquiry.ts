@@ -6,6 +6,21 @@ export interface InquiryRequest {
   installCount: number;
   privacyConsent: boolean;
   submittedAt?: string;
+  marketerCode?: string | null;
+}
+
+// 확장된 문의 요청 타입 (설치 예약 지원)
+export interface ExtendedInquiryRequest {
+  referrerUrl?: string;
+  phoneNumber: string;
+  installLocation?: string;
+  installCount?: number;
+  privacyConsent: boolean;
+  marketerCode?: string | null;
+  // 새 필드
+  inquiryType?: 'consultation' | 'installation';
+  reservationDate?: string;
+  reservationTimeSlot?: 'morning' | 'afternoon';
 }
 
 // 문의 응답 데이터 타입

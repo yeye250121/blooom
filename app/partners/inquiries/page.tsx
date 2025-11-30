@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  Calendar,
+  FileText,
 } from 'lucide-react'
 
 interface Inquiry {
@@ -29,14 +31,35 @@ interface Inquiry {
   status: 'new' | 'in_progress' | 'contracted' | 'cancelled'
   submitted_at: string
   canEdit: boolean
+  // 예약 관련 필드
+  inquiry_type?: 'consultation' | 'installation'  // DB에서는 installation으로 저장됨
+  reservation_date?: string
+  reservation_time_slot?: string
+  outdoor_count?: number
+  indoor_count?: number
+  address?: string
+  address_detail?: string
+  zonecode?: string
+  documents?: Record<string, string> | null  // DB에서는 객체로 저장됨 { idCard: url, ... }
+  documents_submitted?: boolean
 }
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; textColor: string }> = {
   new: { label: '신규', color: 'bg-status-new', textColor: 'text-status-new' },
   in_progress: { label: '상담중', color: 'bg-status-progress', textColor: 'text-status-progress' },
   contracted: { label: '계약완료', color: 'bg-status-done', textColor: 'text-status-done' },
   cancelled: { label: '취소', color: 'bg-status-cancelled', textColor: 'text-status-cancelled' },
 }
+
+const getStatusConfig = (status: string) => {
+  return STATUS_CONFIG[status] || STATUS_CONFIG['new']
+}
+
+const TYPE_OPTIONS = [
+  { value: 'all', label: '전체' },
+  { value: 'installation', label: '예약' },
+  { value: 'consultation', label: '상담' },
+]
 
 function InquiriesContent() {
   const router = useRouter()
@@ -58,6 +81,7 @@ function InquiriesContent() {
   // 필터
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [typeFilter, setTypeFilter] = useState<string>('all')
   const [onlyMine, setOnlyMine] = useState(false)
 
   // 페이지네이션
@@ -65,13 +89,14 @@ function InquiriesContent() {
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
 
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push('/partners/login')
       return
     }
     fetchInquiries()
-  }, [page, statusFilter, onlyMine, partnerCodeFilter])
+  }, [page, statusFilter, typeFilter, onlyMine, partnerCodeFilter])
 
   const fetchInquiries = async () => {
     setIsLoading(true)
@@ -88,7 +113,17 @@ function InquiriesContent() {
       })
 
       const response = await api.get(`/inquiries?${params}`)
-      setInquiries(response.data.data || [])
+      let data = response.data.data || []
+
+      // 타입 필터 적용 (클라이언트 사이드)
+      if (typeFilter !== 'all') {
+        data = data.filter((inquiry: Inquiry) => {
+          const inquiryType = inquiry.inquiry_type || 'consultation'
+          return inquiryType === typeFilter
+        })
+      }
+
+      setInquiries(data)
       setTotalPages(response.data.pagination.totalPages)
       setTotalCount(response.data.pagination.total)
     } catch (error) {
@@ -137,6 +172,39 @@ function InquiriesContent() {
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
   }
 
+  const formatReservationDate = (dateString?: string) => {
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    return `${date.getMonth() + 1}/${date.getDate()}`
+  }
+
+  const getTimeSlotLabel = (slot?: string) => {
+    switch (slot) {
+      case 'morning': return '오전'
+      case 'afternoon': return '오후'
+      default: return ''
+    }
+  }
+
+  const getDocumentLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      idCard: '신분증',
+      paymentCard: '결제수단',
+      businessLicense: '사업자등록증',
+    }
+    return labels[type] || type
+  }
+
+  const getDocumentSummary = (documents: Record<string, string>) => {
+    const keys = Object.keys(documents)
+    if (keys.length === 0) return ''
+    if (keys.length === 1) return getDocumentLabel(keys[0])
+    // 우선순위: 신분증 > 결제카드 > 사업자등록증 > 기타
+    const priority = ['idCard', 'paymentCard', 'businessLicense']
+    const firstKey = priority.find(k => keys.includes(k)) || keys[0]
+    return `${getDocumentLabel(firstKey)} 외 ${keys.length - 1}건`
+  }
+
   const pageTitle = partnerCodeFilter ? `${partnerCodeFilter} 문의` : '문의 관리'
 
   return (
@@ -180,50 +248,76 @@ function InquiriesContent() {
         </div>
 
         {/* 필터 */}
-        <div className="bg-bg-card rounded-card p-4 mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-caption text-text-secondary mr-2">상태:</span>
-            {[
-              { value: 'all', label: '전체' },
-              { value: 'new', label: '신규' },
-              { value: 'in_progress', label: '상담중' },
-              { value: 'contracted', label: '계약완료' },
-              { value: 'cancelled', label: '취소' },
-            ].map((option) => (
+        <div className="bg-bg-card rounded-card p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              {/* 상태 필터 */}
+              <div className="flex items-center gap-2">
+                <span className="text-caption text-text-secondary mr-2">상태:</span>
+                {[
+                  { value: 'all', label: '전체' },
+                  { value: 'new', label: '신규' },
+                  { value: 'in_progress', label: '상담중' },
+                  { value: 'contracted', label: '계약완료' },
+                  { value: 'cancelled', label: '취소' },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setStatusFilter(option.value)
+                      setPage(1)
+                    }}
+                    className={`px-4 py-2 rounded-full text-caption transition-colors ${
+                      statusFilter === option.value
+                        ? 'bg-action-primary text-white'
+                        : 'bg-bg-primary text-text-secondary hover:bg-bg-primary/80'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* 유형 필터 */}
+              <div className="flex items-center gap-2 border-l border-border pl-6">
+                <span className="text-caption text-text-secondary mr-2">유형:</span>
+                {TYPE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setTypeFilter(option.value)
+                      setPage(1)
+                    }}
+                    className={`px-4 py-2 rounded-full text-caption transition-colors ${
+                      typeFilter === option.value
+                        ? 'bg-action-primary text-white'
+                        : 'bg-bg-primary text-text-secondary hover:bg-bg-primary/80'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="text-caption text-text-secondary">내 문의만</span>
               <button
-                key={option.value}
                 onClick={() => {
-                  setStatusFilter(option.value)
+                  setOnlyMine(!onlyMine)
                   setPage(1)
                 }}
-                className={`px-4 py-2 rounded-full text-caption transition-colors ${
-                  statusFilter === option.value
-                    ? 'bg-action-primary text-white'
-                    : 'bg-bg-primary text-text-secondary hover:bg-bg-primary/80'
+                className={`w-12 h-7 rounded-full transition-colors relative ${
+                  onlyMine ? 'bg-action-primary' : 'bg-text-tertiary'
                 }`}
               >
-                {option.label}
+                <div
+                  className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
+                    onlyMine ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
               </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-caption text-text-secondary">내 문의만</span>
-            <button
-              onClick={() => {
-                setOnlyMine(!onlyMine)
-                setPage(1)
-              }}
-              className={`w-12 h-7 rounded-full transition-colors relative ${
-                onlyMine ? 'bg-action-primary' : 'bg-text-tertiary'
-              }`}
-            >
-              <div
-                className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                  onlyMine ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
+            </div>
           </div>
         </div>
 
@@ -241,9 +335,12 @@ function InquiriesContent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-bg-primary">
+                  <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">유형</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">설치위치</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">전화번호</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">수량</th>
+                  <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">예약일</th>
+                  <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">서류</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">담당자</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">상태</th>
                   <th className="text-left py-4 px-6 text-caption text-text-secondary font-medium">접수일</th>
@@ -253,9 +350,61 @@ function InquiriesContent() {
               <tbody>
                 {inquiries.map((inquiry) => (
                   <tr key={inquiry.id} className="border-b border-border last:border-b-0 hover:bg-bg-primary/50 transition-colors">
+                    {/* 유형 */}
+                    <td className="py-4 px-6">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-caption ${
+                        inquiry.inquiry_type === 'installation'
+                          ? 'bg-action-primary/10 text-action-primary'
+                          : 'bg-bg-primary text-text-secondary'
+                      }`}>
+                        {inquiry.inquiry_type === 'installation' ? (
+                          <>
+                            <Calendar className="w-3 h-3" />
+                            예약
+                          </>
+                        ) : (
+                          <>
+                            <Phone className="w-3 h-3" />
+                            상담
+                          </>
+                        )}
+                      </span>
+                    </td>
                     <td className="py-4 px-6 text-body text-text-primary">{inquiry.install_location}</td>
                     <td className="py-4 px-6 text-body text-text-primary">{inquiry.phone_number}</td>
-                    <td className="py-4 px-6 text-body text-text-secondary">{inquiry.install_count}대</td>
+                    <td className="py-4 px-6 text-body text-text-secondary">
+                      {inquiry.inquiry_type === 'installation' ? (
+                        <span>
+                          {inquiry.outdoor_count || 0}+{inquiry.indoor_count || 0}
+                        </span>
+                      ) : (
+                        <span>{inquiry.install_count}대</span>
+                      )}
+                    </td>
+                    {/* 예약일 */}
+                    <td className="py-4 px-6">
+                      {inquiry.inquiry_type === 'installation' && inquiry.reservation_date ? (
+                        <div className="flex items-center gap-1 text-body text-text-primary">
+                          <span>{formatReservationDate(inquiry.reservation_date)}</span>
+                          <span className="text-text-tertiary text-caption">
+                            {getTimeSlotLabel(inquiry.reservation_time_slot)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-text-tertiary">-</span>
+                      )}
+                    </td>
+                    {/* 서류 - 종류만 텍스트로 표시 (내용 열람 불가) */}
+                    <td className="py-4 px-6">
+                      {inquiry.documents && Object.keys(inquiry.documents).length > 0 ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-caption bg-green-100 text-green-700">
+                          <FileText className="w-3.5 h-3.5" />
+                          {getDocumentSummary(inquiry.documents)}
+                        </span>
+                      ) : (
+                        <span className="text-text-tertiary text-caption">-</span>
+                      )}
+                    </td>
                     <td className="py-4 px-6">
                       <span className="text-body text-text-primary">{inquiry.marketer_code}</span>
                       {inquiry.canEdit && (
@@ -263,9 +412,9 @@ function InquiriesContent() {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-caption ${STATUS_CONFIG[inquiry.status].color}/10 ${STATUS_CONFIG[inquiry.status].textColor}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${STATUS_CONFIG[inquiry.status].color}`} />
-                        {STATUS_CONFIG[inquiry.status].label}
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-caption ${getStatusConfig(inquiry.status).color}/10 ${getStatusConfig(inquiry.status).textColor}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${getStatusConfig(inquiry.status).color}`} />
+                        {getStatusConfig(inquiry.status).label}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-body text-text-secondary">{formatFullDate(inquiry.submitted_at)}</td>
@@ -379,6 +528,7 @@ function InquiriesContent() {
         {/* 필터 패널 */}
         {isFilterOpen && (
           <div className="bg-bg-card px-6 py-4 border-t border-bg-primary">
+            {/* 상태 필터 */}
             <div className="mb-4">
               <p className="text-caption text-text-secondary mb-3">상태</p>
               <div className="flex flex-wrap gap-2">
@@ -397,6 +547,29 @@ function InquiriesContent() {
                     }}
                     className={`px-4 py-2 rounded-full text-caption transition-colors ${
                       statusFilter === option.value
+                        ? 'bg-action-primary text-white'
+                        : 'bg-bg-primary text-text-secondary'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 유형 필터 */}
+            <div className="mb-4">
+              <p className="text-caption text-text-secondary mb-3">유형</p>
+              <div className="flex flex-wrap gap-2">
+                {TYPE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setTypeFilter(option.value)
+                      setPage(1)
+                    }}
+                    className={`px-4 py-2 rounded-full text-caption transition-colors ${
+                      typeFilter === option.value
                         ? 'bg-action-primary text-white'
                         : 'bg-bg-primary text-text-secondary'
                     }`}
@@ -454,21 +627,43 @@ function InquiriesContent() {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          {/* 유형 뱃지 */}
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+                            inquiry.inquiry_type === 'installation'
+                              ? 'bg-action-primary/10 text-action-primary'
+                              : 'bg-bg-primary text-text-secondary'
+                          }`}>
+                            {inquiry.inquiry_type === 'installation' ? '예약' : '상담'}
+                          </span>
+                          {/* 서류 여부 */}
+                          {inquiry.documents && Object.keys(inquiry.documents).length > 0 && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
+                              <FileText className="w-3 h-3" />
+                              서류
+                            </span>
+                          )}
+                        </div>
                         <p className="text-body text-text-primary truncate">
                           {inquiry.install_location}
                         </p>
                         <p className="text-caption text-text-secondary mt-1">
                           {formatDate(inquiry.submitted_at)}
+                          {inquiry.inquiry_type === 'installation' && inquiry.reservation_date && (
+                            <span className="ml-2">
+                              · 예약 {formatReservationDate(inquiry.reservation_date)} {getTimeSlotLabel(inquiry.reservation_time_slot)}
+                            </span>
+                          )}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-3">
                         <span
                           className={`w-2 h-2 rounded-full ${
-                            STATUS_CONFIG[inquiry.status].color
+                            getStatusConfig(inquiry.status).color
                           }`}
                         />
                         <span className="text-caption text-text-secondary">
-                          {STATUS_CONFIG[inquiry.status].label}
+                          {getStatusConfig(inquiry.status).label}
                         </span>
                       </div>
                     </div>
@@ -493,9 +688,31 @@ function InquiriesContent() {
                         <div className="flex items-center gap-3">
                           <Package className="w-4 h-4 text-text-tertiary" />
                           <span className="text-body text-text-primary">
-                            설치 수량: {inquiry.install_count}대
+                            {inquiry.inquiry_type === 'installation' ? (
+                              <>야외 {inquiry.outdoor_count || 0}대 / 실내 {inquiry.indoor_count || 0}대</>
+                            ) : (
+                              <>설치 수량: {inquiry.install_count}대</>
+                            )}
                           </span>
                         </div>
+                        {/* 예약 정보 */}
+                        {inquiry.inquiry_type === 'installation' && inquiry.reservation_date && (
+                          <div className="flex items-center gap-3">
+                            <Calendar className="w-4 h-4 text-text-tertiary" />
+                            <span className="text-body text-text-primary">
+                              예약일: {formatReservationDate(inquiry.reservation_date)} {getTimeSlotLabel(inquiry.reservation_time_slot)}
+                            </span>
+                          </div>
+                        )}
+                        {/* 주소 */}
+                        {inquiry.address && (
+                          <div className="flex items-start gap-3">
+                            <MapPin className="w-4 h-4 text-text-tertiary mt-0.5" />
+                            <span className="text-body text-text-primary">
+                              {inquiry.address} {inquiry.address_detail}
+                            </span>
+                          </div>
+                        )}
                         <div className="flex items-center gap-3">
                           <User className="w-4 h-4 text-text-tertiary" />
                           <span className="text-body text-text-primary">
@@ -505,6 +722,15 @@ function InquiriesContent() {
                             )}
                           </span>
                         </div>
+                        {/* 서류 목록 - 종류만 텍스트로 표시 (내용 열람 불가) */}
+                        {inquiry.documents && Object.keys(inquiry.documents).length > 0 && (
+                          <div className="flex items-center gap-3">
+                            <FileText className="w-4 h-4 text-text-tertiary" />
+                            <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-caption">
+                              {getDocumentSummary(inquiry.documents)}
+                            </span>
+                          </div>
+                        )}
                       </div>
 
                       {/* 상태 변경 드롭다운 */}
@@ -583,6 +809,7 @@ function InquiriesContent() {
           </div>
         )}
       </div>
+
     </PartnerLayout>
   )
 }

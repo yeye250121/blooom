@@ -88,6 +88,12 @@ fbq('track', 'PageView');
           src="//t1.daumcdn.net/kas/static/kp.js"
           strategy="afterInteractive"
         />
+
+        {/* Kakao 우편번호 서비스 (주소 검색) */}
+        <Script
+          src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="antialiased">
         {/* Google Tag Manager (noscript) */}

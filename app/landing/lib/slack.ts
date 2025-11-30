@@ -1,14 +1,16 @@
-import type { InquiryRequest } from '@/app/landing/types/inquiry';
+import type { InquiryRequest, ExtendedInquiryRequest } from '@/app/landing/types/inquiry';
 
 /**
  * Slack 웹훅 알림 전송
- * 
+ *
  * 비유: 택배 기사님이 문 앞에 도착하면 초인종을 누르는 것처럼,
  * 새로운 상담 신청이 들어오면 Slack으로 알림을 보냅니다.
  */
 
+type SlackData = InquiryRequest | ExtendedInquiryRequest;
+
 // Slack 메시지 포맷 생성
-function formatSlackMessage(data: InquiryRequest): object {
+function formatSlackMessage(data: SlackData): object {
   const phoneNumber = data.phoneNumber;
   
   return {
@@ -87,11 +89,11 @@ function formatSlackMessage(data: InquiryRequest): object {
 
 /**
  * Slack으로 알림 전송
- * 
+ *
  * @param data - 상담 신청 데이터
  * @returns 성공 여부
  */
-export async function sendSlackNotification(data: InquiryRequest): Promise<boolean> {
+export async function sendSlackNotification(data: SlackData): Promise<boolean> {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
 
   // Slack 웹훅 URL이 설정되지 않은 경우 스킵
