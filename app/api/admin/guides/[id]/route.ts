@@ -35,6 +35,7 @@ export async function GET(
         slug: guide.slug,
         content: guide.content,
         isPublished: guide.is_published,
+        categoryId: guide.category_id,
         createdAt: guide.created_at,
         updatedAt: guide.updated_at,
       },
@@ -71,6 +72,7 @@ export async function PUT(
     if (body.slug !== undefined) updateData.slug = body.slug
     if (body.content !== undefined) updateData.content = body.content
     if (body.isPublished !== undefined) updateData.is_published = body.isPublished
+    if (body.categoryId !== undefined) updateData.category_id = body.categoryId
 
     // Check for duplicate slug if updating slug
     if (body.slug) {

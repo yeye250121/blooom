@@ -11,7 +11,10 @@ export async function GET(request: NextRequest) {
 
     const { data: guides, error } = await supabaseAdmin
       .from('guides')
-      .select('id, title, slug, is_published, created_at, updated_at')
+      .select(`
+        id, title, slug, is_published, category_id, created_at, updated_at,
+        guide_categories (id, name, slug)
+      `)
       .order('updated_at', { ascending: false })
 
     if (error) {
@@ -19,11 +22,13 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      guides: (guides || []).map((guide) => ({
+      guides: (guides || []).map((guide: any) => ({
         id: guide.id,
         title: guide.title,
         slug: guide.slug,
         isPublished: guide.is_published,
+        categoryId: guide.category_id,
+        category: guide.guide_categories,
         createdAt: guide.created_at,
         updatedAt: guide.updated_at,
       })),
@@ -44,7 +49,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '인증이 필요합니다' }, { status: 401 })
     }
 
-    const { title, slug, content, isPublished } = await request.json()
+    const { title, slug, content, isPublished, categoryId } = await request.json()
 
     if (!title || !slug || !content) {
       return NextResponse.json(
@@ -74,6 +79,7 @@ export async function POST(request: NextRequest) {
         slug,
         content,
         is_published: isPublished || false,
+        category_id: categoryId || null,
       })
       .select()
       .single()

@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import AdminLayout from '@/components/admin/AdminLayout'
 import api from '@/lib/admin/api'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Plus, X, ChevronDown } from 'lucide-react'
 
 // Dynamic import to avoid SSR issues with TipTap
 const TipTapEditor = dynamic(() => import('@/components/admin/TipTapEditor'), {
@@ -16,6 +16,12 @@ const TipTapEditor = dynamic(() => import('@/components/admin/TipTapEditor'), {
     </div>
   ),
 })
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
 
 export default function EditGuidePage() {
   const router = useRouter()
@@ -30,9 +36,26 @@ export default function EditGuidePage() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
 
+  // Category state
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null)
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
+  const [newCategoryName, setNewCategoryName] = useState('')
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false)
+
   useEffect(() => {
+    fetchCategories()
     fetchGuide()
   }, [guideId])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/admin/categories')
+      setCategories(response.data.categories)
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+    }
+  }
 
   const fetchGuide = async () => {
     try {
@@ -42,11 +65,30 @@ export default function EditGuidePage() {
       setSlug(guide.slug)
       setContent(guide.content)
       setIsPublished(guide.isPublished)
+      setSelectedCategoryId(guide.categoryId || null)
     } catch (error) {
       console.error('Failed to fetch guide:', error)
       router.push('/admin/guides')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) return
+
+    setIsCreatingCategory(true)
+    try {
+      const response = await api.post('/admin/categories', { name: newCategoryName.trim() })
+      const newCategory = response.data.category
+      setCategories([...categories, newCategory])
+      setSelectedCategoryId(newCategory.id)
+      setNewCategoryName('')
+      setShowCategoryDropdown(false)
+    } catch (err: any) {
+      alert(err.response?.data?.error || '카테고리 생성 실패')
+    } finally {
+      setIsCreatingCategory(false)
     }
   }
 
@@ -73,6 +115,7 @@ export default function EditGuidePage() {
         slug,
         content,
         isPublished,
+        categoryId: selectedCategoryId,
       })
       router.push('/admin/guides')
     } catch (err: any) {
@@ -81,6 +124,8 @@ export default function EditGuidePage() {
       setIsSaving(false)
     }
   }
+
+  const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
 
   if (isLoading) {
     return (
@@ -143,6 +188,98 @@ export default function EditGuidePage() {
                 placeholder="url-slug"
               />
             </div>
+          </div>
+
+          {/* Category Selector */}
+          <div>
+            <label className="block text-small text-text-secondary mb-2">
+              카테고리
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-bg-primary rounded-button text-body text-left focus:ring-2 focus:ring-action-primary"
+              >
+                <span className={selectedCategory ? 'text-text-primary' : 'text-text-tertiary'}>
+                  {selectedCategory?.name || '카테고리 선택 (선택사항)'}
+                </span>
+                <ChevronDown className={`w-5 h-5 text-text-tertiary transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showCategoryDropdown && (
+                <div className="absolute z-10 w-full mt-1 bg-white rounded-card border border-border shadow-lg max-h-64 overflow-y-auto">
+                  {/* 미분류 옵션 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategoryId(null)
+                      setShowCategoryDropdown(false)
+                    }}
+                    className={`w-full px-4 py-3 text-left text-body hover:bg-bg-primary transition-colors ${
+                      selectedCategoryId === null ? 'bg-action-primary/10 text-action-primary' : 'text-text-secondary'
+                    }`}
+                  >
+                    미분류
+                  </button>
+
+                  {/* 기존 카테고리 목록 */}
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategoryId(category.id)
+                        setShowCategoryDropdown(false)
+                      }}
+                      className={`w-full px-4 py-3 text-left text-body hover:bg-bg-primary transition-colors ${
+                        selectedCategoryId === category.id ? 'bg-action-primary/10 text-action-primary' : 'text-text-primary'
+                      }`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+
+                  {/* 새 카테고리 추가 */}
+                  <div className="border-t border-border p-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleCreateCategory()}
+                        placeholder="새 카테고리 이름"
+                        className="flex-1 px-3 py-2 text-small bg-bg-primary rounded border border-border focus:ring-2 focus:ring-action-primary"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCreateCategory}
+                        disabled={isCreatingCategory || !newCategoryName.trim()}
+                        className="p-2 bg-action-primary text-white rounded hover:bg-action-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedCategory && (
+              <div className="flex items-center gap-2 mt-2">
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-action-primary/10 text-action-primary rounded-full text-small">
+                  {selectedCategory.name}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCategoryId(null)}
+                    className="hover:bg-action-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
