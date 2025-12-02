@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useAuthStore } from '@/lib/admin/store'
 import Sidebar from './Sidebar'
 import { Menu, X } from 'lucide-react'
+
+const LOGO_URL = 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_logo'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -41,7 +45,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* 모바일 헤더 */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-bg-card border-b border-border flex items-center justify-between px-4 z-40">
-        <h1 className="text-title text-text-primary">Blooom Admin</h1>
+        <Link href="/admin/dashboard" className="flex items-center gap-2">
+          <Image src={LOGO_URL} alt="Blooom" width={80} height={24} className="h-6 w-auto dark:brightness-0 dark:invert" />
+          <span className="text-body font-semibold text-text-primary">Admin</span>
+        </Link>
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="p-2 text-text-secondary"
@@ -50,15 +57,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </button>
       </div>
 
-      {/* 모바일 메뉴 오버레이 */}
+      {/* 모바일 메뉴 오버레이 (오른쪽에서 열림) */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div
             className="absolute inset-0 bg-overlay"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-64 animate-slide-right">
-            <Sidebar />
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-bg-card animate-slide-left shadow-xl">
+            <Sidebar isMobile />
           </div>
         </div>
       )}

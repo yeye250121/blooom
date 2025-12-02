@@ -129,7 +129,7 @@ export default function MyPage() {
 
             <div className="mt-6 p-4 bg-bg-primary rounded-button flex items-center justify-between">
               <div>
-                <p className="text-caption text-text-tertiary mb-1">나의 추천 링크</p>
+                <p className="text-caption text-text-tertiary mb-1">내 랜딩페이지 링크</p>
                 <p className="text-body text-text-primary">blooom.kr/{user?.uniqueCode}</p>
               </div>
               <button
@@ -167,7 +167,7 @@ export default function MyPage() {
                 </div>
                 <div className="text-left">
                   <p className="text-body text-text-primary font-medium">내 정산서 확인하기</p>
-                  <p className="text-caption text-text-tertiary">월별 정산 내역을 확인하세요</p>
+                  <p className="text-caption text-text-tertiary">정산 내역을 확인하세요</p>
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-text-tertiary" />

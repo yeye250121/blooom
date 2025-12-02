@@ -10,13 +10,42 @@
   --text-light: #F7F9FC;
   --background-white: #FFFFFF;
   --background-footer: #2B313D;
+
+  /* 토스 스타일 컬러 시스템 (파트너/관리자) - Light Mode */
+  --bg-primary: #F7F8FA;
+  --bg-card: #FFFFFF;
+  --text-primary: #191F28;
+  --text-secondary: #8B95A1;
+  --text-tertiary: #B0B8C1;
+  --action-primary: #3182F6;
+  --action-primary-hover: #1B64DA;
+  --status-new: #3182F6;
+  --status-progress: #FF9500;
+  --status-done: #34C759;
+  --status-cancelled: #8B95A1;
+  --error: #F04452;
+  --overlay: rgba(0, 0, 0, 0.5);
+  --border: #E5E8EB;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark Mode */
+.dark {
+  --background: #111827;
+  --foreground: #F9FAFB;
+  --bg-primary: #111827;
+  --bg-card: #1F2937;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --action-primary: #3B82F6;
+  --action-primary-hover: #2563EB;
+  --status-new: #3B82F6;
+  --status-progress: #F59E0B;
+  --status-done: #10B981;
+  --status-cancelled: #6B7280;
+  --error: #EF4444;
+  --overlay: rgba(0, 0, 0, 0.7);
+  --border: #374151;
 }
 
 body {

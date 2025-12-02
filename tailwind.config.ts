@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -20,21 +21,21 @@ const config: Config = {
         'accent-blue': '#0099FF',
         'accent-green': '#0C854A',
         'darkblue': '#0066CC',
-        // 토스 스타일 컬러 시스템 (파트너/관리자)
-        'bg-primary': '#F7F8FA',
-        'bg-card': '#FFFFFF',
-        'text-primary': '#191F28',
-        'text-secondary': '#8B95A1',
-        'text-tertiary': '#B0B8C1',
-        'action-primary': '#3182F6',
-        'action-primary-hover': '#1B64DA',
-        'status-new': '#3182F6',
-        'status-progress': '#FF9500',
-        'status-done': '#34C759',
-        'status-cancelled': '#8B95A1',
-        'error': '#F04452',
-        'overlay': 'rgba(0, 0, 0, 0.5)',
-        'border': '#E5E8EB',
+        // 토스 스타일 컬러 시스템 (파트너/관리자) - CSS 변수 사용으로 다크모드 자동 지원
+        'bg-primary': 'var(--bg-primary)',
+        'bg-card': 'var(--bg-card)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
+        'action-primary': 'var(--action-primary)',
+        'action-primary-hover': 'var(--action-primary-hover)',
+        'status-new': 'var(--status-new)',
+        'status-progress': 'var(--status-progress)',
+        'status-done': 'var(--status-done)',
+        'status-cancelled': 'var(--status-cancelled)',
+        'error': 'var(--error)',
+        'overlay': 'var(--overlay)',
+        'border': 'var(--border)',
       },
       borderRadius: {
         'card': '16px',
@@ -58,6 +59,10 @@ const config: Config = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(0)' },
         },
+        'slide-left': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
         'scale-in': {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
@@ -66,6 +71,7 @@ const config: Config = {
       animation: {
         'slide-up': 'slide-up 0.3s ease-out',
         'slide-right': 'slide-right 0.3s ease-out',
+        'slide-left': 'slide-left 0.3s ease-out',
         'scale-in': 'scale-in 0.2s ease-out',
       },
     },

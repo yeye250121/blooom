@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 이제 모든 라우트가 통합되어 rewrites 불필요
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hvwgs4k77hcs8ntu.public.blob.vercel-storage.com',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
