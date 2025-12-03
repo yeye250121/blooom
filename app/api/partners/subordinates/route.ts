@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getUserContext } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 /**
  * 하위 파트너 목록 + 각 파트너별 문의 수 조회
@@ -21,6 +22,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       data: subordinates,
       total: subordinates.length,
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      }
     })
   } catch (error) {
     console.error('[Subordinates] Error:', error)
