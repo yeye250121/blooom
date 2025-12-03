@@ -1,12 +1,12 @@
 'use client'
 
-import { useEditor, EditorContent, Editor } from '@tiptap/react'
+import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import TextAlign from '@tiptap/extension-text-align'
 import Link from '@tiptap/extension-link'
 import Youtube from '@tiptap/extension-youtube'
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect, DragEvent } from 'react'
 import {
   Bold,
   Italic,
@@ -26,6 +26,9 @@ import {
   Quote,
   Minus,
   Code,
+  ExternalLink,
+  Trash2,
+  Upload,
 } from 'lucide-react'
 import api from '@/lib/admin/api'
 import TurndownService from 'turndown'
@@ -337,7 +340,12 @@ turndownService.addRule('youtube', {
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const [mode, setMode] = useState<EditorMode>('wysiwyg')
   const [markdownContent, setMarkdownContent] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [showImageLinkInput, setShowImageLinkInput] = useState(false)
+  const [imageLinkUrl, setImageLinkUrl] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const editorContainerRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
     extensions: [
@@ -348,8 +356,9 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       }),
       Image.configure({
         HTMLAttributes: {
-          class: 'max-w-full h-auto rounded-lg',
+          class: 'max-w-full h-auto rounded-lg cursor-pointer transition-all hover:ring-2 hover:ring-action-primary',
         },
+        allowBase64: true,
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -377,11 +386,10 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
     },
   })
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !editor) return
-
+  // 이미지 파일 업로드 함수 (공통)
+  const uploadImage = useCallback(async (file: File): Promise<string | null> => {
     try {
+      setIsUploading(true)
       const formData = new FormData()
       formData.append('file', file)
 
@@ -389,11 +397,23 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
 
-      const { url } = response.data
-      editor.chain().focus().setImage({ src: url }).run()
+      return response.data.url
     } catch (error) {
       console.error('Failed to upload image:', error)
       alert('이미지 업로드에 실패했습니다')
+      return null
+    } finally {
+      setIsUploading(false)
+    }
+  }, [])
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !editor) return
+
+    const url = await uploadImage(file)
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run()
     }
 
     if (fileInputRef.current) {
@@ -404,6 +424,112 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const triggerImageUpload = () => {
     fileInputRef.current?.click()
   }
+
+  // 드래그앤드롭 핸들러
+  const handleDragEnter = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.dataTransfer.types.includes('Files')) {
+      setIsDragging(true)
+    }
+  }, [])
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    // 에디터 영역을 벗어났을 때만 드래그 상태 해제
+    const relatedTarget = e.relatedTarget as Node | null
+    if (!editorContainerRef.current?.contains(relatedTarget)) {
+      setIsDragging(false)
+    }
+  }, [])
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
+
+  const handleDrop = useCallback(async (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(false)
+
+    if (!editor) return
+
+    const files = Array.from(e.dataTransfer.files)
+    const imageFiles = files.filter(file => file.type.startsWith('image/'))
+
+    for (const file of imageFiles) {
+      const url = await uploadImage(file)
+      if (url) {
+        editor.chain().focus().setImage({ src: url }).run()
+      }
+    }
+  }, [editor, uploadImage])
+
+  // 이미지 선택 감지 및 링크 추가
+  const handleSetImageLink = useCallback(() => {
+    if (!editor || !imageLinkUrl) return
+
+    // 현재 선택된 노드가 이미지인지 확인
+    const { state } = editor
+    const { selection } = state
+    const node = state.doc.nodeAt(selection.from)
+
+    if (node?.type.name === 'image') {
+      const src = node.attrs.src
+      // 이미지를 링크로 감싸기
+      editor
+        .chain()
+        .focus()
+        .deleteSelection()
+        .insertContent({
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              marks: [{ type: 'link', attrs: { href: imageLinkUrl, target: '_blank' } }],
+              text: ' ',
+            },
+          ],
+        })
+        .run()
+
+      // 이미지 다시 삽입하면서 링크 적용
+      const imgHtml = `<a href="${imageLinkUrl}" target="_blank"><img src="${src}" /></a>`
+      editor.commands.insertContent(imgHtml)
+    }
+
+    setImageLinkUrl('')
+    setShowImageLinkInput(false)
+  }, [editor, imageLinkUrl])
+
+  // 클립보드에서 이미지 붙여넣기 지원
+  useEffect(() => {
+    const handlePaste = async (e: ClipboardEvent) => {
+      if (!editor || mode !== 'wysiwyg') return
+
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault()
+          const file = item.getAsFile()
+          if (file) {
+            const url = await uploadImage(file)
+            if (url) {
+              editor.chain().focus().setImage({ src: url }).run()
+            }
+          }
+          break
+        }
+      }
+    }
+
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [editor, mode, uploadImage])
 
   // 모드 전환 핸들러
   const handleModeChange = useCallback(
@@ -439,7 +565,35 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   )
 
   return (
-    <div className="border border-border rounded-card overflow-hidden bg-white">
+    <div
+      ref={editorContainerRef}
+      className="border border-border rounded-card overflow-hidden bg-white relative"
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      {/* 드래그앤드롭 오버레이 */}
+      {isDragging && (
+        <div className="absolute inset-0 z-50 bg-action-primary/10 border-2 border-dashed border-action-primary flex items-center justify-center">
+          <div className="text-center">
+            <Upload className="w-12 h-12 text-action-primary mx-auto mb-2" />
+            <p className="text-lg font-medium text-action-primary">이미지를 여기에 놓으세요</p>
+            <p className="text-sm text-text-secondary mt-1">이미지 파일을 드롭하면 자동으로 업로드됩니다</p>
+          </div>
+        </div>
+      )}
+
+      {/* 업로드 중 오버레이 */}
+      {isUploading && (
+        <div className="absolute inset-0 z-50 bg-white/80 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-10 h-10 border-4 border-action-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <p className="text-sm text-text-secondary">이미지 업로드 중...</p>
+          </div>
+        </div>
+      )}
+
       {/* Mode Tabs */}
       <div className="flex border-b border-border">
         <button
@@ -478,7 +632,82 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       {mode === 'wysiwyg' ? (
         <>
           <MenuBar editor={editor} onImageUpload={triggerImageUpload} />
+
+          {/* 이미지 버블 메뉴 - 이미지 클릭 시 나타남 */}
+          {editor && (
+            <BubbleMenu
+              editor={editor}
+              tippyOptions={{ duration: 100 }}
+              shouldShow={({ editor, state }) => {
+                // 현재 선택된 노드가 이미지인지 확인
+                const { selection } = state
+                const node = state.doc.nodeAt(selection.from)
+                return node?.type.name === 'image'
+              }}
+            >
+              <div className="flex items-center gap-1 bg-white shadow-lg border border-border rounded-lg p-1">
+                {showImageLinkInput ? (
+                  <div className="flex items-center gap-1 px-2">
+                    <input
+                      type="url"
+                      value={imageLinkUrl}
+                      onChange={(e) => setImageLinkUrl(e.target.value)}
+                      placeholder="https://example.com"
+                      className="w-48 px-2 py-1 text-sm border border-border rounded focus:ring-1 focus:ring-action-primary"
+                      onKeyDown={(e) => e.key === 'Enter' && handleSetImageLink()}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSetImageLink}
+                      className="px-2 py-1 text-sm bg-action-primary text-white rounded hover:bg-action-primary/90"
+                    >
+                      적용
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowImageLinkInput(false)
+                        setImageLinkUrl('')
+                      }}
+                      className="px-2 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                    >
+                      취소
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setShowImageLinkInput(true)}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm text-text-secondary hover:bg-bg-primary rounded transition-colors"
+                      title="이미지에 링크 추가"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>링크 추가</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => editor.chain().focus().deleteSelection().run()}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm text-status-error hover:bg-red-50 rounded transition-colors"
+                      title="이미지 삭제"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>삭제</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </BubbleMenu>
+          )}
+
           <EditorContent editor={editor} />
+
+          {/* 에디터 하단 도움말 */}
+          <div className="px-4 py-2 border-t border-border bg-bg-primary text-xs text-text-tertiary">
+            <span className="mr-4">💡 이미지를 드래그해서 놓거나 클립보드에서 붙여넣기(Ctrl+V) 가능</span>
+            <span>• 이미지 클릭 시 링크 추가 가능</span>
+          </div>
         </>
       ) : (
         <div className="p-4">
