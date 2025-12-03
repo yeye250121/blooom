@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>제이앤유통</h3>
+          <h3>케어온</h3>
           <p>사업자 등록번호: 609-41-95762</p>
           <p>경상남도 창원시 의창구 사화로 80번길 20, 201호</p>
         </div>
