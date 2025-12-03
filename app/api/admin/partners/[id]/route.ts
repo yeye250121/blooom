@@ -14,7 +14,7 @@ export async function PUT(
     }
 
     const { id } = await params
-    const partnerId = parseInt(id)
+    const partnerId = id
     const { password, nickname, referrerCode, phone } = await request.json()
 
     if (!nickname) {
@@ -66,7 +66,7 @@ export async function DELETE(
     }
 
     const { id } = await params
-    const partnerId = parseInt(id)
+    const partnerId = id
 
     // Check if partner exists and is not an admin
     const { data: partner } = await supabaseAdmin

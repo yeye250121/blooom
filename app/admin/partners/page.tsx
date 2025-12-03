@@ -6,7 +6,7 @@ import api from '@/lib/admin/api'
 import { Search, ChevronDown, ChevronUp, Eye, EyeOff, Trash2 } from 'lucide-react'
 
 interface Partner {
-  id: number
+  id: string
   loginId: string
   nickname: string
   uniqueCode: string
@@ -19,9 +19,9 @@ export default function PartnersPage() {
   const [partners, setPartners] = useState<Partner[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [expandedId, setExpandedId] = useState<number | null>(null)
-  const [visibleIds, setVisibleIds] = useState<Set<number>>(new Set())
-  const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set())
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   useEffect(() => {
     fetchPartners()
@@ -38,7 +38,7 @@ export default function PartnersPage() {
     }
   }
 
-  const toggleVisibility = (id: number) => {
+  const toggleVisibility = (id: string) => {
     setVisibleIds((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(id)) {
@@ -54,7 +54,7 @@ export default function PartnersPage() {
     return '*'.repeat(Math.min(text.length, 8))
   }
 
-  const handleDelete = async (partnerId: number) => {
+  const handleDelete = async (partnerId: string) => {
     try {
       await api.delete(`/admin/partners/${partnerId}`)
       setPartners((prev) => prev.filter((p) => p.id !== partnerId))
