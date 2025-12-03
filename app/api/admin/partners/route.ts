@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     // Get all users
     const { data: partners, error } = await supabaseAdmin
       .from('users')
-      .select('id, login_id, nickname, unique_code, level, created_at')
+      .select('id, login_id, nickname, unique_code, level, created_at, phone, bank_name, account_number, account_holder')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -36,6 +36,10 @@ export async function GET(request: NextRequest) {
           level: partner.level,
           createdAt: partner.created_at,
           inquiryCount: count || 0,
+          phone: partner.phone,
+          bankName: partner.bank_name,
+          accountNumber: partner.account_number,
+          accountHolder: partner.account_holder,
         }
       })
     )

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '@/components/admin/AdminLayout'
 import api from '@/lib/admin/api'
-import { Search, ChevronDown, ChevronUp, Eye, EyeOff, Trash2 } from 'lucide-react'
+import { Search, ChevronDown, ChevronUp, Eye, EyeOff, Trash2, Phone, CreditCard } from 'lucide-react'
 
 interface Partner {
   id: string
@@ -13,6 +13,10 @@ interface Partner {
   level: number
   createdAt: string
   inquiryCount: number
+  phone?: string | null
+  bankName?: string | null
+  accountNumber?: string | null
+  accountHolder?: string | null
 }
 
 export default function PartnersPage() {
@@ -119,6 +123,8 @@ export default function PartnersPage() {
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">코드</th>
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">아이디</th>
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">닉네임</th>
+                <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">전화번호</th>
+                <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">정산계좌</th>
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">레벨</th>
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">문의 수</th>
                 <th className="text-left py-4 px-6 text-small text-text-secondary font-medium">가입일</th>
@@ -146,6 +152,28 @@ export default function PartnersPage() {
                   </td>
                   <td className="py-4 px-6 text-body text-text-primary">
                     {visibleIds.has(partner.id) ? partner.nickname : maskText(partner.nickname)}
+                  </td>
+                  <td className="py-4 px-6 text-body text-text-secondary">
+                    {partner.phone ? (
+                      visibleIds.has(partner.id) ? partner.phone : maskText(partner.phone)
+                    ) : (
+                      <span className="text-text-tertiary">-</span>
+                    )}
+                  </td>
+                  <td className="py-4 px-6 text-body text-text-secondary">
+                    {partner.bankName && partner.accountNumber ? (
+                      visibleIds.has(partner.id) ? (
+                        <div className="text-small">
+                          <div>{partner.bankName}</div>
+                          <div className="text-text-tertiary">{partner.accountNumber}</div>
+                          {partner.accountHolder && <div className="text-text-tertiary">{partner.accountHolder}</div>}
+                        </div>
+                      ) : (
+                        maskText(partner.accountNumber)
+                      )
+                    ) : (
+                      <span className="text-text-tertiary">-</span>
+                    )}
                   </td>
                   <td className="py-4 px-6">
                     <span className={`inline-block px-2 py-1 rounded-full text-small ${getLevelColor(partner.level)}`}>
@@ -223,6 +251,30 @@ export default function PartnersPage() {
                         {new Date(partner.createdAt).toLocaleDateString('ko-KR')}
                       </p>
                     </div>
+                    <div>
+                      <span className="text-text-tertiary">전화번호</span>
+                      <p className="text-text-primary">
+                        {partner.phone ? (
+                          visibleIds.has(partner.id) ? partner.phone : maskText(partner.phone)
+                        ) : '-'}
+                      </p>
+                    </div>
+                  </div>
+                  {/* 정산계좌 정보 */}
+                  <div className="text-small">
+                    <span className="text-text-tertiary">정산계좌</span>
+                    {partner.bankName && partner.accountNumber ? (
+                      visibleIds.has(partner.id) ? (
+                        <p className="text-text-primary mt-1">
+                          {partner.bankName} {partner.accountNumber}
+                          {partner.accountHolder && ` (${partner.accountHolder})`}
+                        </p>
+                      ) : (
+                        <p className="text-text-primary mt-1">{maskText(partner.accountNumber)}</p>
+                      )
+                    ) : (
+                      <p className="text-text-tertiary mt-1">미등록</p>
+                    )}
                   </div>
                   <div className="flex gap-2 pt-2">
                     <button
