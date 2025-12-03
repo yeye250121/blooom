@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/partners/store'
 import api from '@/lib/partners/api'
 import PartnerLayout from '@/components/partners/PartnerLayout'
-import { Copy, Check, ChevronRight, ChevronDown, X, Loader2, FileText, User, Key, LogOut, Building2 } from 'lucide-react'
+import { Copy, Check, ChevronRight, ChevronDown, X, Loader2, FileText, User, Key, LogOut, Building2, Phone, CreditCard } from 'lucide-react'
 
 export default function MyPage() {
   const router = useRouter()
@@ -28,6 +28,18 @@ export default function MyPage() {
 
   // 사업자 정보 아코디언
   const [isBusinessInfoOpen, setIsBusinessInfoOpen] = useState(false)
+
+  // 전화번호 변경 모달
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false)
+  const [newPhone, setNewPhone] = useState('')
+  const [isPhoneLoading, setIsPhoneLoading] = useState(false)
+
+  // 계좌정보 변경 모달
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false)
+  const [bankName, setBankName] = useState('')
+  const [accountNumber, setAccountNumber] = useState('')
+  const [accountHolder, setAccountHolder] = useState('')
+  const [isBankLoading, setIsBankLoading] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -108,6 +120,57 @@ export default function MyPage() {
       setPasswordError(error.response?.data?.error || '비밀번호 변경에 실패했습니다')
     } finally {
       setIsPasswordLoading(false)
+    }
+  }
+
+  const handlePhoneChange = async () => {
+    setIsPhoneLoading(true)
+    try {
+      const response = await api.patch('/partners/profile', {
+        phone: newPhone.trim() || null,
+      })
+
+      if (user) {
+        setAuth(useAuthStore.getState().token!, {
+          ...user,
+          phone: newPhone.trim() || null,
+        })
+      }
+
+      setIsPhoneModalOpen(false)
+      setNewPhone('')
+      alert('전화번호가 변경되었습니다')
+    } catch (error: any) {
+      alert(error.response?.data?.error || '전화번호 변경에 실패했습니다')
+    } finally {
+      setIsPhoneLoading(false)
+    }
+  }
+
+  const handleBankChange = async () => {
+    setIsBankLoading(true)
+    try {
+      const response = await api.patch('/partners/profile', {
+        bankName: bankName.trim() || null,
+        accountNumber: accountNumber.trim() || null,
+        accountHolder: accountHolder.trim() || null,
+      })
+
+      if (user) {
+        setAuth(useAuthStore.getState().token!, {
+          ...user,
+          bankName: bankName.trim() || null,
+          accountNumber: accountNumber.trim() || null,
+          accountHolder: accountHolder.trim() || null,
+        })
+      }
+
+      setIsBankModalOpen(false)
+      alert('계좌정보가 변경되었습니다')
+    } catch (error: any) {
+      alert(error.response?.data?.error || '계좌정보 변경에 실패했습니다')
+    } finally {
+      setIsBankLoading(false)
     }
   }
 
@@ -206,6 +269,54 @@ export default function MyPage() {
                   <Key className="w-5 h-5 text-text-secondary" />
                 </div>
                 <span className="text-body text-text-primary">비밀번호 변경</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-tertiary" />
+            </button>
+
+            <div className="h-px bg-border mx-6" />
+
+            <button
+              onClick={() => {
+                setNewPhone(user?.phone || '')
+                setIsPhoneModalOpen(true)
+              }}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-bg-primary rounded-full flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-text-secondary" />
+                </div>
+                <div className="text-left">
+                  <span className="text-body text-text-primary">전화번호</span>
+                  {user?.phone && (
+                    <p className="text-caption text-text-tertiary">{user.phone}</p>
+                  )}
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-text-tertiary" />
+            </button>
+
+            <div className="h-px bg-border mx-6" />
+
+            <button
+              onClick={() => {
+                setBankName(user?.bankName || '')
+                setAccountNumber(user?.accountNumber || '')
+                setAccountHolder(user?.accountHolder || '')
+                setIsBankModalOpen(true)
+              }}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-bg-primary rounded-full flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-text-secondary" />
+                </div>
+                <div className="text-left">
+                  <span className="text-body text-text-primary">정산 계좌</span>
+                  {user?.bankName && user?.accountNumber && (
+                    <p className="text-caption text-text-tertiary">{user.bankName} {user.accountNumber}</p>
+                  )}
+                </div>
               </div>
               <ChevronRight className="w-5 h-5 text-text-tertiary" />
             </button>
@@ -326,6 +437,44 @@ export default function MyPage() {
             className="w-full px-6 py-4 flex items-center justify-between"
           >
             <span className="text-body text-text-primary">비밀번호 변경</span>
+            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+          </button>
+
+          <div className="h-px bg-bg-primary mx-6" />
+
+          <button
+            onClick={() => {
+              setNewPhone(user?.phone || '')
+              setIsPhoneModalOpen(true)
+            }}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <div>
+              <span className="text-body text-text-primary">전화번호</span>
+              {user?.phone && (
+                <p className="text-caption text-text-tertiary">{user.phone}</p>
+              )}
+            </div>
+            <ChevronRight className="w-5 h-5 text-text-tertiary" />
+          </button>
+
+          <div className="h-px bg-bg-primary mx-6" />
+
+          <button
+            onClick={() => {
+              setBankName(user?.bankName || '')
+              setAccountNumber(user?.accountNumber || '')
+              setAccountHolder(user?.accountHolder || '')
+              setIsBankModalOpen(true)
+            }}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <div>
+              <span className="text-body text-text-primary">정산 계좌</span>
+              {user?.bankName && user?.accountNumber && (
+                <p className="text-caption text-text-tertiary">{user.bankName} {user.accountNumber}</p>
+              )}
+            </div>
             <ChevronRight className="w-5 h-5 text-text-tertiary" />
           </button>
         </div>
@@ -475,6 +624,107 @@ export default function MyPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 '변경'
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 전화번호 변경 모달 */}
+      {isPhoneModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:items-center">
+          <div
+            className="absolute inset-0 bg-overlay"
+            onClick={() => setIsPhoneModalOpen(false)}
+          />
+          <div className="absolute bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-bg-card rounded-t-[20px] lg:rounded-card p-6 lg:w-[400px] animate-slide-up lg:animate-none">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-title text-text-primary">전화번호 변경</h2>
+              <button onClick={() => setIsPhoneModalOpen(false)}>
+                <X className="w-6 h-6 text-text-secondary" />
+              </button>
+            </div>
+
+            <input
+              type="tel"
+              placeholder="전화번호 입력 (예: 010-1234-5678)"
+              value={newPhone}
+              onChange={(e) => setNewPhone(e.target.value)}
+              className="w-full px-4 py-4 bg-bg-primary rounded-input text-body text-text-primary placeholder:text-text-tertiary mb-4"
+            />
+
+            <button
+              onClick={handlePhoneChange}
+              disabled={isPhoneLoading}
+              className="w-full py-4 bg-action-primary hover:bg-action-primary-hover disabled:bg-text-tertiary text-white rounded-button text-body font-semibold flex items-center justify-center gap-2"
+            >
+              {isPhoneLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                '저장'
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 계좌정보 변경 모달 */}
+      {isBankModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:items-center">
+          <div
+            className="absolute inset-0 bg-overlay"
+            onClick={() => setIsBankModalOpen(false)}
+          />
+          <div className="absolute bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-bg-card rounded-t-[20px] lg:rounded-card p-6 lg:w-[400px] animate-slide-up lg:animate-none">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-title text-text-primary">정산 계좌 설정</h2>
+              <button onClick={() => setIsBankModalOpen(false)}>
+                <X className="w-6 h-6 text-text-secondary" />
+              </button>
+            </div>
+
+            <div className="space-y-3 mb-4">
+              <div>
+                <label className="block text-caption text-text-secondary mb-2">은행명</label>
+                <input
+                  type="text"
+                  placeholder="예: 국민은행"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  className="w-full px-4 py-4 bg-bg-primary rounded-input text-body text-text-primary placeholder:text-text-tertiary"
+                />
+              </div>
+              <div>
+                <label className="block text-caption text-text-secondary mb-2">계좌번호</label>
+                <input
+                  type="text"
+                  placeholder="- 없이 입력"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  className="w-full px-4 py-4 bg-bg-primary rounded-input text-body text-text-primary placeholder:text-text-tertiary"
+                />
+              </div>
+              <div>
+                <label className="block text-caption text-text-secondary mb-2">예금주</label>
+                <input
+                  type="text"
+                  placeholder="예금주명"
+                  value={accountHolder}
+                  onChange={(e) => setAccountHolder(e.target.value)}
+                  className="w-full px-4 py-4 bg-bg-primary rounded-input text-body text-text-primary placeholder:text-text-tertiary"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleBankChange}
+              disabled={isBankLoading}
+              className="w-full py-4 bg-action-primary hover:bg-action-primary-hover disabled:bg-text-tertiary text-white rounded-button text-body font-semibold flex items-center justify-center gap-2"
+            >
+              {isBankLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                '저장'
               )}
             </button>
           </div>

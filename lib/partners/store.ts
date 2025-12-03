@@ -8,6 +8,10 @@ interface User {
   nickname: string
   uniqueCode: string
   level: number
+  phone?: string | null
+  bankName?: string | null
+  accountNumber?: string | null
+  accountHolder?: string | null
 }
 
 interface AuthState {
