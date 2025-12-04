@@ -6,6 +6,7 @@ import Image from '@tiptap/extension-image'
 import TextAlign from '@tiptap/extension-text-align'
 import Link from '@tiptap/extension-link'
 import Youtube from '@tiptap/extension-youtube'
+import { Node as TiptapNode, mergeAttributes } from '@tiptap/core'
 import { useRef, useState, useCallback, useEffect, DragEvent } from 'react'
 import {
   Bold,
@@ -29,7 +30,87 @@ import {
   ExternalLink,
   Trash2,
   Upload,
+  Presentation,
 } from 'lucide-react'
+
+// Google Slides Embed Extension
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    googleSlides: {
+      setGoogleSlides: (options: { src: string }) => ReturnType
+    }
+  }
+}
+
+const GoogleSlides = TiptapNode.create({
+  name: 'googleSlides',
+  group: 'block',
+  atom: true,
+
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      width: {
+        default: '100%',
+      },
+      height: {
+        default: '500',
+      },
+    }
+  },
+
+  parseHTML() {
+    return [
+      {
+        tag: 'iframe[src*="docs.google.com/presentation"]',
+      },
+    ]
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'div',
+      { class: 'google-slides-wrapper' },
+      [
+        'iframe',
+        mergeAttributes(HTMLAttributes, {
+          frameborder: '0',
+          allowfullscreen: 'true',
+          mozallowfullscreen: 'true',
+          webkitallowfullscreen: 'true',
+        }),
+      ],
+    ]
+  },
+
+  addCommands() {
+    return {
+      setGoogleSlides:
+        (options: { src: string }) =>
+        ({ commands }) => {
+          // Convert pub URL to embed URL
+          let embedUrl = options.src
+          if (embedUrl.includes('/pub?')) {
+            embedUrl = embedUrl.replace('/pub?', '/embed?')
+          } else if (!embedUrl.includes('/embed')) {
+            // If it's a regular view URL, convert to embed
+            embedUrl = embedUrl.replace(/\/d\/e\/([^/]+).*/, '/d/e/$1/embed')
+          }
+
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              src: embedUrl,
+              width: '100%',
+              height: '500',
+            },
+          })
+        },
+    }
+  },
+})
 import api from '@/lib/admin/api'
 import TurndownService from 'turndown'
 import { marked } from 'marked'
@@ -76,6 +157,8 @@ const MenuBar = ({ editor, onImageUpload }: { editor: Editor | null; onImageUplo
   const [linkUrl, setLinkUrl] = useState('')
   const [showYoutubeInput, setShowYoutubeInput] = useState(false)
   const [youtubeUrl, setYoutubeUrl] = useState('')
+  const [showSlidesInput, setShowSlidesInput] = useState(false)
+  const [slidesUrl, setSlidesUrl] = useState('')
 
   if (!editor) return null
 
@@ -107,6 +190,14 @@ const MenuBar = ({ editor, onImageUpload }: { editor: Editor | null; onImageUplo
     }
     setYoutubeUrl('')
     setShowYoutubeInput(false)
+  }
+
+  const handleAddSlides = () => {
+    if (slidesUrl) {
+      editor.commands.setGoogleSlides({ src: slidesUrl })
+    }
+    setSlidesUrl('')
+    setShowSlidesInput(false)
   }
 
   return (
@@ -242,6 +333,13 @@ const MenuBar = ({ editor, onImageUpload }: { editor: Editor | null; onImageUplo
           <YoutubeIconLucide className="w-4 h-4" />
         </MenuButton>
 
+        <MenuButton
+          onClick={() => setShowSlidesInput(!showSlidesInput)}
+          title="Google 슬라이드 삽입"
+        >
+          <Presentation className="w-4 h-4" />
+        </MenuButton>
+
         <div className="w-px bg-border mx-1" />
 
         <MenuButton
@@ -303,6 +401,27 @@ const MenuBar = ({ editor, onImageUpload }: { editor: Editor | null; onImageUplo
           <button
             type="button"
             onClick={handleAddYoutube}
+            className="px-3 py-1.5 text-small bg-action-primary text-white rounded hover:bg-action-primary/90"
+          >
+            삽입
+          </button>
+        </div>
+      )}
+
+      {/* Google Slides Input */}
+      {showSlidesInput && (
+        <div className="flex items-center gap-2 mt-2 p-2 bg-bg-primary rounded-lg">
+          <input
+            type="url"
+            value={slidesUrl}
+            onChange={(e) => setSlidesUrl(e.target.value)}
+            placeholder="https://docs.google.com/presentation/d/e/.../pub?..."
+            className="flex-1 px-3 py-1.5 text-small bg-white border border-border rounded focus:ring-2 focus:ring-action-primary"
+            onKeyDown={(e) => e.key === 'Enter' && handleAddSlides()}
+          />
+          <button
+            type="button"
+            onClick={handleAddSlides}
             className="px-3 py-1.5 text-small bg-action-primary text-white rounded hover:bg-action-primary/90"
           >
             삽입
@@ -374,6 +493,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           class: 'w-full aspect-video rounded-lg',
         },
       }),
+      GoogleSlides,
     ],
     content,
     onUpdate: ({ editor }) => {
