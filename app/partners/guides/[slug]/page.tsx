@@ -42,41 +42,58 @@ export default function GuideDetailPage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [fullscreenSrc, closeFullscreen])
 
-  // Google Slides에 전체화면 버튼 동적 추가 및 이벤트 핸들러
+  // 전체화면 버튼 추가 함수
+  const addFullscreenButtons = useCallback(() => {
+    // 모든 Google Slides iframe 찾기
+    const iframes = document.querySelectorAll('iframe[src*="docs.google.com/presentation"]')
+
+    iframes.forEach((iframe) => {
+      const wrapper = iframe.parentElement
+      if (!wrapper) return
+
+      // wrapper에 필요한 클래스 추가
+      if (!wrapper.classList.contains('google-slides-wrapper')) {
+        wrapper.classList.add('google-slides-wrapper')
+      }
+
+      // 이미 버튼이 있으면 스킵
+      if (wrapper.querySelector('.slides-fullscreen-btn')) return
+
+      // data-slides-src 속성 추가 (없으면)
+      if (!wrapper.getAttribute('data-slides-src')) {
+        wrapper.setAttribute('data-slides-src', iframe.getAttribute('src') || '')
+      }
+
+      // 전체화면 버튼 생성
+      const btn = document.createElement('button')
+      btn.className = 'slides-fullscreen-btn'
+      btn.type = 'button'
+      btn.title = '전체화면으로 보기'
+      btn.textContent = '전체화면'
+      wrapper.appendChild(btn)
+    })
+  }, [])
+
+  // Google Slides에 전체화면 버튼 동적 추가
   useEffect(() => {
     if (!guide) return
 
     // 약간의 딜레이 후 실행 (DOM 렌더링 완료 대기)
-    const timer = setTimeout(() => {
-      // 모든 Google Slides iframe 찾기
-      const iframes = document.querySelectorAll('iframe[src*="docs.google.com/presentation"]')
+    const timer = setTimeout(addFullscreenButtons, 100)
 
-      iframes.forEach((iframe) => {
-        const wrapper = iframe.parentElement
-        if (!wrapper) return
+    return () => clearTimeout(timer)
+  }, [guide, addFullscreenButtons])
 
-        // wrapper에 position relative 추가
-        wrapper.style.position = 'relative'
+  // 전체화면 닫힐 때 버튼 다시 확인
+  useEffect(() => {
+    if (fullscreenSrc === null && guide) {
+      // 전체화면 닫힌 후 버튼 다시 확인
+      setTimeout(addFullscreenButtons, 50)
+    }
+  }, [fullscreenSrc, guide, addFullscreenButtons])
 
-        // 이미 버튼이 있으면 스킵
-        if (wrapper.querySelector('.slides-fullscreen-btn')) return
-
-        // data-slides-src 속성 추가 (없으면)
-        if (!wrapper.getAttribute('data-slides-src')) {
-          wrapper.setAttribute('data-slides-src', iframe.getAttribute('src') || '')
-        }
-
-        // 전체화면 버튼 생성
-        const btn = document.createElement('button')
-        btn.className = 'slides-fullscreen-btn'
-        btn.type = 'button'
-        btn.title = '전체화면으로 보기'
-        btn.textContent = '전체화면'
-        wrapper.appendChild(btn)
-      })
-    }, 100)
-
-    // 클릭 이벤트 핸들러
+  // 클릭 이벤트 핸들러
+  useEffect(() => {
     const handleFullscreenClick = (e: Event) => {
       const target = e.target as HTMLElement
       if (target.classList.contains('slides-fullscreen-btn')) {
@@ -90,11 +107,8 @@ export default function GuideDetailPage() {
     }
 
     document.addEventListener('click', handleFullscreenClick)
-    return () => {
-      clearTimeout(timer)
-      document.removeEventListener('click', handleFullscreenClick)
-    }
-  }, [guide])
+    return () => document.removeEventListener('click', handleFullscreenClick)
+  }, [])
 
   useEffect(() => {
     if (!isAuthenticated()) {

@@ -266,12 +266,17 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* 16:9 비율 유지 */
+  aspect-ratio: 16 / 9;
 }
 
 .tiptap-editor .google-slides-wrapper iframe,
 .google-slides-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 500px;
+  height: 100%;
   border: none;
 }
 
@@ -333,10 +338,37 @@ body {
 
 .slides-fullscreen-modal iframe {
   width: 100%;
-  max-width: 1400px;
-  height: calc(100vh - 100px);
+  max-width: min(1400px, 95vw);
+  /* 16:9 비율 유지하면서 화면에 맞춤 */
+  aspect-ratio: 16 / 9;
+  max-height: calc(100vh - 120px);
   border: none;
   border-radius: 8px;
+}
+
+/* 모바일에서 전체화면 최적화 */
+@media (max-width: 768px) {
+  .slides-fullscreen-modal {
+    padding: 10px;
+  }
+
+  .slides-fullscreen-modal iframe {
+    max-width: 100%;
+    max-height: calc(100vh - 80px);
+    border-radius: 4px;
+  }
+
+  .slides-fullscreen-close {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .slides-fullscreen-hint {
+    font-size: 12px;
+    margin-top: 10px;
+  }
 }
 
 .slides-fullscreen-close {
