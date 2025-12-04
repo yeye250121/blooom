@@ -42,15 +42,47 @@ export default function GuideDetailPage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [fullscreenSrc, closeFullscreen])
 
-  // 전체화면 버튼 이벤트 핸들러 설정
+  // Google Slides에 전체화면 버튼 동적 추가 및 이벤트 핸들러
   useEffect(() => {
     if (!guide) return
 
+    // 약간의 딜레이 후 실행 (DOM 렌더링 완료 대기)
+    const timer = setTimeout(() => {
+      // 모든 Google Slides iframe 찾기
+      const iframes = document.querySelectorAll('iframe[src*="docs.google.com/presentation"]')
+
+      iframes.forEach((iframe) => {
+        const wrapper = iframe.parentElement
+        if (!wrapper) return
+
+        // wrapper에 position relative 추가
+        wrapper.style.position = 'relative'
+
+        // 이미 버튼이 있으면 스킵
+        if (wrapper.querySelector('.slides-fullscreen-btn')) return
+
+        // data-slides-src 속성 추가 (없으면)
+        if (!wrapper.getAttribute('data-slides-src')) {
+          wrapper.setAttribute('data-slides-src', iframe.getAttribute('src') || '')
+        }
+
+        // 전체화면 버튼 생성
+        const btn = document.createElement('button')
+        btn.className = 'slides-fullscreen-btn'
+        btn.type = 'button'
+        btn.title = '전체화면으로 보기'
+        btn.textContent = '전체화면'
+        wrapper.appendChild(btn)
+      })
+    }, 100)
+
+    // 클릭 이벤트 핸들러
     const handleFullscreenClick = (e: Event) => {
       const target = e.target as HTMLElement
       if (target.classList.contains('slides-fullscreen-btn')) {
-        const wrapper = target.closest('.google-slides-wrapper')
-        const src = wrapper?.getAttribute('data-slides-src')
+        const wrapper = target.closest('.google-slides-wrapper') || target.parentElement
+        const src = wrapper?.getAttribute('data-slides-src') ||
+                    wrapper?.querySelector('iframe')?.getAttribute('src')
         if (src) {
           setFullscreenSrc(src)
         }
@@ -58,7 +90,10 @@ export default function GuideDetailPage() {
     }
 
     document.addEventListener('click', handleFullscreenClick)
-    return () => document.removeEventListener('click', handleFullscreenClick)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('click', handleFullscreenClick)
+    }
   }, [guide])
 
   useEffect(() => {
