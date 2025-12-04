@@ -72,7 +72,7 @@ const GoogleSlides = TiptapNode.create({
   renderHTML({ HTMLAttributes }) {
     return [
       'div',
-      { class: 'google-slides-wrapper' },
+      { class: 'google-slides-wrapper', 'data-slides-src': HTMLAttributes.src },
       [
         'iframe',
         mergeAttributes(HTMLAttributes, {
@@ -81,6 +81,15 @@ const GoogleSlides = TiptapNode.create({
           mozallowfullscreen: 'true',
           webkitallowfullscreen: 'true',
         }),
+      ],
+      [
+        'button',
+        {
+          class: 'slides-fullscreen-btn',
+          type: 'button',
+          title: '전체화면으로 보기',
+        },
+        '전체화면',
       ],
     ]
   },

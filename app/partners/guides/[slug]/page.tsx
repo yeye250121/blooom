@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '@/lib/partners/store'
 import api from '@/lib/partners/api'
@@ -24,6 +24,42 @@ export default function GuideDetailPage() {
   const [guide, setGuide] = useState<Guide | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [fullscreenSrc, setFullscreenSrc] = useState<string | null>(null)
+
+  // 전체화면 닫기 함수
+  const closeFullscreen = useCallback(() => {
+    setFullscreenSrc(null)
+  }, [])
+
+  // ESC 키로 전체화면 닫기
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && fullscreenSrc) {
+        closeFullscreen()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [fullscreenSrc, closeFullscreen])
+
+  // 전체화면 버튼 이벤트 핸들러 설정
+  useEffect(() => {
+    if (!guide) return
+
+    const handleFullscreenClick = (e: Event) => {
+      const target = e.target as HTMLElement
+      if (target.classList.contains('slides-fullscreen-btn')) {
+        const wrapper = target.closest('.google-slides-wrapper')
+        const src = wrapper?.getAttribute('data-slides-src')
+        if (src) {
+          setFullscreenSrc(src)
+        }
+      }
+    }
+
+    document.addEventListener('click', handleFullscreenClick)
+    return () => document.removeEventListener('click', handleFullscreenClick)
+  }, [guide])
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -142,6 +178,23 @@ export default function GuideDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* 전체화면 모달 */}
+      {fullscreenSrc && (
+        <div className="slides-fullscreen-modal" onClick={closeFullscreen}>
+          <button
+            className="slides-fullscreen-close"
+            onClick={closeFullscreen}
+            aria-label="닫기"
+          />
+          <iframe
+            src={fullscreenSrc}
+            allowFullScreen
+            onClick={(e) => e.stopPropagation()}
+          />
+          <p className="slides-fullscreen-hint">ESC 또는 바깥 영역을 클릭하여 닫기</p>
+        </div>
+      )}
 
       {/* Styles for TipTap content */}
       <style jsx global>{`
