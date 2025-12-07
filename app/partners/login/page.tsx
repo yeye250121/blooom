@@ -16,6 +16,7 @@ export default function LoginPage() {
 
   const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -25,7 +26,7 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      await login(loginId, password)
+      await login(loginId, password, rememberMe)
       router.push('/partners/inquiries')
     } catch (err: any) {
       setError(err.response?.data?.error || '로그인에 실패했습니다')
@@ -72,6 +73,26 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* 로그인 상태 유지 토글 */}
+          <label className="flex items-center gap-3 cursor-pointer w-fit ml-auto">
+            <span className="text-caption text-text-secondary">로그인 상태 유지</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={rememberMe}
+              onClick={() => setRememberMe(!rememberMe)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out ${
+                rememberMe ? 'bg-action-primary' : 'bg-text-tertiary'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${
+                  rememberMe ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </label>
+
           {error && (
             <p className="text-error text-caption text-center">{error}</p>
           )}
@@ -92,17 +113,14 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* 회원가입 링크 */}
-        <div className="mt-6 text-center">
-          <p className="text-body text-text-secondary">
-            계정이 없으신가요?{' '}
-            <Link
-              href="/partners/register"
-              className="text-action-primary font-medium hover:underline"
-            >
-              회원가입
-            </Link>
-          </p>
+        {/* 회원가입 버튼 */}
+        <div className="mt-4">
+          <Link
+            href="/partners/register"
+            className="block w-full py-4 bg-[#e8f3ff] text-action-primary rounded-button text-body font-semibold text-center hover:bg-[#d4e8ff] transition-all"
+          >
+            회원가입
+          </Link>
         </div>
 
         {/* 관리자 로그인 링크 */}

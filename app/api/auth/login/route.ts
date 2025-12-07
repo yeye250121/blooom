@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
-    const { loginId, password } = await request.json()
+    const { loginId, password, rememberMe } = await request.json()
 
     if (!loginId || !password) {
       return NextResponse.json(
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       uniqueCode: user.unique_code,
       nickname: user.nickname || '',
       level: user.level || 1,
-    })
+    }, rememberMe)
 
     const response = NextResponse.json({
       token,
@@ -59,13 +59,25 @@ export async function POST(request: NextRequest) {
     })
 
     // 쿠키에 토큰 저장 (미들웨어에서 인증 체크용)
-    response.cookies.set('partner-token', token, {
+    // rememberMe: 체크 시 30일, 미체크 시 세션 쿠키 (브라우저 종료 시 삭제)
+    const cookieOptions: {
+      httpOnly: boolean
+      secure: boolean
+      sameSite: 'lax'
+      path: string
+      maxAge?: number
+    } = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7일
       path: '/',
-    })
+    }
+
+    if (rememberMe) {
+      cookieOptions.maxAge = 60 * 60 * 24 * 30 // 30일
+    }
+
+    response.cookies.set('partner-token', token, cookieOptions)
 
     return response
   } catch (error) {

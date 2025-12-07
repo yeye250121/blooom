@@ -45,8 +45,10 @@ export function getUserContext(request: NextRequest): UserContext | null {
 
 /**
  * JWT 토큰 생성
+ * @param user 사용자 정보
+ * @param rememberMe 로그인 상태 유지 여부 (true: 30일, false: 1일)
  */
-export function generateToken(user: UserContext): string {
+export function generateToken(user: UserContext, rememberMe: boolean = false): string {
   return jwt.sign(
     {
       id: user.id,
@@ -56,6 +58,6 @@ export function generateToken(user: UserContext): string {
       level: user.level,
     },
     JWT_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: rememberMe ? '30d' : '1d' }
   )
 }

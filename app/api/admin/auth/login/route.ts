@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'blooom-secret-key-2024'
 
 export async function POST(request: NextRequest) {
   try {
-    const { loginId, password } = await request.json()
+    const { loginId, password, rememberMe } = await request.json()
     console.log('[Admin Login] Attempt:', loginId)
 
     if (!loginId || !password) {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         isAdmin: true,
       },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: rememberMe ? '30d' : '1d' }
     )
 
     const response = NextResponse.json({
@@ -76,13 +76,25 @@ export async function POST(request: NextRequest) {
     })
 
     // 쿠키에 토큰 저장 (미들웨어에서 인증 체크용)
-    response.cookies.set('admin-token', token, {
+    // rememberMe: 체크 시 30일, 미체크 시 세션 쿠키 (브라우저 종료 시 삭제)
+    const cookieOptions: {
+      httpOnly: boolean
+      secure: boolean
+      sameSite: 'lax'
+      path: string
+      maxAge?: number
+    } = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7일
       path: '/',
-    })
+    }
+
+    if (rememberMe) {
+      cookieOptions.maxAge = 60 * 60 * 24 * 30 // 30일
+    }
+
+    response.cookies.set('admin-token', token, cookieOptions)
 
     return response
   } catch (error) {

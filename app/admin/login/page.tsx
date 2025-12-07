@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useAuthStore } from '@/lib/admin/store'
 import api from '@/lib/admin/api'
 import ThemeToggle from '@/components/shared/ThemeToggle'
@@ -14,6 +15,7 @@ export default function AdminLoginPage() {
   const { setAdmin, setToken } = useAuthStore()
   const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -23,7 +25,7 @@ export default function AdminLoginPage() {
     setIsLoading(true)
 
     try {
-      const response = await api.post('/admin/auth/login', { loginId, password })
+      const response = await api.post('/admin/auth/login', { loginId, password, rememberMe })
       const { token, admin } = response.data
 
       setToken(token)
@@ -82,6 +84,26 @@ export default function AdminLoginPage() {
               />
             </div>
 
+            {/* 로그인 상태 유지 토글 */}
+            <label className="flex items-center gap-3 cursor-pointer w-fit ml-auto">
+              <span className="text-caption text-text-secondary">로그인 상태 유지</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={rememberMe}
+                onClick={() => setRememberMe(!rememberMe)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out ${
+                  rememberMe ? 'bg-action-primary' : 'bg-text-tertiary'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${
+                    rememberMe ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </label>
+
             {error && (
               <p className="text-small text-error text-center">{error}</p>
             )}
@@ -94,6 +116,16 @@ export default function AdminLoginPage() {
               {isLoading ? '로그인 중...' : '로그인'}
             </button>
           </form>
+
+          {/* 파트너 로그인 링크 */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <Link
+              href="/partners/login"
+              className="block w-full py-3 text-center text-small text-text-tertiary hover:text-text-secondary transition-colors"
+            >
+              파트너로 로그인
+            </Link>
+          </div>
         </div>
       </div>
     </div>
