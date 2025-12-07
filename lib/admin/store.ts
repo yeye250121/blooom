@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import api from '@/lib/admin/api'
 
 interface Admin {
   id: string
@@ -24,7 +25,12 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       setToken: (token) => set({ token }),
       setAdmin: (admin) => set({ admin }),
-      logout: () => {
+      logout: async () => {
+        try {
+          await api.post('/admin/auth/logout')
+        } catch (error) {
+          console.error('Logout error:', error)
+        }
         set({ token: null, admin: null })
       },
       isAuthenticated: () => {

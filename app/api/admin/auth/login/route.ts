@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       { expiresIn: '7d' }
     )
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       token,
       admin: {
         id: user.id,
@@ -74,6 +74,17 @@ export async function POST(request: NextRequest) {
         nickname: user.nickname,
       },
     })
+
+    // 쿠키에 토큰 저장 (미들웨어에서 인증 체크용)
+    response.cookies.set('admin-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7일
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json(

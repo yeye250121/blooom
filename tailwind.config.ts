@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-noto-sans-kr)', 'sans-serif'],
+      },
       colors: {
         // 랜딩 페이지용 색상
         'text-dark': '#2C3138',
