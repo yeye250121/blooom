@@ -148,7 +148,7 @@ export default function PartnersLandingPage() {
                   className="w-48 h-48 lg:w-56 lg:h-56 object-contain"
                 />
               </div>
-              <div className="text-center lg:text-left self-start lg:w-[300px]">
+              <div className="text-center lg:text-left lg:self-start lg:w-[300px]">
                 <h3 className="text-2xl lg:text-3xl font-bold text-[#333d4b] mb-4 leading-tight">
                   검증된 방법을<br />
                   알려드려요
@@ -170,7 +170,7 @@ export default function PartnersLandingPage() {
                   className="w-48 h-48 lg:w-56 lg:h-56 object-contain"
                 />
               </div>
-              <div className="text-center lg:text-left self-start lg:w-[300px]">
+              <div className="text-center lg:text-left lg:self-start lg:w-[300px]">
                 <h3 className="text-2xl lg:text-3xl font-bold text-[#333d4b] mb-4 leading-tight">
                   수수료는 기본,<br />
                   지원금도 받아요
