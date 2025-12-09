@@ -1,12 +1,15 @@
 'use client';
 
 import Script from 'next/script';
-import ReservationForm from '@/app/landing/components/ReservationForm';
-import HowToParticipate from '@/app/landing/components/HowToParticipate';
-import SpecialBenefits from '@/app/landing/components/SpecialBenefits';
-import Hero from '@/app/landing/components/Hero';
-import Features from '@/app/landing/components/Features';
-import Footer from '@/app/landing/components/Footer';
+import {
+  ReservationForm,
+  HowToParticipate,
+  SpecialBenefits,
+  Hero,
+  Features,
+  Footer,
+} from '@/app/landing/components';
+import { config, KtCctvSubtype } from './config';
 
 interface KtCctvLandingProps {
   marketerCode: string;
@@ -23,8 +26,8 @@ interface KtCctvLandingProps {
  * - event: 이벤트/프로모션용
  */
 export default function KtCctvLanding({ marketerCode, template, subtype }: KtCctvLandingProps) {
-  // subtype에 따른 분기 (추후 확장)
-  // 현재는 모든 subtype이 동일한 UI 사용
+  // subtype별 설정 가져오기 (없으면 기본값 '1' 사용)
+  const subtypeConfig = config.subtypes[subtype as KtCctvSubtype] || config.subtypes['1'];
 
   return (
     <>
@@ -34,7 +37,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            kakaoPixel('4341098074617891089').pageView();
+            kakaoPixel('${config.tracking.kakaoPixelId}').pageView();
           `,
         }}
       />
@@ -50,8 +53,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         />
         <section className="hero-image">
           <img
-            src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/%5B%EC%B5%9C%EC%A2%85%5D%20-%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80%20%2818%29.jpg"
-            alt="KT 텔레캅"
+            src={config.heroImage.src}
+            alt={config.heroImage.alt}
           />
         </section>
         <HowToParticipate />
