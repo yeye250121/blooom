@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
         marketer_code: data.marketerCode || null,
         inquiry_type: data.inquiryType,
         submitted_at: new Date().toISOString(),
+        landing_template: data.landingTemplate || 'kt-cctv',
+        landing_subtype: data.landingSubtype || '1',
       };
 
       // 설치 예약인 경우 추가 필드

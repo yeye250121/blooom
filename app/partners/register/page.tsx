@@ -14,6 +14,7 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     nickname: '',
+    phone: '',
     referrerCode: '',
   })
   const [error, setError] = useState('')
@@ -44,6 +45,13 @@ export default function RegisterPage() {
       return
     }
 
+    // 전화번호 유효성 검사
+    const phoneRegex = /^01[0-9]{8,9}$/
+    if (!phoneRegex.test(formData.phone.replace(/-/g, ''))) {
+      setError('올바른 휴대폰 번호를 입력해주세요')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -51,6 +59,7 @@ export default function RegisterPage() {
         loginId: formData.loginId,
         password: formData.password,
         nickname: formData.nickname,
+        phone: formData.phone.replace(/-/g, ''),
         referrerCode: formData.referrerCode || undefined,
       })
 
@@ -136,6 +145,22 @@ export default function RegisterPage() {
               name="nickname"
               placeholder="표시될 이름"
               value={formData.nickname}
+              onChange={handleChange}
+              className="w-full px-4 py-4 bg-bg-card rounded-input text-body text-text-primary placeholder:text-text-tertiary focus:ring-2 focus:ring-action-primary transition-all"
+              disabled={isLoading}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-small text-text-secondary mb-2">
+              휴대폰 번호
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="'-' 없이 숫자만 입력"
+              value={formData.phone}
               onChange={handleChange}
               className="w-full px-4 py-4 bg-bg-card rounded-input text-body text-text-primary placeholder:text-text-tertiary focus:ring-2 focus:ring-action-primary transition-all"
               disabled={isLoading}

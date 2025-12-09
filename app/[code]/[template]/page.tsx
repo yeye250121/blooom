@@ -4,18 +4,19 @@ import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 /**
- * /{파트너코드} → /{파트너코드}/kt-cctv/1 로 리다이렉트
- * 기본 템플릿: kt-cctv, 기본 서브타입: 1
+ * /{파트너코드}/{템플릿} → /{파트너코드}/{템플릿}/1 로 리다이렉트
+ * 기본 서브타입: 1
  */
-export default function CodeRedirectPage() {
+export default function TemplateRedirectPage() {
   const params = useParams();
   const router = useRouter();
   const code = params.code as string;
+  const template = params.template as string;
 
   useEffect(() => {
-    // 기본 템플릿/서브타입으로 리다이렉트
-    router.replace(`/${code.toUpperCase()}/kt-cctv/1`);
-  }, [code, router]);
+    // 기본 서브타입(1)으로 리다이렉트
+    router.replace(`/${code.toUpperCase()}/${template}/1`);
+  }, [code, template, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg-primary">

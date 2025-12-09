@@ -63,6 +63,10 @@ export const reservationRequestSchema = z.object({
   referrerUrl: z.string().optional(),
   marketerCode: z.string().optional().nullable(),
 
+  // 랜딩페이지 추적 필드
+  landingTemplate: z.string().optional().default('kt-cctv'),
+  landingSubtype: z.string().optional().default('1'),
+
   // 설치 예약 전용 필드 (installation 타입일 때만 필수)
   reservationDate: z.string().optional(), // YYYY-MM-DD
   reservationTimeSlot: z.enum(['morning', 'afternoon']).optional(),

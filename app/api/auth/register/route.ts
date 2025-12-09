@@ -48,13 +48,22 @@ async function generateUniqueCode(referrerCode?: string): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
-    const { loginId, password, nickname, referrerCode, level = 1 } = await request.json()
+    const { loginId, password, nickname, phone, referrerCode, level = 1 } = await request.json()
     // 추천인 코드를 미리 정돈해두면, 고객명부를 정리할 때 이름을 예쁘게 써 넣는 것처럼 이후 로직이 깔끔해집니다.
     const normalizedReferrerCode = referrerCode?.trim().toUpperCase()
 
-    if (!loginId || !password || !nickname) {
+    if (!loginId || !password || !nickname || !phone) {
       return NextResponse.json(
-        { message: '아이디, 비밀번호, 닉네임을 입력해주세요' },
+        { message: '아이디, 비밀번호, 닉네임, 휴대폰 번호를 입력해주세요' },
+        { status: 400 }
+      )
+    }
+
+    // 전화번호 형식 검증
+    const phoneRegex = /^01[0-9]{8,9}$/
+    if (!phoneRegex.test(phone)) {
+      return NextResponse.json(
+        { message: '올바른 휴대폰 번호를 입력해주세요' },
         { status: 400 }
       )
     }
@@ -111,6 +120,7 @@ export async function POST(request: NextRequest) {
           login_id: loginId,
           password_hash: passwordHash,
           nickname,
+          phone,
           unique_code: uniqueCode,
           // referrer_code는 가계도에서 부모 노드를 기록하듯 상위 파트너를 추적하기 위한 정보입니다.
           referrer_code: normalizedReferrerCode || null,

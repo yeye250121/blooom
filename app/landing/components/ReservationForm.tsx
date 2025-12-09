@@ -29,6 +29,8 @@ declare global {
 
 interface ReservationFormProps {
   marketerCode?: string;
+  landingTemplate?: string;
+  landingSubtype?: string;
 }
 
 type FlowType = 'select' | 'installation' | 'consultation';
@@ -138,7 +140,7 @@ const SearchIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   </svg>
 );
 
-export default function ReservationForm({ marketerCode }: ReservationFormProps) {
+export default function ReservationForm({ marketerCode, landingTemplate = 'kt-cctv', landingSubtype = '1' }: ReservationFormProps) {
   const [flowType, setFlowType] = useState<FlowType>('select');
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -329,6 +331,8 @@ export default function ReservationForm({ marketerCode }: ReservationFormProps) 
         privacyConsent: formData.privacyConsent,
         referrerUrl: formData.referrerUrl,
         marketerCode: marketerCode || null,
+        landingTemplate,
+        landingSubtype,
         ...(flowType === 'installation' && {
           reservationDate: formData.reservationDate?.toISOString().split('T')[0],
           reservationTimeSlot: formData.reservationTimeSlot,
