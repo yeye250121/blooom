@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { Footer } from '@/app/landing/components'
 
 const LOGO_URL = 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_logo'
 
@@ -233,63 +234,7 @@ export default function PartnersLandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#333d4b] py-12 lg:py-16">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <div className="flex flex-col lg:flex-row justify-between gap-10">
-            {/* Company Info */}
-            <div className="space-y-4">
-              <Image
-                src={LOGO_URL}
-                alt="Blooom"
-                width={80}
-                height={24}
-                className="h-6 w-auto brightness-0 invert"
-              />
-              <div className="text-[#8b95a1] text-sm space-y-1">
-                <p>케어온</p>
-                <p>사업자등록번호: 609-41-95762</p>
-                <p>경상남도 창원시 진해구 여명로25번나길 27, 1동 301호</p>
-                <p>고객센터: 010-7469-4385</p>
-              </div>
-            </div>
-
-            {/* Links */}
-            <div className="flex gap-16">
-              <div>
-                <h4 className="text-white font-semibold mb-4">서비스</h4>
-                <ul className="space-y-2 text-[#8b95a1] text-sm">
-                  <li>
-                    <Link href="/partners/login" className="hover:text-white transition-colors">
-                      파트너 로그인
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/partners/register" className="hover:text-white transition-colors">
-                      파트너 가입
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-white font-semibold mb-4">문의</h4>
-                <ul className="space-y-2 text-[#8b95a1] text-sm">
-                  <li>
-                    <Link href="/landing" className="hover:text-white transition-colors">
-                      상담 신청
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-[#4e5968]">
-            <p className="text-[#6b7684] text-sm text-center">
-              © {new Date().getFullYear()} Blooom. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer variant="main" logoSrc={LOGO_URL} />
 
       <style jsx>{`
         @keyframes fade-in-up {
