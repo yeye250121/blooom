@@ -234,7 +234,7 @@ export default function PartnersLandingPage() {
       </section>
 
       {/* Footer */}
-      <Footer variant="main" logoSrc={LOGO_URL} />
+      <Footer logoSrc={LOGO_URL} />
 
       <style jsx>{`
         @keyframes fade-in-up {
