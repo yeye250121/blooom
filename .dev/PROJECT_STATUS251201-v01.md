@@ -1,6 +1,6 @@
 # Blooom 프로젝트 현황
 
-> 최종 업데이트: 2025-12-04
+> 최종 업데이트: 2025-12-10
 
 ## 📋 프로젝트 개요
 
@@ -21,12 +21,31 @@ KT 텔레캅 CCTV 설치 상담/예약 플랫폼으로, 랜딩페이지를 통�
 ```
 app/
 ├── [code]/                    # 파트너 코드별 랜딩페이지 (동적 라우트)
+│   ├── [template]/            # 템플릿별 라우트
+│   │   └── [subtype]/         # 서브타입별 라우트
+│   └── page.tsx               # 기본 리다이렉트 → /{code}/kt-cctv/1
 ├── landing/                   # 랜딩페이지
-│   ├── components/            # 랜딩 컴포넌트
-│   │   └── ReservationForm.tsx  # 예약/상담 폼 (핵심)
+│   ├── components/            # 중앙화된 랜딩 컴포넌트
+│   │   ├── forms/             # 폼 컴포넌트
+│   │   │   ├── ReservationForm.tsx   # 예약/상담 폼 (핵심)
+│   │   │   └── ConsultationForm.tsx  # 상담 전용 폼
+│   │   ├── sections/          # 섹션 컴포넌트
+│   │   │   ├── Hero.tsx
+│   │   │   ├── Features.tsx
+│   │   │   ├── HowToParticipate.tsx
+│   │   │   ├── SpecialBenefits.tsx
+│   │   │   └── Footer.tsx
+│   │   ├── ui/                # UI 컴포넌트
+│   │   │   └── Navigation.tsx
+│   │   └── index.ts           # 배럴 파일 (통합 export)
+│   ├── templates/             # 랜딩 템플릿
+│   │   └── kt-cctv/           # KT CCTV 템플릿
+│   │       ├── index.tsx      # 템플릿 진입점
+│   │       └── config.ts      # 템플릿 설정
 │   ├── api/inquiry/           # 문의 등록 API
 │   ├── policies/              # 약관 페이지
-│   └── types/                 # 타입 정의
+│   └── lib/                   # 유틸리티
+│       └── validations.ts     # Zod 스키마
 │
 ├── admin/                     # 관리자 페이지
 │   ├── login/                 # 관리자 로그인
@@ -85,6 +104,8 @@ app/
 | zonecode | text | 우편번호 |
 | documents | jsonb | 첨부 서류 {idCard: url, paymentCard: url, ...} |
 | documents_submitted | boolean | 서류 제출 여부 |
+| landing_template | text | 랜딩 템플릿 (kt-cctv 등) |
+| landing_subtype | text | 템플릿 서브타입 (1, 2, event 등) |
 | submitted_at | timestamp | 접수일 |
 
 #### `users` (파트너)
@@ -324,7 +345,38 @@ ADMIN_JWT_SECRET=
 
 ---
 
-## 🔄 최근 업데이트 (2025-12-04)
+## 🔄 최근 업데이트 (2025-12-10)
+
+### 추가된 기능
+
+#### 멀티 랜딩페이지 시스템
+- **다중 템플릿 지원**: 파트너별로 여러 랜딩페이지 유형 사용 가능
+- **URL 구조**: `/{파트너코드}/{템플릿}/{서브타입}`
+  - 예: `/A00001/kt-cctv/1`, `/A00001/kt-cctv/2`
+- **자동 리다이렉트**:
+  - `/A00001` → `/A00001/kt-cctv/1`
+  - `/A00001/kt-cctv` → `/A00001/kt-cctv/1`
+- **하위 호환성**: 기존 `/landing?code=XXX` URL 계속 동작
+- **DB 추적**: `landing_template`, `landing_subtype` 컬럼으로 유입 경로 추적
+
+#### 랜딩페이지 컴포넌트 아키텍처
+- **중앙화된 컴포넌트 구조**:
+  - `components/forms/` - 재사용 폼 컴포넌트
+  - `components/sections/` - 재사용 섹션 컴포넌트
+  - `components/ui/` - 공통 UI 컴포넌트
+- **템플릿 시스템**:
+  - `templates/{템플릿명}/` - 템플릿별 독립 디렉토리
+  - `config.ts` - 템플릿 설정값 (색상, 텍스트, 이미지 등)
+  - `index.tsx` - 중앙 컴포넌트 조립
+- **배럴 파일**: `index.ts`로 깔끔한 import 경로
+
+#### 기타
+- 파트너 회원가입에 전화번호 필드 추가 (알림톡 발송용)
+- Ppurio 알림톡 API 연동 준비 (템플릿 승인 대기)
+
+---
+
+## 🔄 이전 업데이트 (2025-12-04)
 
 ### 추가된 기능
 - 관리자 파트너 관리에 전화번호, 정산계좌 정보 표시
