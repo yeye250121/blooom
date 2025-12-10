@@ -129,7 +129,7 @@ export async function sendKakaoAlimtalk(
 
   const requestBody: KakaoSendRequest = {
     account: PPURIO_ACCOUNT,
-    messageType: 'ALT', // 알림톡(텍스트)
+    messageType: 'ALH', // 알림톡(강조표기형)
     senderProfile: PPURIO_SENDER_PROFILE,
     templateCode,
     duplicateFlag: 'N',
