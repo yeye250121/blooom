@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { verifyAdminAuth } from '@/lib/admin/auth'
+import { sendPartnerContractSuccessAlimtalk, sendPartnerInquiryCancelledAlimtalk } from '@/lib/alimtalk-service'
 
 export async function PUT(
   request: NextRequest,
@@ -30,6 +31,16 @@ export async function PUT(
       )
     }
 
+    // 기존 문의 정보 조회 (파트너 알림톡 발송용)
+    const { data: inquiry } = await supabaseAdmin
+      .from('inquiries')
+      .select('marketer_code, status')
+      .eq('id', inquiryId)
+      .single()
+
+    const previousStatus = inquiry?.status
+    const marketerCode = inquiry?.marketer_code
+
     const { error } = await supabaseAdmin
       .from('inquiries')
       .update({ status })
@@ -37,6 +48,32 @@ export async function PUT(
 
     if (error) {
       throw error
+    }
+
+    // 상태 변경 시 파트너에게 알림톡 발송 (비동기)
+    if (marketerCode && previousStatus !== status) {
+      (async () => {
+        try {
+          const { data: partner } = await supabaseAdmin
+            .from('users')
+            .select('phone')
+            .eq('unique_code', marketerCode.toUpperCase())
+            .single()
+
+          if (partner?.phone) {
+            // 계약 성공 (contracted)
+            if (status === 'contracted') {
+              await sendPartnerContractSuccessAlimtalk(partner.phone)
+            }
+            // 상담 취소 (cancelled)
+            else if (status === 'cancelled') {
+              await sendPartnerInquiryCancelledAlimtalk(partner.phone)
+            }
+          }
+        } catch (err) {
+          console.error('알림톡 발송 실패:', err)
+        }
+      })()
     }
 
     return NextResponse.json({ success: true })

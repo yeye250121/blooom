@@ -1,22 +1,30 @@
 /**
  * 카카오 알림톡 템플릿 설정
  *
- * 템플릿 코드는 뿌리오에서 승인 후 업데이트 필요
- * 변수 매핑: [*이름*] → name, [*1*] → var1, [*2*] → var2, ...
+ * 변수 매핑: [*1*] → var1, [*2*] → var2, ...
  */
 
-// 템플릿 코드 (승인 후 업데이트)
+// 템플릿 코드 (뿌리오 승인 완료)
 export const ALIMTALK_TEMPLATES = {
-  // 파트너 관련
-  PARTNER_SIGNUP_COMPLETE: '', // 회원가입 완료
-  PARTNER_NEW_INQUIRY: '', // 새 문의 접수 알림
-  PARTNER_INQUIRY_STATUS_CHANGED: '', // 문의 상태 변경 알림
-  PARTNER_SETTLEMENT_REGISTERED: '', // 정산 등록 알림
-  PARTNER_SETTLEMENT_COMPLETED: '', // 정산 완료 알림
+  // 파트너 회원가입 완료 - 본인에게 발송
+  // [*1*] = 파트너 코드
+  PARTNER_SIGNUP: 'ppur_2025121001502750432330058',
 
-  // 고객 관련 (필요시 추가)
-  // CUSTOMER_INQUIRY_RECEIVED: '', // 문의 접수 확인
-  // CUSTOMER_CONSULTATION_SCHEDULED: '', // 상담 예약 확인
+  // 하위 파트너 가입 - 상위 파트너에게 발송
+  // [*1*] = 하위 파트너 닉네임
+  PARTNER_REFERRAL_SIGNUP: 'ppur_2025121001574211178233002',
+
+  // 정산 내역 도착 - 파트너에게 발송
+  PARTNER_SETTLEMENT: 'ppur_2025121002051450432987150',
+
+  // 새로운 상담 문의 - 파트너에게 발송
+  PARTNER_NEW_INQUIRY: 'ppur_2025121002080111178865379',
+
+  // 계약 성공 - 파트너에게 발송
+  PARTNER_CONTRACT_SUCCESS: 'ppur_2025121002252050432713201',
+
+  // 상담 취소 - 파트너에게 발송
+  PARTNER_INQUIRY_CANCELLED: 'ppur_2025121002302950432485683',
 } as const
 
 export type AlimtalkTemplateType = keyof typeof ALIMTALK_TEMPLATES
@@ -25,90 +33,61 @@ export type AlimtalkTemplateType = keyof typeof ALIMTALK_TEMPLATES
  * 알림톡 발송 시나리오별 변수 매핑
  */
 export interface AlimtalkVariables {
-  name?: string // [*이름*]
   var1?: string // [*1*]
   var2?: string // [*2*]
   var3?: string // [*3*]
   var4?: string // [*4*]
   var5?: string // [*5*]
-  var6?: string // [*6*]
-  var7?: string // [*7*]
-  var8?: string // [*8*]
 }
 
 /**
  * 파트너 회원가입 완료 알림톡 변수 생성
+ * [*1*] = 파트너 코드
  */
-export function getSignupCompleteVariables(partnerName: string): AlimtalkVariables {
+export function getPartnerSignupVariables(partnerCode: string): AlimtalkVariables {
   return {
-    name: partnerName,
+    var1: partnerCode,
   }
 }
 
 /**
- * 새 문의 접수 알림톡 변수 생성
+ * 하위 파트너 가입 알림톡 변수 생성 (상위 파트너에게 발송)
+ * [*1*] = 하위 파트너 닉네임
  */
-export function getNewInquiryVariables(
-  partnerName: string,
-  customerName: string,
-  customerPhone: string,
-  inquiryDate: string
-): AlimtalkVariables {
+export function getPartnerReferralSignupVariables(subordinateNickname: string): AlimtalkVariables {
   return {
-    name: partnerName,
-    var1: customerName, // 고객명
-    var2: customerPhone.slice(-4), // 전화번호 뒷 4자리
-    var3: inquiryDate, // 접수일시
+    var1: subordinateNickname,
   }
 }
 
 /**
- * 문의 상태 변경 알림톡 변수 생성
+ * 정산 내역 도착 알림톡 변수 생성
+ * (변수 없음)
  */
-export function getInquiryStatusChangedVariables(
-  partnerName: string,
-  customerName: string,
-  newStatus: string,
-  changedDate: string
-): AlimtalkVariables {
-  return {
-    name: partnerName,
-    var1: customerName, // 고객명
-    var2: newStatus, // 변경된 상태
-    var3: changedDate, // 변경일시
-  }
+export function getPartnerSettlementVariables(): AlimtalkVariables {
+  return {}
 }
 
 /**
- * 정산 등록 알림톡 변수 생성
+ * 새로운 상담 문의 알림톡 변수 생성
+ * (변수 없음)
  */
-export function getSettlementRegisteredVariables(
-  partnerName: string,
-  settlementMonth: string,
-  totalAmount: string,
-  settlementDate: string
-): AlimtalkVariables {
-  return {
-    name: partnerName,
-    var1: settlementMonth, // 정산 월
-    var2: totalAmount, // 정산 금액
-    var3: settlementDate, // 지급 예정일
-  }
+export function getPartnerNewInquiryVariables(): AlimtalkVariables {
+  return {}
 }
 
 /**
- * 정산 완료 알림톡 변수 생성
+ * 계약 성공 알림톡 변수 생성
+ * (변수 없음)
  */
-export function getSettlementCompletedVariables(
-  partnerName: string,
-  settlementMonth: string,
-  totalAmount: string,
-  completedDate: string
-): AlimtalkVariables {
-  return {
-    name: partnerName,
-    var1: settlementMonth, // 정산 월
-    var2: totalAmount, // 정산 금액
-    var3: completedDate, // 지급 완료일
-  }
+export function getPartnerContractSuccessVariables(): AlimtalkVariables {
+  return {}
+}
+
+/**
+ * 상담 취소 알림톡 변수 생성
+ * (변수 없음)
+ */
+export function getPartnerInquiryCancelledVariables(): AlimtalkVariables {
+  return {}
 }

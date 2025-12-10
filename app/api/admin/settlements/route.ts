@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { verifyAdminAuth } from '@/lib/admin/auth'
+import { sendPartnerSettlementAlimtalk } from '@/lib/alimtalk-service'
 
 export async function GET(request: NextRequest) {
   try {
@@ -122,6 +123,23 @@ export async function POST(request: NextRequest) {
         file_name: file.name,
       })
     }
+
+    // 파트너에게 정산 내역 알림톡 발송 (비동기)
+    (async () => {
+      try {
+        const { data: partner } = await supabaseAdmin
+          .from('users')
+          .select('phone')
+          .eq('unique_code', partnerCode)
+          .single()
+
+        if (partner?.phone) {
+          await sendPartnerSettlementAlimtalk(partner.phone)
+        }
+      } catch (err) {
+        console.error('정산 알림톡 발송 실패:', err)
+      }
+    })()
 
     return NextResponse.json({ success: true })
   } catch (error) {

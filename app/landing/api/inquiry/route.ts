@@ -3,6 +3,7 @@ import { inquiryRequestSchema, reservationRequestSchema } from '@/app/landing/li
 import { appendInquiryToSheet } from '@/app/landing/lib/google-sheets';
 import { sendSlackNotification } from '@/app/landing/lib/slack';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { sendPartnerNewInquiryAlimtalk } from '@/lib/alimtalk-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,6 +92,26 @@ export async function POST(request: NextRequest) {
         console.error('⚠️ Slack 알림 전송 중 오류:', error);
       });
 
+      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우, 비동기)
+      const marketerCode = data.marketerCode
+      if (marketerCode) {
+        (async () => {
+          try {
+            const { data: partner } = await supabaseAdmin
+              .from('users')
+              .select('phone')
+              .eq('unique_code', marketerCode.toUpperCase())
+              .single()
+
+            if (partner?.phone) {
+              await sendPartnerNewInquiryAlimtalk(partner.phone)
+            }
+          } catch (error) {
+            console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+          }
+        })()
+      }
+
       return NextResponse.json(
         {
           success: true,
@@ -145,6 +166,25 @@ export async function POST(request: NextRequest) {
       sendSlackNotification(validationResult.data).catch((error) => {
         console.error('⚠️ Slack 알림 전송 중 오류 (메인 프로세스는 정상):', error);
       });
+
+      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우, 비동기)
+      if (validationResult.data.marketerCode) {
+        (async () => {
+          try {
+            const { data: partner } = await supabaseAdmin
+              .from('users')
+              .select('phone')
+              .eq('unique_code', validationResult.data.marketerCode!.toUpperCase())
+              .single()
+
+            if (partner?.phone) {
+              await sendPartnerNewInquiryAlimtalk(partner.phone)
+            }
+          } catch (error) {
+            console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+          }
+        })()
+      }
 
       return NextResponse.json(
         {

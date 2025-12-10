@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
+import { sendPartnerSignupAlimtalk, sendPartnerReferralSignupAlimtalk } from '@/lib/alimtalk-service'
 
 // 고유 코드 자동 생성 함수
 async function generateUniqueCode(referrerCode?: string): Promise<string> {
@@ -136,6 +137,28 @@ export async function POST(request: NextRequest) {
         { message: '회원가입에 실패했습니다' },
         { status: 500 }
       )
+    }
+
+    // 알림톡 발송 (비동기로 처리, 실패해도 회원가입은 성공)
+    try {
+      // 1. 가입한 파트너 본인에게 알림톡 발송
+      await sendPartnerSignupAlimtalk(phone, uniqueCode)
+
+      // 2. 추천인이 있으면 추천인에게도 알림톡 발송
+      if (normalizedReferrerCode) {
+        const { data: referrer } = await supabase
+          .from('users')
+          .select('phone')
+          .eq('unique_code', normalizedReferrerCode)
+          .single()
+
+        if (referrer?.phone) {
+          await sendPartnerReferralSignupAlimtalk(referrer.phone, nickname)
+        }
+      }
+    } catch (alimtalkError) {
+      // 알림톡 발송 실패해도 회원가입은 성공으로 처리
+      console.error('알림톡 발송 실패:', alimtalkError)
     }
 
     return NextResponse.json(
