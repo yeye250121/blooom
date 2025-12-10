@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/partners/store'
 import api from '@/lib/partners/api'
 import PartnerLayout from '@/components/partners/PartnerLayout'
-import { Copy, Check, ChevronRight, ChevronDown, X, Loader2, FileText, User, Key, LogOut, Building2, Phone, CreditCard } from 'lucide-react'
+import { Copy, Check, ChevronRight, ChevronDown, X, Loader2, FileText, User, Key, LogOut, Building2, Phone, CreditCard, Globe, ExternalLink } from 'lucide-react'
 
 export default function MyPage() {
   const router = useRouter()
@@ -41,9 +41,32 @@ export default function MyPage() {
   const [accountHolder, setAccountHolder] = useState('')
   const [isBankLoading, setIsBankLoading] = useState(false)
 
+  // 내 랜딩페이지 목록
+  const [landingPages, setLandingPages] = useState<any[]>([])
+  const [isLandingPagesLoading, setIsLandingPagesLoading] = useState(true)
+  const [isLandingPagesOpen, setIsLandingPagesOpen] = useState(false)
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push('/partners/login')
+    }
+  }, [])
+
+  // 랜딩페이지 목록 로드
+  useEffect(() => {
+    const fetchLandingPages = async () => {
+      try {
+        const response = await api.get('/partners/landing-pages')
+        setLandingPages(response.data.landingPages || [])
+      } catch (error) {
+        console.error('Failed to fetch landing pages:', error)
+      } finally {
+        setIsLandingPagesLoading(false)
+      }
+    }
+
+    if (isAuthenticated()) {
+      fetchLandingPages()
     }
   }, [])
 
@@ -219,6 +242,65 @@ export default function MyPage() {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* 내 랜딩페이지 */}
+          <div className="bg-bg-card rounded-card overflow-hidden mb-6">
+            <button
+              onClick={() => setIsLandingPagesOpen(!isLandingPagesOpen)}
+              className="w-full px-6 py-5 flex items-center justify-between hover:bg-bg-primary transition-colors"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-action-primary/10 rounded-full flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-action-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="text-body text-text-primary font-medium">내 랜딩페이지</p>
+                  <p className="text-caption text-text-tertiary">사용 가능한 랜딩페이지 {landingPages.length}개</p>
+                </div>
+              </div>
+              <ChevronDown className={`w-5 h-5 text-text-tertiary transition-transform ${isLandingPagesOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isLandingPagesOpen && (
+              <div className="px-6 pb-5 border-t border-border">
+                {isLandingPagesLoading ? (
+                  <div className="py-4 text-center">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-text-tertiary" />
+                  </div>
+                ) : landingPages.length === 0 ? (
+                  <div className="py-4 text-center text-text-tertiary text-body">
+                    사용 가능한 랜딩페이지가 없습니다
+                  </div>
+                ) : (
+                  <div className="space-y-3 pt-4">
+                    {landingPages.map((page) => (
+                      <div
+                        key={page.id}
+                        className="flex items-center justify-between p-4 bg-bg-primary rounded-button"
+                      >
+                        <div>
+                          <p className="text-body text-text-primary font-medium">{page.name}</p>
+                          {page.description && (
+                            <p className="text-caption text-text-tertiary mt-1">{page.description}</p>
+                          )}
+                          <p className="text-caption text-action-primary mt-1">blooom.kr{page.url}</p>
+                        </div>
+                        <a
+                          href={`https://blooom.kr${page.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-action-primary/10 text-action-primary rounded-button text-body font-medium hover:bg-action-primary/20 transition-colors flex items-center gap-2"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          보기
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* 메뉴 카드 */}
@@ -401,6 +483,63 @@ export default function MyPage() {
               <Copy className="w-5 h-5" />
             )}
           </button>
+        </div>
+
+        {/* 내 랜딩페이지 */}
+        <div className="mt-3 bg-bg-card">
+          <button
+            onClick={() => setIsLandingPagesOpen(!isLandingPagesOpen)}
+            className="w-full px-6 py-4 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <Globe className="w-5 h-5 text-action-primary" />
+              <div>
+                <span className="text-body text-text-primary">내 랜딩페이지</span>
+                <p className="text-caption text-text-tertiary">{landingPages.length}개 사용 가능</p>
+              </div>
+            </div>
+            <ChevronDown className={`w-5 h-5 text-text-tertiary transition-transform ${isLandingPagesOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {isLandingPagesOpen && (
+            <div className="px-6 pb-4 border-t border-bg-primary">
+              {isLandingPagesLoading ? (
+                <div className="py-4 text-center">
+                  <Loader2 className="w-6 h-6 animate-spin mx-auto text-text-tertiary" />
+                </div>
+              ) : landingPages.length === 0 ? (
+                <div className="py-4 text-center text-text-tertiary text-body">
+                  사용 가능한 랜딩페이지가 없습니다
+                </div>
+              ) : (
+                <div className="space-y-3 pt-4">
+                  {landingPages.map((page) => (
+                    <div
+                      key={page.id}
+                      className="p-4 bg-bg-primary rounded-button"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-body text-text-primary font-medium">{page.name}</p>
+                        <a
+                          href={`https://blooom.kr${page.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 bg-action-primary/10 text-action-primary rounded-button text-caption font-medium flex items-center gap-1"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          보기
+                        </a>
+                      </div>
+                      {page.description && (
+                        <p className="text-caption text-text-tertiary">{page.description}</p>
+                      )}
+                      <p className="text-caption text-action-primary mt-1">blooom.kr{page.url}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 정산서 메뉴 */}
