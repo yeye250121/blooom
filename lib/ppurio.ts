@@ -3,7 +3,8 @@
  * https://www.ppurio.com
  */
 
-const PPURIO_BASE_URL = 'https://message.ppurio.com'
+// GCP 프록시 서버를 통해 뿌리오 API 호출 (IP 화이트리스트 우회)
+const PPURIO_BASE_URL = process.env.PPURIO_PROXY_URL || 'https://message.ppurio.com'
 const PPURIO_ACCOUNT = process.env.PPURIO_ACCOUNT || ''
 const PPURIO_API_KEY = process.env.PPURIO_API_KEY || ''
 const PPURIO_SENDER_PROFILE = process.env.PPURIO_SENDER_PROFILE || ''
