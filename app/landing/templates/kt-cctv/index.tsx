@@ -169,6 +169,9 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             hideNavButtons={true}
             hideLogo={true}
             logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+            warningTitle={<><span className="text-3xl lg:text-4xl">중국산 저가 양산품을</span><br /><span className="text-2xl lg:text-3xl">주의하세요!</span></>}
+            warningImageUrl="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_alram_v01.png"
+            warningImageAlt="경고 사이렌"
           />
           <PartnersBenefits
             sectionTitle={ktCctvContent.benefits.sectionTitle}

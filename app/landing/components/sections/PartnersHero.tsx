@@ -21,6 +21,12 @@ export interface PartnersHeroProps {
   hideNavButtons?: boolean;
   /** 히어로 영역 로고 숨기기 */
   hideLogo?: boolean;
+  /** 타이틀 위에 표시할 경고/강조 문구 */
+  warningTitle?: React.ReactNode;
+  /** 경고 문구 아래 이미지 URL */
+  warningImageUrl?: string;
+  /** 경고 이미지 alt */
+  warningImageAlt?: string;
 }
 
 const defaultProps: PartnersHeroProps = {
@@ -62,6 +68,9 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
     hideNav,
     hideNavButtons,
     hideLogo,
+    warningTitle,
+    warningImageUrl,
+    warningImageAlt,
   } = { ...defaultProps, ...props };
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -137,7 +146,7 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
 
       {/* Hero Content */}
       <div className="flex-1 flex items-center">
-        <div className="max-w-[1100px] mx-auto px-6 py-24 lg:py-32 text-center w-full">
+        <div className="max-w-[1100px] mx-auto px-6 py-12 lg:py-16 text-center w-full">
           <div className="animate-on-scroll opacity-0 translate-y-12 transition-all duration-700">
             {!hideLogo && (
               <Image
@@ -147,6 +156,30 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
                 height={72}
                 className={`h-[72px] w-auto mb-6 mx-auto ${logoClassName || ''}`}
               />
+            )}
+            {/* 경고 문구 및 이미지 */}
+            {warningTitle && (
+              <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight mb-6">
+                {warningTitle}
+              </h2>
+            )}
+            {warningImageUrl && (
+              <div className="flex flex-col items-center mb-16">
+                {/* 세로선 */}
+                <div className="w-[2px] h-16 lg:h-20 bg-white/40 mb-4" />
+                {/* 사이렌 이미지 + 글로우 효과 */}
+                <div className="relative">
+                  {/* 빨간 글로우 배경 */}
+                  <div className="absolute inset-0 bg-red-800/30 blur-xl rounded-full scale-150" />
+                  <Image
+                    src={warningImageUrl}
+                    alt={warningImageAlt || '경고 이미지'}
+                    width={160}
+                    height={160}
+                    className="relative w-32 h-32 lg:w-40 lg:h-40 object-contain"
+                  />
+                </div>
+              </div>
             )}
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
               {title}
