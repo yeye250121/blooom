@@ -44,7 +44,7 @@ const ktCctvContent = {
     ),
     benefits: [
       {
-        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_idea_icon_v02.png',
+        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_secure_v01.png',
         imageAlt: '보안 아이콘',
         bgColor: '#e8f3ff',
         title: (
@@ -74,7 +74,7 @@ const ktCctvContent = {
         ),
       },
       {
-        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_idea_icon_v02.png',
+        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_engineer_v01.png',
         imageAlt: '설치 아이콘',
         bgColor: '#fff8e8',
         title: (
@@ -87,6 +87,7 @@ const ktCctvContent = {
             전문 기사님이 방문하고,<br />A/S도 무료로 받을 수 있어요.
           </>
         ),
+        imageAlignBottom: true,
       },
     ],
   },

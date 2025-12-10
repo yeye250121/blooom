@@ -6,6 +6,8 @@ export interface BenefitCardItem {
   bgColor: string;
   title: React.ReactNode;
   description: React.ReactNode;
+  /** 이미지 하단 정렬 (기본: center) */
+  imageAlignBottom?: boolean;
 }
 
 export interface PartnersBenefitsProps {
@@ -90,15 +92,15 @@ export default function PartnersBenefits(props: PartnersBenefitsProps = {}) {
               className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center justify-center gap-8 lg:gap-12 animate-on-scroll opacity-0 translate-y-12 transition-all duration-700`}
             >
               <div
-                className="w-[280px] lg:w-[290px] h-[230px] lg:h-[290px] rounded-[24px] flex items-center justify-center flex-shrink-0"
+                className={`w-[280px] lg:w-[290px] h-[230px] lg:h-[290px] rounded-[24px] flex ${benefit.imageAlignBottom ? 'items-end' : 'items-center'} justify-center flex-shrink-0`}
                 style={{ backgroundColor: benefit.bgColor }}
               >
                 <Image
                   src={benefit.imageSrc}
                   alt={benefit.imageAlt}
-                  width={240}
-                  height={240}
-                  className="w-48 h-48 lg:w-56 lg:h-56 object-contain"
+                  width={280}
+                  height={280}
+                  className={`w-52 h-52 lg:w-64 lg:h-64 ${benefit.imageAlignBottom ? 'object-contain object-bottom' : 'object-contain'}`}
                 />
               </div>
               <div className="text-center lg:text-left lg:self-start lg:w-[300px]">
