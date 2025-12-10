@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'hvwgs4k77hcs8ntu.public.blob.vercel-storage.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'ktollehcctv.co',
+      },
     ],
   },
 };

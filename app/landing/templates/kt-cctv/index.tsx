@@ -59,7 +59,7 @@ const ktCctvContent = {
         ),
       },
       {
-        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_money_icon_v01.png',
+        imageSrc: 'https://ktollehcctv.co/img/checking-devices.png',
         imageAlt: '녹화 아이콘',
         bgColor: '#f0faf6',
         title: (
