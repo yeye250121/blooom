@@ -77,16 +77,12 @@ function generateRefKey(): string {
  * 토큰 유효기간: 24시간
  */
 async function getAccessToken(): Promise<string> {
-  console.log('[Ppurio] getAccessToken called, PPURIO_BASE_URL:', PPURIO_BASE_URL)
-
   // 캐싱된 토큰이 유효하면 재사용
   if (cachedToken && tokenExpiry > Date.now()) {
-    console.log('[Ppurio] Using cached token')
     return cachedToken
   }
 
   const basicAuth = Buffer.from(`${PPURIO_ACCOUNT}:${PPURIO_API_KEY}`).toString('base64')
-  console.log('[Ppurio] Fetching new token from:', `${PPURIO_BASE_URL}/v1/token`)
 
   const response = await fetch(`${PPURIO_BASE_URL}/v1/token`, {
     method: 'POST',
