@@ -11,6 +11,10 @@ export interface BenefitCardItem {
 export interface PartnersBenefitsProps {
   sectionTitle?: React.ReactNode;
   benefits?: BenefitCardItem[];
+  /** 섹션 타이틀 위에 표시할 로고 URL */
+  logoUrl?: string;
+  /** 로고 alt 텍스트 */
+  logoAlt?: string;
 }
 
 const defaultBenefits: BenefitCardItem[] = [
@@ -58,12 +62,21 @@ const defaultProps: PartnersBenefitsProps = {
 };
 
 export default function PartnersBenefits(props: PartnersBenefitsProps = {}) {
-  const { sectionTitle, benefits } = { ...defaultProps, ...props };
+  const { sectionTitle, benefits, logoUrl, logoAlt } = { ...defaultProps, ...props };
 
   return (
     <section className="py-16 lg:py-20 bg-white">
       <div className="max-w-[1100px] mx-auto px-6">
         <div className="text-center mb-16 lg:mb-20 animate-on-scroll opacity-0 translate-y-12 transition-all duration-700">
+          {logoUrl && (
+            <Image
+              src={logoUrl}
+              alt={logoAlt || 'Logo'}
+              width={160}
+              height={48}
+              className="h-12 w-auto mx-auto mb-6"
+            />
+          )}
           <h2 className="text-3xl lg:text-4xl font-bold text-[#333d4b]">
             {sectionTitle}
           </h2>

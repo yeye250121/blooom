@@ -22,12 +22,100 @@ interface KtCctvLandingProps {
   subtype: string;
 }
 
+// KT CCTV 랜딩 subtype 2 전용 콘텐츠
+const ktCctvContent = {
+  hero: {
+    title: (
+      <>
+        해킹 걱정 없이<br />안전하게 지켜요
+      </>
+    ),
+    subtitle: 'KT 텔레캅이 든든하게 막아드릴게요.',
+    ctaText: '무료로 상담받기',
+    ctaHref: '#consultation-form',
+    // 네비게이션 숨김 (단일 랜딩 페이지용)
+    hideNav: true,
+  },
+  benefits: {
+    sectionTitle: (
+      <>
+        KT CCTV만의<br />특별한 혜택
+      </>
+    ),
+    benefits: [
+      {
+        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_idea_icon_v02.png',
+        imageAlt: '보안 아이콘',
+        bgColor: '#e8f3ff',
+        title: (
+          <>
+            해킹 걱정,<br />이제 그만
+          </>
+        ),
+        description: (
+          <>
+            KT 전용망을 써서<br />밖에서는 절대 볼 수 없어요.
+          </>
+        ),
+      },
+      {
+        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_money_icon_v01.png',
+        imageAlt: '녹화 아이콘',
+        bgColor: '#f0faf6',
+        title: (
+          <>
+            24시간 내내<br />놓치지 않아요
+          </>
+        ),
+        description: (
+          <>
+            영상이 끊기거나 사라질 걱정 없이<br />모두 기록해요.
+          </>
+        ),
+      },
+      {
+        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_idea_icon_v02.png',
+        imageAlt: '설치 아이콘',
+        bgColor: '#fff8e8',
+        title: (
+          <>
+            설치부터 수리까지<br />알아서 해드려요
+          </>
+        ),
+        description: (
+          <>
+            전문 기사님이 방문하고,<br />A/S도 무료로 받을 수 있어요.
+          </>
+        ),
+      },
+    ],
+  },
+  support: {
+    title: (
+      <>
+        3년만 내면<br />평생 무료예요
+      </>
+    ),
+    description: '3년 뒤에는 월 이용료가 0원이 돼요.',
+  },
+  cta: {
+    title: (
+      <>
+        우리 집에 딱 맞는 보안,<br />지금 알아볼까요?
+      </>
+    ),
+    description: '상담사에게 궁금한 점을 편하게 물어보세요.',
+    ctaText: '30초 만에 상담 신청하기',
+    ctaHref: '#consultation-form',
+  },
+};
+
 /**
  * KT CCTV 랜딩페이지 템플릿
  *
  * subtype에 따라 다른 버전 표시 가능:
  * - 1: 기본형 (설치예약 + 상담)
- * - 2: 파트너 스타일형 (블룸 파트너스 디자인)
+ * - 2: KT CCTV 홈캠 전환 유도 랜딩
  * - event: 이벤트/프로모션용
  */
 export default function KtCctvLanding({ marketerCode, template, subtype }: KtCctvLandingProps) {
@@ -57,7 +145,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
     return () => observerRef.current?.disconnect();
   }, [subtype]);
 
-  // subtype 2: 파트너스 스타일 랜딩
+  // subtype 2: KT CCTV 홈캠 전환 유도 랜딩
   if (subtype === '2') {
     return (
       <>
@@ -73,10 +161,39 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         />
 
         <div className="min-h-screen bg-white">
-          <PartnersHero />
-          <PartnersBenefits />
-          <PartnersSupport />
-          <PartnersCTA />
+          <PartnersHero
+            title={ktCctvContent.hero.title}
+            subtitle={ktCctvContent.hero.subtitle}
+            ctaText={ktCctvContent.hero.ctaText}
+            ctaHref={ktCctvContent.hero.ctaHref}
+            hideNavButtons={true}
+            hideLogo={true}
+            logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+          />
+          <PartnersBenefits
+            sectionTitle={ktCctvContent.benefits.sectionTitle}
+            benefits={ktCctvContent.benefits.benefits}
+            logoUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+            logoAlt="KT 텔레캅"
+          />
+          <PartnersSupport
+            title={ktCctvContent.support.title}
+            description={ktCctvContent.support.description}
+          />
+          <PartnersCTA
+            title={ktCctvContent.cta.title}
+            description={ktCctvContent.cta.description}
+            ctaText={ktCctvContent.cta.ctaText}
+            ctaHref={ktCctvContent.cta.ctaHref}
+          />
+          {/* 상담 신청 폼 */}
+          <div id="consultation-form">
+            <ReservationForm
+              marketerCode={marketerCode}
+              landingTemplate={template}
+              landingSubtype={subtype}
+            />
+          </div>
           <Footer />
         </div>
 
