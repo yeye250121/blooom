@@ -72,6 +72,7 @@ const ktCctvContent = {
             영상이 끊기거나 사라질 걱정 없이<br />모두 기록해요.
           </>
         ),
+        imageClassName: 'w-60 h-60 lg:w-72 lg:h-72',
       },
       {
         imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_engineer_v01.png',

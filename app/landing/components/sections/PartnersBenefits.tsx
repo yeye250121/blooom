@@ -8,6 +8,8 @@ export interface BenefitCardItem {
   description: React.ReactNode;
   /** 이미지 하단 정렬 (기본: center) */
   imageAlignBottom?: boolean;
+  /** 이미지 크기 클래스 (기본: 'w-52 h-52 lg:w-64 lg:h-64') */
+  imageClassName?: string;
 }
 
 export interface PartnersBenefitsProps {
@@ -100,7 +102,7 @@ export default function PartnersBenefits(props: PartnersBenefitsProps = {}) {
                   alt={benefit.imageAlt}
                   width={280}
                   height={280}
-                  className={`w-52 h-52 lg:w-64 lg:h-64 ${benefit.imageAlignBottom ? 'object-contain object-bottom' : 'object-contain'}`}
+                  className={`${benefit.imageClassName || 'w-52 h-52 lg:w-64 lg:h-64'} ${benefit.imageAlignBottom ? 'object-contain object-bottom' : 'object-contain'}`}
                 />
               </div>
               <div className="text-center lg:text-left lg:self-start lg:w-[300px]">
