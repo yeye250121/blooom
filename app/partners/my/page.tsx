@@ -70,10 +70,9 @@ export default function MyPage() {
     }
   }, [])
 
-  const handleCopyLink = async () => {
+  const handleCopyCode = async () => {
     if (!user) return
-    const link = `blooom.kr/${user.uniqueCode}`
-    await navigator.clipboard.writeText(link)
+    await navigator.clipboard.writeText(user.uniqueCode)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -218,11 +217,11 @@ export default function MyPage() {
 
             <div className="mt-6 p-4 bg-bg-primary rounded-button flex items-center justify-between">
               <div>
-                <p className="text-caption text-text-tertiary mb-1">내 랜딩페이지 링크</p>
-                <p className="text-body text-text-primary">blooom.kr/{user?.uniqueCode}</p>
+                <p className="text-caption text-text-tertiary mb-1">내 파트너 코드</p>
+                <p className="text-body text-text-primary font-medium">{user?.uniqueCode}</p>
               </div>
               <button
-                onClick={handleCopyLink}
+                onClick={handleCopyCode}
                 className={`px-4 py-2 rounded-button text-body font-medium transition-colors flex items-center gap-2 ${
                   copied
                     ? 'bg-status-done/10 text-status-done'
@@ -470,19 +469,21 @@ export default function MyPage() {
           <h1 className="text-heading text-text-primary">
             {user?.nickname || '파트너'}
           </h1>
-          <p className="text-body text-text-secondary mt-1">{user?.uniqueCode}</p>
 
-          <button
-            onClick={handleCopyLink}
-            className="flex items-center gap-2 mt-4 text-body text-text-secondary"
-          >
-            <span>blooom.kr/{user?.uniqueCode}</span>
-            {copied ? (
-              <Check className="w-5 h-5 text-status-done" />
-            ) : (
-              <Copy className="w-5 h-5" />
-            )}
-          </button>
+          <div className="mt-4 flex items-center gap-2">
+            <span className="text-caption text-text-tertiary">파트너 코드</span>
+            <button
+              onClick={handleCopyCode}
+              className="flex items-center gap-1.5 text-body text-action-primary font-medium"
+            >
+              <span>{user?.uniqueCode}</span>
+              {copied ? (
+                <Check className="w-4 h-4 text-status-done" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* 내 랜딩페이지 */}
