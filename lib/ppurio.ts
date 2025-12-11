@@ -180,9 +180,13 @@ export async function sendKakaoAlimtalk(
     body: JSON.stringify(requestBody),
   })
 
-  const data: KakaoSendResponse = await response.json()
+  const data = await response.json()
 
-  if (data.code !== 1000) {
+  console.log('[Ppurio] Response:', data)
+
+  // code가 문자열 또는 숫자로 올 수 있음
+  const responseCode = String(data.code)
+  if (responseCode !== '1000') {
     console.error('[Ppurio] Send error:', data)
     throw new Error(`알림톡 발송 실패: ${data.description}`)
   }
