@@ -121,7 +121,21 @@ export async function sendKakaoAlimtalk(
     }
   }
 ): Promise<KakaoSendResponse> {
+  // 환경변수 디버깅 로그
+  console.log('[Ppurio] Config check:', {
+    baseUrl: PPURIO_BASE_URL,
+    hasAccount: !!PPURIO_ACCOUNT,
+    hasApiKey: !!PPURIO_API_KEY,
+    hasSenderProfile: !!PPURIO_SENDER_PROFILE,
+  })
+
   if (!PPURIO_ACCOUNT || !PPURIO_API_KEY || !PPURIO_SENDER_PROFILE) {
+    console.error('[Ppurio] Missing env vars:', {
+      account: PPURIO_ACCOUNT ? 'set' : 'MISSING',
+      apiKey: PPURIO_API_KEY ? 'set' : 'MISSING',
+      senderProfile: PPURIO_SENDER_PROFILE ? 'set' : 'MISSING',
+      proxyUrl: PPURIO_BASE_URL,
+    })
     throw new Error('뿌리오 환경변수가 설정되지 않았습니다.')
   }
 
