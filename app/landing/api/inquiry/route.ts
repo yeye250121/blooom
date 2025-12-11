@@ -92,24 +92,27 @@ export async function POST(request: NextRequest) {
         console.error('⚠️ Slack 알림 전송 중 오류:', error);
       });
 
-      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우, 비동기)
+      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우)
       const marketerCode = data.marketerCode
       if (marketerCode) {
-        (async () => {
-          try {
-            const { data: partner } = await supabaseAdmin
-              .from('users')
-              .select('phone')
-              .eq('unique_code', marketerCode.toUpperCase())
-              .single()
+        try {
+          console.log('[Inquiry] 파트너 알림톡 발송 시작:', marketerCode)
+          const { data: partner } = await supabaseAdmin
+            .from('users')
+            .select('phone')
+            .eq('unique_code', marketerCode.toUpperCase())
+            .single()
 
-            if (partner?.phone) {
-              await sendPartnerNewInquiryAlimtalk(partner.phone)
-            }
-          } catch (error) {
-            console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+          if (partner?.phone) {
+            console.log('[Inquiry] 파트너 전화번호 조회 성공:', partner.phone.slice(0, 7) + '****')
+            await sendPartnerNewInquiryAlimtalk(partner.phone)
+            console.log('[Inquiry] 알림톡 발송 완료')
+          } else {
+            console.log('[Inquiry] 파트너 전화번호 없음')
           }
-        })()
+        } catch (error) {
+          console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+        }
       }
 
       return NextResponse.json(
@@ -167,23 +170,26 @@ export async function POST(request: NextRequest) {
         console.error('⚠️ Slack 알림 전송 중 오류 (메인 프로세스는 정상):', error);
       });
 
-      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우, 비동기)
+      // 파트너에게 알림톡 발송 (마케터 코드가 있는 경우)
       if (validationResult.data.marketerCode) {
-        (async () => {
-          try {
-            const { data: partner } = await supabaseAdmin
-              .from('users')
-              .select('phone')
-              .eq('unique_code', validationResult.data.marketerCode!.toUpperCase())
-              .single()
+        try {
+          console.log('[Inquiry] 파트너 알림톡 발송 시작:', validationResult.data.marketerCode)
+          const { data: partner } = await supabaseAdmin
+            .from('users')
+            .select('phone')
+            .eq('unique_code', validationResult.data.marketerCode!.toUpperCase())
+            .single()
 
-            if (partner?.phone) {
-              await sendPartnerNewInquiryAlimtalk(partner.phone)
-            }
-          } catch (error) {
-            console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+          if (partner?.phone) {
+            console.log('[Inquiry] 파트너 전화번호 조회 성공:', partner.phone.slice(0, 7) + '****')
+            await sendPartnerNewInquiryAlimtalk(partner.phone)
+            console.log('[Inquiry] 알림톡 발송 완료')
+          } else {
+            console.log('[Inquiry] 파트너 전화번호 없음')
           }
-        })()
+        } catch (error) {
+          console.error('⚠️ 파트너 알림톡 발송 실패:', error)
+        }
       }
 
       return NextResponse.json(
