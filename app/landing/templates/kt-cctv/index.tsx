@@ -9,6 +9,7 @@ import {
   PartnersSupport,
   PartnersCTA,
 } from '@/app/landing/components';
+import AnimatedCounter from '@/app/landing/components/AnimatedCounter';
 import { config, KtCctvSubtype } from './config';
 
 interface KtCctvLandingProps {
@@ -21,14 +22,20 @@ interface KtCctvLandingProps {
 const getContactUrl = (marketerCode: string, template: string, subtype: string) =>
   `/${marketerCode}/${template}/contact?from=${subtype}`;
 
+// 애니메이션 히어로 타이틀 컴포넌트
+const AnimatedHeroTitle = () => (
+  <div className="flex flex-col items-center">
+    <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
+      <AnimatedCounter end={1000000} duration={2000} suffix="+" />
+    </div>
+    <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
+  </div>
+);
+
 // KT CCTV 랜딩 subtype 1 전용 콘텐츠 (가성비/신뢰 컨셉)
 const ktCctvContent1 = {
   hero: {
-    title: (
-      <>
-        전국 100만+ 명의 선택
-      </>
-    ),
+    title: <AnimatedHeroTitle />,
     subtitle: '대한민국 1등 보안기업',
     ctaText: '프로모션 받기',
   },
