@@ -23,8 +23,8 @@ const isValidPhone = (phone: string) => {
   return pattern.test(phone.replace(/\s/g, ''));
 };
 
-// 블룸 로고 URL
-const LOGO_URL = 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_logo';
+// KT 텔레캅 로고 URL
+const LOGO_URL = 'https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg';
 
 export default function ReservationEntryPage() {
   const router = useRouter();
@@ -76,7 +76,7 @@ export default function ReservationEntryPage() {
           <div className="hidden lg:block lg:sticky lg:top-20">
             <img
               src={LOGO_URL}
-              alt="Blooom"
+              alt="KT 텔레캅"
               className="h-10 mb-8"
             />
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
