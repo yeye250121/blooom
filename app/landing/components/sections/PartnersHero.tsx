@@ -27,6 +27,8 @@ export interface PartnersHeroProps {
   warningImageUrl?: string;
   /** 경고 이미지 alt */
   warningImageAlt?: string;
+  /** 헤더 로고 클릭 비활성화 */
+  disableLogoLink?: boolean;
 }
 
 const defaultProps: PartnersHeroProps = {
@@ -71,6 +73,7 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
     warningTitle,
     warningImageUrl,
     warningImageAlt,
+    disableLogoLink,
   } = { ...defaultProps, ...props };
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -81,7 +84,7 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
       {!hideNav && (
         <nav className="relative">
           <div className="h-16 max-w-[1100px] mx-auto px-6 flex items-center justify-between">
-            <Link href="/">
+            {disableLogoLink ? (
               <Image
                 src={logoWithTextUrl!}
                 alt="Blooom"
@@ -89,7 +92,17 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
                 height={28}
                 className="h-5 w-auto brightness-0 invert"
               />
-            </Link>
+            ) : (
+              <Link href="/">
+                <Image
+                  src={logoWithTextUrl!}
+                  alt="Blooom"
+                  width={100}
+                  height={28}
+                  className="h-5 w-auto brightness-0 invert"
+                />
+              </Link>
+            )}
             {/* Desktop Menu */}
             {!hideNavButtons && (
               <div className="hidden md:flex items-center gap-4">

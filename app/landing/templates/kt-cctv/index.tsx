@@ -140,12 +140,12 @@ const ktCctvContent1 = {
     },
   ],
   cta: {
-    title: (
+    title: '이번달이 지나면 혜택이 사라져요',
+    description: (
       <>
-        우리 집에 딱 맞는 보안,<br />지금 알아볼까요?
+        지금 신청해야 가장 저렴해요<br />30초만에 내 예상 견적을 확인해봐요
       </>
     ),
-    description: '상담사에게 궁금한 점을 편하게 물어보세요.',
     ctaText: '지금 프로모션 받기',
   },
 };
@@ -353,6 +353,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             ctaHref={contactUrl}
             hideNavButtons={true}
             hideLogo={true}
+            disableLogoLink={true}
             logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
             warningTitle={<><span className="text-3xl lg:text-4xl">중국산 저가 양산품을</span><br /><span className="text-2xl lg:text-3xl">주의하세요!</span></>}
             warningImageUrl="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_alram_v01.png"
@@ -417,6 +418,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           ctaHref={contactUrl}
           hideNavButtons={true}
           hideLogo={true}
+          disableLogoLink={true}
           logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
         />
         {/* 가격 비교 섹션 (타이틀 + 비교 테이블 + 폰 이미지) */}
