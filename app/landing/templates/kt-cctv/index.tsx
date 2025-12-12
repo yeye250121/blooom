@@ -210,7 +210,7 @@ const ComparisonSection = () => (
       {/* 타이틀 */}
       <div className="text-center animate-on-scroll opacity-0 translate-y-12 transition-all duration-700 mb-12 lg:mb-16">
         <h3 className="text-3xl lg:text-4xl font-bold text-[#333d4b] leading-tight mb-4">
-          다른 렌탈은<br />평생 내요
+          다른 렌탈은 평생 내요
         </h3>
         <p className="text-lg lg:text-xl text-[#4e5968]">
           KT는 3년만 내면 끝. 그 뒤로는 월 0원이에요.
