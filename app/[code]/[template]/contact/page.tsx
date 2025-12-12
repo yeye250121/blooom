@@ -264,30 +264,17 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 공통 헤더 - KT 텔레캅 로고 */}
-      <header className="sticky top-0 z-10 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-          <Link
-            href={`/${marketerCode}/${template}/${fromSubtype}`}
-            className="flex items-center gap-2 lg:gap-1 text-gray-500 hover:text-gray-700"
-          >
-            <ChevronLeftIcon className="w-5 h-5" />
-            <span className="hidden lg:inline text-sm">돌아가기</span>
-          </Link>
-          <img
-            src={ktLogoUrl}
-            alt="KT 텔레캅"
-            className="h-8 lg:h-10"
-          />
-          <div className="w-10 lg:w-16" /> {/* 좌우 균형용 빈 공간 */}
-        </div>
-      </header>
-
       {/* 메인 컨텐츠 - 데스크탑 2컬럼, 모바일 1컬럼 */}
       <main className="max-w-6xl mx-auto px-5 py-8 lg:py-20">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
           {/* 좌측: 타이틀 영역 (데스크탑에서만 표시) */}
-          <div className="hidden lg:block lg:sticky lg:top-24">
+          <div className="hidden lg:block lg:sticky lg:top-20">
+            {/* 로고 - 데스크탑 */}
+            <img
+              src={ktLogoUrl}
+              alt="KT 텔레캅"
+              className="h-10 mb-8"
+            />
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
               전화번호를 남겨주시면<br />
               연락드릴게요
@@ -299,6 +286,13 @@ export default function ContactPage() {
 
           {/* 우측: 폼 영역 */}
           <div className="lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-sm lg:border lg:border-gray-100">
+            {/* 로고 - 모바일 */}
+            <img
+              src={ktLogoUrl}
+              alt="KT 텔레캅"
+              className="h-8 mb-6 lg:hidden"
+            />
+
             {/* 에러 메시지 */}
             {error && (
               <div className="mb-6 bg-red-50 text-red-600 rounded-xl p-4 text-sm">
