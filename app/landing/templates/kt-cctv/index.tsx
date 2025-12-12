@@ -232,11 +232,11 @@ const ComparisonSection = () => (
               </div>
               <div className="border-b border-gray-300 py-4 px-4 text-center">
                 <p className="text-sm text-gray-500 mb-1">5년 사용 시</p>
-                <p className="text-lg font-bold text-gray-600">240만원</p>
+                <p className="text-lg font-bold text-red-500">240만원</p>
               </div>
               <div className="py-4 px-4 text-center">
                 <p className="text-sm text-gray-500 mb-1">10년 사용 시</p>
-                <p className="text-lg font-bold text-gray-600">480만원</p>
+                <p className="text-lg font-bold text-red-500">480만원</p>
               </div>
             </div>
           </div>
