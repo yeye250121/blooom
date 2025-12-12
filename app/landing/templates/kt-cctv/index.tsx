@@ -246,10 +246,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
   const subtypeConfig = config.subtypes[subtype as KtCctvSubtype] || config.subtypes['1'];
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Intersection Observer for fade-in animations (subtype 2용)
+  // Intersection Observer for fade-in animations
   useEffect(() => {
-    if (subtype !== '2') return;
-
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -266,7 +264,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
     animatedElements.forEach((el) => observerRef.current?.observe(el));
 
     return () => observerRef.current?.disconnect();
-  }, [subtype]);
+  }, []);
 
   // Contact 페이지 URL
   const contactUrl = getContactUrl(marketerCode, template, subtype);
