@@ -502,7 +502,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         }
 
         .animate-marquee {
-          animation: marquee 16s linear infinite;
+          animation: marquee 10s linear infinite;
         }
 
         .animate-marquee:hover {
