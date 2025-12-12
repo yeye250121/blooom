@@ -227,15 +227,15 @@ const ComparisonSection = () => (
             </div>
             <div className="bg-gray-200 rounded-b-lg">
               <div className="border-b border-gray-300 py-4 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">3년</p>
+                <p className="text-sm text-gray-500 mb-1">3년 사용 시</p>
                 <p className="text-lg font-bold text-gray-600">144만원</p>
               </div>
               <div className="border-b border-gray-300 py-4 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">5년</p>
+                <p className="text-sm text-gray-500 mb-1">5년 사용 시</p>
                 <p className="text-lg font-bold text-gray-600">240만원</p>
               </div>
               <div className="py-4 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">10년</p>
+                <p className="text-sm text-gray-500 mb-1">10년 사용 시</p>
                 <p className="text-lg font-bold text-gray-600">480만원</p>
               </div>
             </div>
@@ -247,21 +247,21 @@ const ComparisonSection = () => (
               <img
                 src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
                 alt="KT 텔레캅"
-                className="h-8 mx-auto"
+                className="h-6 mx-auto"
               />
             </div>
             <div className="bg-white rounded-b-xl">
               <div className="border-b border-gray-100 py-5 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">3년</p>
+                <p className="text-sm text-gray-500 mb-1">3년 사용 시</p>
                 <p className="text-xl font-bold text-gray-900">144만원</p>
               </div>
               <div className="border-b border-gray-100 py-5 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">5년</p>
+                <p className="text-sm text-gray-500 mb-1">5년 사용 시</p>
                 <p className="text-xl font-bold text-blue-600">144만원</p>
                 <p className="text-xs text-blue-500 font-medium">+0원</p>
               </div>
               <div className="py-5 px-4 text-center">
-                <p className="text-sm text-gray-500 mb-1">10년</p>
+                <p className="text-sm text-gray-500 mb-1">10년 사용 시</p>
                 <p className="text-xl font-bold text-blue-600">144만원</p>
                 <p className="text-xs text-blue-500 font-medium">+0원</p>
               </div>
@@ -270,8 +270,8 @@ const ComparisonSection = () => (
         </div>
 
         {/* 하단 안내 */}
-        <p className="text-center text-sm text-gray-400 mt-6">
-          * 월 4만원 기준 예상 금액
+        <p className="text-center text-sm text-gray-500 mt-8">
+          월 4만원 기준, 10년 사용 시 <span className="font-bold text-blue-600">336만원</span> 차이!
         </p>
       </div>
     </div>
