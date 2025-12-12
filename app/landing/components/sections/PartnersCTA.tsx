@@ -24,10 +24,10 @@ export default function PartnersCTA(props: PartnersCTAProps = {}) {
   const { title, description, ctaText, ctaHref, imageSrc, imageAlt } = { ...defaultProps, ...props };
 
   return (
-    <section className="relative bg-[#191f28] pt-32 lg:pt-40 pb-24 lg:pb-32 overflow-hidden">
+    <section className="relative bg-[#191f28] pt-32 lg:pt-40 pb-48 lg:pb-32 overflow-hidden">
       {/* 배경 이미지 */}
       {imageSrc && (
-        <div className="absolute -bottom-4 -right-8 lg:right-10 opacity-20 lg:opacity-30">
+        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-10">
           <img
             src={imageSrc}
             alt={imageAlt || ''}
