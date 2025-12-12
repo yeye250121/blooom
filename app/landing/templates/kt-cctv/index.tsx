@@ -35,7 +35,7 @@ const ktCctvContent1 = {
   benefits: {
     sectionTitle: (
       <>
-        KT CCTV만의<br />특별한 혜택
+        왜 KT텔레캅은<br />다를까요?
       </>
     ),
     benefits: [
