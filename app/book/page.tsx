@@ -77,7 +77,7 @@ export default function ReservationEntryPage() {
             <img
               src={LOGO_URL}
               alt="KT 텔레캅"
-              className="h-10 mb-8"
+              className="h-10 mb-8 ml-1"
             />
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
               예약 정보를<br />확인해주세요
