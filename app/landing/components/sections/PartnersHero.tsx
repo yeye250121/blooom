@@ -181,10 +181,10 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
                 </div>
               </div>
             )}
-            <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-8">
               {title}
             </h1>
-            <p className="text-white/70 text-lg lg:text-xl max-w-2xl mx-auto mb-10">
+            <p className="text-white/70 text-lg lg:text-xl max-w-2xl mx-auto mb-12">
               {subtitle}
             </p>
             <Link
