@@ -23,7 +23,17 @@ const getContactUrl = (marketerCode: string, template: string, subtype: string) 
   `/${marketerCode}/${template}/contact?from=${subtype}`;
 
 // 애니메이션 히어로 타이틀 컴포넌트
-const AnimatedHeroTitle = () => {
+const AnimatedHeroTitle = () => (
+  <div className="flex flex-col items-center">
+    <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
+      <AnimatedCounter end={1000000} duration={2500} suffix="+" />
+    </div>
+    <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
+  </div>
+);
+
+// 애니메이션 서브타이틀 컴포넌트 (로고 + 텍스트)
+const AnimatedSubtitle = () => {
   const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
@@ -36,19 +46,15 @@ const AnimatedHeroTitle = () => {
 
   return (
     <div className="flex flex-col items-center">
-      {/* KT 로고 - 카운터 완료 후 플로트 인 (아래에서 위로) */}
-      <div className={`mb-8 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      {/* KT 로고 - 카운터 완료 후 플로트 인 */}
+      <div className={`mb-3 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <img
           src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
           alt="KT 텔레캅"
-          className="h-14 lg:h-16 brightness-0 invert"
+          className="h-12 lg:h-14 brightness-0 invert"
         />
       </div>
-      {/* 숫자 + 명의 선택 */}
-      <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
-        <AnimatedCounter end={1000000} duration={2500} suffix="+" />
-      </div>
-      <p className="text-xl lg:text-2xl text-white/80 mt-2 mb-8">명의 선택</p>
+      <span>대한민국 1등 보안기업, KT 텔레캅</span>
     </div>
   );
 };
@@ -57,7 +63,7 @@ const AnimatedHeroTitle = () => {
 const ktCctvContent1 = {
   hero: {
     title: <AnimatedHeroTitle />,
-    subtitle: '대한민국 1등 보안기업, KT 텔레캅',
+    subtitle: <AnimatedSubtitle />,
     ctaText: '프로모션 받기',
   },
   benefits: {
