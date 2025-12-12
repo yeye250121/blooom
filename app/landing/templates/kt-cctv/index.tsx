@@ -270,8 +270,8 @@ const ComparisonSection = () => (
         </div>
 
         {/* 하단 안내 */}
-        <p className="text-center text-base lg:text-lg text-gray-500 mt-8">
-          월 4만원 기준, 10년 사용 시 <span className="font-bold text-blue-600">336만원</span> 차이!
+        <p className="text-center text-xl lg:text-2xl text-gray-600 mt-8 font-medium">
+          월 4만원 기준, 10년 사용 시<br /><span className="font-bold text-blue-600">336만원</span> 더 저렴해요
         </p>
       </div>
     </div>
