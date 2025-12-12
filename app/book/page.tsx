@@ -72,8 +72,8 @@ export default function ReservationEntryPage() {
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-6xl mx-auto px-5 py-8 lg:py-20">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
-          {/* 좌측: 타이틀 영역 (데스크탑에서만 표시) */}
-          <div className="hidden lg:block lg:sticky lg:top-20">
+          {/* 좌측: 타이틀 영역 */}
+          <div className="mb-8 lg:mb-0 lg:sticky lg:top-20">
             <img
               src={LOGO_URL}
               alt="KT 텔레캅"
