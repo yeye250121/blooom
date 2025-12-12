@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 import {
   Footer,
@@ -279,6 +279,36 @@ const ComparisonTable = () => (
   </section>
 );
 
+// 리뷰 아이템 컴포넌트 (아코디언)
+const ReviewItem = ({ review }: { review: { id: string; content: string } }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const previewLength = 30;
+  const preview = review.content.length > previewLength
+    ? review.content.slice(0, previewLength) + '...'
+    : review.content;
+
+  return (
+    <div
+      className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <div className="p-5 flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-blue-600 mb-1">{review.id}</p>
+          <p className={`text-gray-700 ${isOpen ? '' : 'truncate'}`}>
+            {isOpen ? review.content : preview}
+          </p>
+        </div>
+        <div className={`ml-4 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // 리뷰 섹션 컴포넌트
 const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[] }) => (
   <section className="relative py-16 lg:py-24 px-5 bg-gray-50 overflow-hidden">
@@ -286,15 +316,9 @@ const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[
       <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 text-center mb-4">
         먼저 사용한 고객님들의<br />솔직한 후기예요
       </h2>
-      <div className="mt-10 space-y-4">
+      <div className="mt-10 space-y-3">
         {reviews.map((review, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-2xl p-5 shadow-sm"
-          >
-            <p className="text-sm font-medium text-blue-600 mb-2">{review.id}</p>
-            <p className="text-gray-700 leading-relaxed">{review.content}</p>
-          </div>
+          <ReviewItem key={index} review={review} />
         ))}
       </div>
     </div>
