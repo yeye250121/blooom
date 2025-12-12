@@ -211,6 +211,74 @@ const ktCctvContent2 = {
   },
 };
 
+// 비교 테이블 컴포넌트
+const ComparisonTable = () => (
+  <section className="py-12 lg:py-16 px-5 bg-gray-100">
+    <div className="max-w-2xl mx-auto">
+      {/* 테이블 */}
+      <div className="flex">
+        {/* 왼쪽: 렌탈업체 */}
+        <div className="flex-1">
+          <div className="bg-gray-400 text-white text-center py-4 font-bold text-lg">
+            렌탈업체
+          </div>
+          <div className="bg-gray-200">
+            <div className="border-b border-gray-300 py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">3년</p>
+              <p className="text-xl font-bold text-gray-700">144만원</p>
+            </div>
+            <div className="border-b border-gray-300 py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">5년</p>
+              <p className="text-xl font-bold text-gray-700">240만원</p>
+            </div>
+            <div className="py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">10년</p>
+              <p className="text-xl font-bold text-gray-700">480만원</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 가운데: VS */}
+        <div className="w-16 flex items-center justify-center bg-white">
+          <span className="text-gray-400 font-bold text-lg">VS</span>
+        </div>
+
+        {/* 오른쪽: KT 텔레캅 */}
+        <div className="flex-1">
+          <div className="bg-gray-200 text-center py-4">
+            <img
+              src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+              alt="KT 텔레캅"
+              className="h-7 mx-auto"
+            />
+          </div>
+          <div className="bg-gray-100">
+            <div className="border-b border-gray-300 py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">3년</p>
+              <p className="text-xl font-bold text-gray-900">144만원</p>
+            </div>
+            <div className="border-b border-gray-300 py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">5년</p>
+              <p className="text-xl font-bold text-blue-600">144만원</p>
+              <p className="text-xs text-blue-500">+0원</p>
+            </div>
+            <div className="py-4 px-4">
+              <p className="text-sm text-gray-500 mb-1">10년</p>
+              <p className="text-xl font-bold text-blue-600">144만원</p>
+              <p className="text-xs text-blue-500">+0원</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 하단 안내 */}
+      <p className="text-center text-sm text-gray-400 mt-6">
+        * 월 4만원 기준 예상 금액
+      </p>
+    </div>
+  </section>
+);
+
 // 리뷰 섹션 컴포넌트
 const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[] }) => (
   <section className="py-16 lg:py-24 px-5 bg-gray-50">
@@ -366,6 +434,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           title={ktCctvContent1.support.title}
           description={ktCctvContent1.support.description}
         />
+        {/* 비교 테이블 */}
+        <ComparisonTable />
         {/* 품질 혜택 */}
         <PartnersBenefits
           sectionTitle={ktCctvContent1.benefits.sectionTitle}
