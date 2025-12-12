@@ -196,18 +196,6 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             ctaText={ktCctvContent.cta.ctaText}
             ctaHref={contactUrl}
           />
-          {/* 상담 신청 CTA */}
-          <section className="py-16 bg-gray-50">
-            <div className="max-w-lg mx-auto px-5 text-center">
-              <p className="text-gray-600 mb-6">전문 상담사가 친절하게 안내해 드릴게요</p>
-              <Link
-                href={contactUrl}
-                className="inline-block w-full max-w-xs bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-4 px-8 rounded-xl transition-colors shadow-lg shadow-blue-500/25"
-              >
-                무료 상담 신청하기
-              </Link>
-            </div>
-          </section>
           <Footer />
         </div>
 
