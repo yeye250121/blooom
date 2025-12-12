@@ -219,7 +219,7 @@ const ComparisonSection = () => (
 
       {/* 비교 테이블 */}
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           {/* 왼쪽: 렌탈업체 (작게) */}
           <div className="flex-1 scale-95">
             <div className="bg-gray-400 text-white text-center py-3 font-bold text-base rounded-t-lg">
