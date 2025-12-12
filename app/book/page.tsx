@@ -88,9 +88,6 @@ export default function ReservationEntryPage() {
           <div className="max-w-md mx-auto lg:max-w-none lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-lg">
             {/* 헤더 */}
             <div className="text-center mb-10">
-              <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <PhoneIcon className="w-8 h-8 text-white" />
-              </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">예약 정보 등록</h1>
               <p className="text-base text-gray-600">
                 상담 신청 시 입력하신 전화번호를<br />입력해주세요
