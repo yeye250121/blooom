@@ -32,14 +32,6 @@ const ktCctvContent1 = {
     subtitle: '대한민국 1등 보안기업',
     ctaText: '프로모션 받기',
   },
-  support: {
-    title: (
-      <>
-        다른 렌탈은<br />평생 내요
-      </>
-    ),
-    description: 'KT는 3년만 내면 끝. 그 뒤로는 월 0원이에요.',
-  },
   benefits: {
     sectionTitle: (
       <>
@@ -211,70 +203,91 @@ const ktCctvContent2 = {
   },
 };
 
-// 비교 테이블 컴포넌트
-const ComparisonTable = () => (
-  <section className="py-12 lg:py-16 px-5 bg-gray-100">
-    <div className="max-w-2xl mx-auto">
-      {/* 테이블 */}
-      <div className="flex items-center">
-        {/* 왼쪽: 렌탈업체 (작게) */}
-        <div className="flex-1 scale-90 origin-right">
-          <div className="bg-gray-400 text-white text-center py-3 font-bold text-base rounded-t-lg">
-            렌탈업체
-          </div>
-          <div className="bg-gray-200 rounded-b-lg">
-            <div className="border-b border-gray-300 py-4 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">3년</p>
-              <p className="text-lg font-bold text-gray-600">144만원</p>
-            </div>
-            <div className="border-b border-gray-300 py-4 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">5년</p>
-              <p className="text-lg font-bold text-gray-600">240만원</p>
-            </div>
-            <div className="py-4 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">10년</p>
-              <p className="text-lg font-bold text-gray-600">480만원</p>
-            </div>
-          </div>
-        </div>
-
-        {/* 가운데: VS */}
-        <div className="w-12 flex-shrink-0 flex items-center justify-center">
-          <span className="text-gray-400 font-bold text-sm">VS</span>
-        </div>
-
-        {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
-        <div className="flex-1 scale-105 origin-left shadow-xl rounded-xl z-10">
-          <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
-            <img
-              src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
-              alt="KT 텔레캅"
-              className="h-8 mx-auto"
-            />
-          </div>
-          <div className="bg-white rounded-b-xl">
-            <div className="border-b border-gray-100 py-5 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">3년</p>
-              <p className="text-xl font-bold text-gray-900">144만원</p>
-            </div>
-            <div className="border-b border-gray-100 py-5 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">5년</p>
-              <p className="text-xl font-bold text-blue-600">144만원</p>
-              <p className="text-xs text-blue-500 font-medium">+0원</p>
-            </div>
-            <div className="py-5 px-4 text-center">
-              <p className="text-sm text-gray-500 mb-1">10년</p>
-              <p className="text-xl font-bold text-blue-600">144만원</p>
-              <p className="text-xs text-blue-500 font-medium">+0원</p>
-            </div>
-          </div>
-        </div>
+// 비교 섹션 컴포넌트 (타이틀 + 비교 테이블 + 이미지)
+const ComparisonSection = () => (
+  <section className="relative bg-[#e8f3ff] pt-16 lg:pt-24 pb-48 lg:pb-56 overflow-hidden">
+    <div className="max-w-[1100px] mx-auto px-6">
+      {/* 타이틀 */}
+      <div className="text-center animate-on-scroll opacity-0 translate-y-12 transition-all duration-700 mb-12 lg:mb-16">
+        <h3 className="text-2xl lg:text-3xl font-bold text-[#333d4b] leading-tight mb-4">
+          다른 렌탈은<br />평생 내요
+        </h3>
+        <p className="text-lg lg:text-xl text-[#4e5968]">
+          KT는 3년만 내면 끝. 그 뒤로는 월 0원이에요.
+        </p>
       </div>
 
-      {/* 하단 안내 */}
-      <p className="text-center text-sm text-gray-400 mt-6">
-        * 월 4만원 기준 예상 금액
-      </p>
+      {/* 비교 테이블 */}
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center">
+          {/* 왼쪽: 렌탈업체 (작게) */}
+          <div className="flex-1 scale-90 origin-right">
+            <div className="bg-gray-400 text-white text-center py-3 font-bold text-base rounded-t-lg">
+              렌탈업체
+            </div>
+            <div className="bg-gray-200 rounded-b-lg">
+              <div className="border-b border-gray-300 py-4 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">3년</p>
+                <p className="text-lg font-bold text-gray-600">144만원</p>
+              </div>
+              <div className="border-b border-gray-300 py-4 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">5년</p>
+                <p className="text-lg font-bold text-gray-600">240만원</p>
+              </div>
+              <div className="py-4 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">10년</p>
+                <p className="text-lg font-bold text-gray-600">480만원</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 가운데: VS */}
+          <div className="w-12 flex-shrink-0 flex items-center justify-center">
+            <span className="text-gray-400 font-bold text-sm">VS</span>
+          </div>
+
+          {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
+          <div className="flex-1 scale-105 origin-left shadow-xl rounded-xl z-10">
+            <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
+              <img
+                src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+                alt="KT 텔레캅"
+                className="h-8 mx-auto"
+              />
+            </div>
+            <div className="bg-white rounded-b-xl">
+              <div className="border-b border-gray-100 py-5 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">3년</p>
+                <p className="text-xl font-bold text-gray-900">144만원</p>
+              </div>
+              <div className="border-b border-gray-100 py-5 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">5년</p>
+                <p className="text-xl font-bold text-blue-600">144만원</p>
+                <p className="text-xs text-blue-500 font-medium">+0원</p>
+              </div>
+              <div className="py-5 px-4 text-center">
+                <p className="text-sm text-gray-500 mb-1">10년</p>
+                <p className="text-xl font-bold text-blue-600">144만원</p>
+                <p className="text-xs text-blue-500 font-medium">+0원</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 하단 안내 */}
+        <p className="text-center text-sm text-gray-400 mt-6">
+          * 월 4만원 기준 예상 금액
+        </p>
+      </div>
+    </div>
+
+    {/* 폰 보는 사람 이미지 */}
+    <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-10 flex items-end">
+      <img
+        src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
+        alt="폰을 보는 사람"
+        className="w-56 h-56 lg:w-72 lg:h-72 object-contain object-bottom"
+      />
     </div>
   </section>
 );
@@ -453,14 +466,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           hideLogo={true}
           logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
         />
-        {/* 가격 혜택: 3년 후 무료 */}
-        <PartnersSupport
-          title={ktCctvContent1.support.title}
-          description={ktCctvContent1.support.description}
-          imageSrc=""
-        />
-        {/* 비교 테이블 */}
-        <ComparisonTable />
+        {/* 가격 비교 섹션 (타이틀 + 비교 테이블 + 폰 이미지) */}
+        <ComparisonSection />
         {/* 품질 혜택 */}
         <PartnersBenefits
           sectionTitle={ktCctvContent1.benefits.sectionTitle}
@@ -476,8 +483,6 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           description={ktCctvContent1.cta.description}
           ctaText={ktCctvContent1.cta.ctaText}
           ctaHref={contactUrl}
-          imageSrc="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
-          imageAlt="폰을 보는 사람"
         />
         <Footer />
       </div>
