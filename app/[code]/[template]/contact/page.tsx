@@ -22,8 +22,7 @@ interface FormData {
   inquiryType: 'new' | 'as';
   phoneNumber: string;
   installRegion: string;
-  installCount: number;
-  preferredTime: string;
+  installCount: string;
   privacyConsent: boolean;
   referrerUrl: string;
 }
@@ -49,11 +48,6 @@ const CameraIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
   </svg>
 );
 
-const ClockIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
 
 const CheckIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -67,26 +61,6 @@ const ChevronLeftIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
   </svg>
 );
 
-const ChevronDownIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-  </svg>
-);
-
-// 상담 시간 옵션
-const TIME_OPTIONS = [
-  { value: '', label: '희망 시간을 선택하세요' },
-  { value: '09:00-10:00', label: '오전 9시 ~ 10시' },
-  { value: '10:00-11:00', label: '오전 10시 ~ 11시' },
-  { value: '11:00-12:00', label: '오전 11시 ~ 12시' },
-  { value: '12:00-13:00', label: '오후 12시 ~ 1시' },
-  { value: '13:00-14:00', label: '오후 1시 ~ 2시' },
-  { value: '14:00-15:00', label: '오후 2시 ~ 3시' },
-  { value: '15:00-16:00', label: '오후 3시 ~ 4시' },
-  { value: '16:00-17:00', label: '오후 4시 ~ 5시' },
-  { value: '17:00-18:00', label: '오후 5시 ~ 6시' },
-  { value: 'anytime', label: '시간 무관' },
-];
 
 /**
  * 통합 상담 신청 페이지
@@ -110,8 +84,7 @@ export default function ContactPage() {
     inquiryType: 'new',
     phoneNumber: '',
     installRegion: '',
-    installCount: 1,
-    preferredTime: '',
+    installCount: '1',
     privacyConsent: false,
     referrerUrl: '',
   });
@@ -160,10 +133,11 @@ export default function ContactPage() {
   };
 
   // 폼 유효성 검사
+  const installCountNum = parseInt(formData.installCount) || 0;
   const isFormValid =
     isValidPhone(formData.phoneNumber) &&
     formData.installRegion.trim() !== '' &&
-    formData.installCount > 0 &&
+    installCountNum > 0 &&
     formData.privacyConsent;
 
   // 폼 제출
@@ -187,8 +161,7 @@ export default function ContactPage() {
         landingTemplate: template,
         landingSubtype: fromSubtype,
         installLocation: formData.installRegion,
-        installCount: formData.installCount,
-        preferredTime: formData.preferredTime,
+        installCount: installCountNum,
       };
 
       const res = await fetch(`${API_BASE_URL}/landing/api/inquiry`, {
@@ -271,19 +244,6 @@ export default function ContactPage() {
                   <p className="text-lg font-medium text-gray-900">{formData.installCount}대</p>
                 </div>
               </div>
-              {formData.preferredTime && (
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <ClockIcon className="w-6 h-6 text-blue-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">희망 상담 시간</p>
-                    <p className="text-lg font-medium text-gray-900">
-                      {TIME_OPTIONS.find(t => t.value === formData.preferredTime)?.label}
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
             <Link
@@ -394,49 +354,18 @@ export default function ContactPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               설치 예상 대수 <span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-4">
-              <span className="flex-1 text-gray-500">정확하지 않아도 괜찮아요</span>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, installCount: Math.max(1, prev.installCount - 1) }))}
-                  className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 text-xl font-medium hover:bg-gray-200 transition-colors"
-                >
-                  -
-                </button>
-                <span className="w-8 text-center text-xl font-semibold text-gray-900">
-                  {formData.installCount}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, installCount: Math.min(99, prev.installCount + 1) }))}
-                  className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white text-xl font-medium hover:bg-blue-600 transition-colors"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 희망 상담 시간 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              희망 상담 시간
-            </label>
-            <div className="relative">
-              <select
-                value={formData.preferredTime}
-                onChange={(e) => setFormData(prev => ({ ...prev, preferredTime: e.target.value }))}
-                className="w-full h-14 px-4 pr-12 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none"
-              >
-                {TIME_OPTIONS.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            </div>
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="예: 4"
+              value={formData.installCount}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                setFormData((prev) => ({ ...prev, installCount: value }));
+              }}
+              className="w-full h-14 px-4 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+            <p className="mt-1 text-sm text-gray-500">정확하지 않아도 괜찮아요</p>
           </div>
 
           {/* 개인정보 동의 */}
@@ -489,7 +418,7 @@ export default function ContactPage() {
 
         {/* 안내 문구 */}
         <p className="mt-6 text-center text-sm text-gray-500">
-          신청하시면 영업시간 내 빠르게 연락드릴게요
+          전문상담사가 빠르게 연락드릴게요
         </p>
       </main>
     </div>
