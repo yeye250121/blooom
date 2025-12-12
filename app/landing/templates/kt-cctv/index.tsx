@@ -216,56 +216,56 @@ const ComparisonTable = () => (
   <section className="py-12 lg:py-16 px-5 bg-gray-100">
     <div className="max-w-2xl mx-auto">
       {/* 테이블 */}
-      <div className="flex">
-        {/* 왼쪽: 렌탈업체 */}
-        <div className="flex-1">
-          <div className="bg-gray-400 text-white text-center py-4 font-bold text-lg">
+      <div className="flex items-center">
+        {/* 왼쪽: 렌탈업체 (작게) */}
+        <div className="flex-1 scale-90 origin-right">
+          <div className="bg-gray-400 text-white text-center py-3 font-bold text-base rounded-t-lg">
             렌탈업체
           </div>
-          <div className="bg-gray-200">
-            <div className="border-b border-gray-300 py-4 px-4">
+          <div className="bg-gray-200 rounded-b-lg">
+            <div className="border-b border-gray-300 py-4 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">3년</p>
-              <p className="text-xl font-bold text-gray-700">144만원</p>
+              <p className="text-lg font-bold text-gray-600">144만원</p>
             </div>
-            <div className="border-b border-gray-300 py-4 px-4">
+            <div className="border-b border-gray-300 py-4 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">5년</p>
-              <p className="text-xl font-bold text-gray-700">240만원</p>
+              <p className="text-lg font-bold text-gray-600">240만원</p>
             </div>
-            <div className="py-4 px-4">
+            <div className="py-4 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">10년</p>
-              <p className="text-xl font-bold text-gray-700">480만원</p>
+              <p className="text-lg font-bold text-gray-600">480만원</p>
             </div>
           </div>
         </div>
 
         {/* 가운데: VS */}
-        <div className="w-16 flex items-center justify-center bg-white">
-          <span className="text-gray-400 font-bold text-lg">VS</span>
+        <div className="w-12 flex-shrink-0 flex items-center justify-center">
+          <span className="text-gray-400 font-bold text-sm">VS</span>
         </div>
 
-        {/* 오른쪽: KT 텔레캅 */}
-        <div className="flex-1">
-          <div className="bg-gray-200 text-center py-4">
+        {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
+        <div className="flex-1 scale-105 origin-left shadow-xl rounded-xl z-10">
+          <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
             <img
               src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
               alt="KT 텔레캅"
-              className="h-7 mx-auto"
+              className="h-8 mx-auto"
             />
           </div>
-          <div className="bg-gray-100">
-            <div className="border-b border-gray-300 py-4 px-4">
+          <div className="bg-white rounded-b-xl">
+            <div className="border-b border-gray-100 py-5 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">3년</p>
               <p className="text-xl font-bold text-gray-900">144만원</p>
             </div>
-            <div className="border-b border-gray-300 py-4 px-4">
+            <div className="border-b border-gray-100 py-5 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">5년</p>
               <p className="text-xl font-bold text-blue-600">144만원</p>
-              <p className="text-xs text-blue-500">+0원</p>
+              <p className="text-xs text-blue-500 font-medium">+0원</p>
             </div>
-            <div className="py-4 px-4">
+            <div className="py-5 px-4 text-center">
               <p className="text-sm text-gray-500 mb-1">10년</p>
               <p className="text-xl font-bold text-blue-600">144만원</p>
-              <p className="text-xs text-blue-500">+0원</p>
+              <p className="text-xs text-blue-500 font-medium">+0원</p>
             </div>
           </div>
         </div>
