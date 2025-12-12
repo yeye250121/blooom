@@ -86,8 +86,8 @@ export default function ReservationEntryPage() {
 
           {/* 우측: 폼 영역 */}
           <div className="max-w-md mx-auto lg:max-w-none lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-lg">
-            {/* 헤더 - 모바일에서만 표시 */}
-            <div className="text-center mb-10 lg:hidden">
+            {/* 헤더 */}
+            <div className="text-center mb-10">
               <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <PhoneIcon className="w-8 h-8 text-white" />
               </div>
