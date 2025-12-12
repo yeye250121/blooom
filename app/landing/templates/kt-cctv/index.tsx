@@ -219,9 +219,9 @@ const ComparisonSection = () => (
 
       {/* 비교 테이블 */}
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           {/* 왼쪽: 렌탈업체 (작게) */}
-          <div className="flex-1 scale-90 origin-right">
+          <div className="flex-1 scale-95">
             <div className="bg-gray-400 text-white text-center py-3 font-bold text-base rounded-t-lg">
               렌탈업체
             </div>
@@ -241,13 +241,8 @@ const ComparisonSection = () => (
             </div>
           </div>
 
-          {/* 가운데: VS */}
-          <div className="w-12 flex-shrink-0 flex items-center justify-center">
-            <span className="text-gray-400 font-bold text-sm">VS</span>
-          </div>
-
           {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
-          <div className="flex-1 scale-105 origin-left shadow-xl rounded-xl z-10">
+          <div className="flex-1 scale-105 shadow-xl rounded-xl z-10">
             <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
               <img
                 src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
