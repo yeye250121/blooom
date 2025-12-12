@@ -36,18 +36,18 @@ const AnimatedHeroTitle = () => {
 
   return (
     <div className="flex flex-col items-center">
+      {/* KT 로고 - 카운터 완료 후 플로트 인 */}
+      <div className={`mb-6 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+        <img
+          src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+          alt="KT 텔레캅"
+          className="h-14 lg:h-16 brightness-0 invert"
+        />
+      </div>
       <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
         <AnimatedCounter end={1000000} duration={2500} suffix="+" />
       </div>
       <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
-      {/* KT 로고 - 카운터 완료 후 플로트 인 */}
-      <div className={`mt-6 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <img
-          src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
-          alt="KT 텔레캅"
-          className="h-10 lg:h-12 brightness-0 invert"
-        />
-      </div>
     </div>
   );
 };
