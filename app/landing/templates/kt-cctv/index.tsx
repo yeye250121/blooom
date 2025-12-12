@@ -6,11 +6,10 @@ import {
   Footer,
   PartnersHero,
   PartnersBenefits,
-  PartnersSupport,
   PartnersCTA,
 } from '@/app/landing/components';
 import AnimatedCounter from '@/app/landing/components/AnimatedCounter';
-import { config, KtCctvSubtype } from './config';
+import { config } from './config';
 
 interface KtCctvLandingProps {
   marketerCode: string;
@@ -162,70 +161,6 @@ const ktCctvContent2 = {
     subtitle: 'KT 텔레캅이 든든하게 막아드릴게요.',
     ctaText: '무료로 상담받기',
   },
-  benefits: {
-    sectionTitle: (
-      <>
-        KT CCTV만의<br />특별한 혜택
-      </>
-    ),
-    benefits: [
-      {
-        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_secure_v01.png',
-        imageAlt: '보안 아이콘',
-        bgColor: '#e8f3ff',
-        title: (
-          <>
-            해킹 걱정,<br />이제 그만
-          </>
-        ),
-        description: (
-          <>
-            KT 전용망을 써서<br />밖에서는 절대 볼 수 없어요.
-          </>
-        ),
-      },
-      {
-        imageSrc: 'https://ktollehcctv.co/img/checking-devices.png',
-        imageAlt: '녹화 아이콘',
-        bgColor: '#f0faf6',
-        title: (
-          <>
-            24시간 내내<br />놓치지 않아요
-          </>
-        ),
-        description: (
-          <>
-            영상이 끊기거나 사라질 걱정 없이<br />모두 기록해요.
-          </>
-        ),
-        imageClassName: 'w-60 h-60 lg:w-72 lg:h-72',
-      },
-      {
-        imageSrc: 'https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_engineer_v01.png',
-        imageAlt: '설치 아이콘',
-        bgColor: '#fff8e8',
-        title: (
-          <>
-            설치부터 수리까지<br />알아서 해드려요
-          </>
-        ),
-        description: (
-          <>
-            전문 기사님이 방문하고,<br />A/S도 무료로 받을 수 있어요.
-          </>
-        ),
-        imageAlignBottom: true,
-      },
-    ],
-  },
-  support: {
-    title: (
-      <>
-        3년만 내면<br />평생 무료예요
-      </>
-    ),
-    description: '3년 뒤에는 월 이용료가 0원이 돼요.',
-  },
   cta: {
     title: (
       <>
@@ -306,7 +241,16 @@ const ComparisonSection = () => (
         {/* 하단 안내 */}
         <div className="text-center mt-14 lg:mt-16">
           <p className="text-base lg:text-lg text-gray-500 mb-2">월 4만원 기준, 10년 사용 시</p>
-          <p className="text-2xl lg:text-3xl font-bold text-blue-600">336만원 더 저렴해요</p>
+          <p className="text-2xl lg:text-3xl font-bold text-blue-600 mb-6">336만원 더 저렴해요</p>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105"
+          >
+            지금 할인 받기
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -361,8 +305,6 @@ const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[
  * - event: 이벤트/프로모션용
  */
 export default function KtCctvLanding({ marketerCode, template, subtype }: KtCctvLandingProps) {
-  // subtype별 설정 가져오기 (없으면 기본값 '1' 사용)
-  const subtypeConfig = config.subtypes[subtype as KtCctvSubtype] || config.subtypes['1'];
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Intersection Observer for fade-in animations
@@ -417,15 +359,12 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             warningImageAlt="경고 사이렌"
           />
           <PartnersBenefits
-            sectionTitle={ktCctvContent2.benefits.sectionTitle}
-            benefits={ktCctvContent2.benefits.benefits}
+            sectionTitle={ktCctvContent1.benefits.sectionTitle}
+            benefits={ktCctvContent1.benefits.benefits}
             logoUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
             logoAlt="KT 텔레캅"
           />
-          <PartnersSupport
-            title={ktCctvContent2.support.title}
-            description={ktCctvContent2.support.description}
-          />
+          <ComparisonSection />
           <PartnersCTA
             title={ktCctvContent2.cta.title}
             description={ktCctvContent2.cta.description}
