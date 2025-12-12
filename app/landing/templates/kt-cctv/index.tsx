@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import {
   ReservationForm,
+  ConsultationForm,
   HowToParticipate,
   SpecialBenefits,
   Hero,
@@ -240,7 +241,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
       <Script src="/config.js" strategy="beforeInteractive" />
 
       <main>
-        <ReservationForm
+        {/* subtype 1은 상담 신청 전용 폼 사용 */}
+        <ConsultationForm
           marketerCode={marketerCode}
           landingTemplate={template}
           landingSubtype={subtype}
