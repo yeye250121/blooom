@@ -35,7 +35,7 @@ const ktCctvContent1 = {
   benefits: {
     sectionTitle: (
       <>
-        왜 KT텔레캅은<br />다를까요?
+        왜 KT텔레캅은 다를까요?
       </>
     ),
     benefits: [
@@ -243,11 +243,11 @@ const ComparisonSection = () => (
 
           {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
           <div className="flex-1 scale-110 shadow-xl rounded-xl z-10">
-            <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
+            <div className="bg-blue-500 text-center py-4 rounded-t-xl">
               <img
                 src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
                 alt="KT 텔레캅"
-                className="h-6 mx-auto"
+                className="h-6 mx-auto brightness-0 invert"
               />
             </div>
             <div className="bg-white rounded-b-xl">
