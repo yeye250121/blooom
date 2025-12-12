@@ -3,7 +3,7 @@ import { inquiryRequestSchema, reservationRequestSchema } from '@/app/landing/li
 import { appendInquiryToSheet } from '@/app/landing/lib/google-sheets';
 import { sendSlackNotification } from '@/app/landing/lib/slack';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { sendPartnerNewInquiryAlimtalk } from '@/lib/alimtalk-service';
+import { sendPartnerNewInquiryAlimtalk, sendCustomerInquiryAlimtalks } from '@/lib/alimtalk-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -115,6 +115,15 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // 고객에게 알림톡 발송 (문의 접수 + 예약 안내)
+      try {
+        console.log('[Inquiry] 고객 알림톡 발송 시작:', data.phoneNumber.slice(0, 7) + '****')
+        const customerAlimtalkResult = await sendCustomerInquiryAlimtalks(data.phoneNumber)
+        console.log('[Inquiry] 고객 알림톡 발송 결과:', customerAlimtalkResult)
+      } catch (error) {
+        console.error('⚠️ 고객 알림톡 발송 실패:', error)
+      }
+
       return NextResponse.json(
         {
           success: true,
@@ -190,6 +199,15 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           console.error('⚠️ 파트너 알림톡 발송 실패:', error)
         }
+      }
+
+      // 고객에게 알림톡 발송 (문의 접수 + 예약 안내)
+      try {
+        console.log('[Inquiry] 고객 알림톡 발송 시작:', validationResult.data.phoneNumber.slice(0, 7) + '****')
+        const customerAlimtalkResult = await sendCustomerInquiryAlimtalks(validationResult.data.phoneNumber)
+        console.log('[Inquiry] 고객 알림톡 발송 결과:', customerAlimtalkResult)
+      } catch (error) {
+        console.error('⚠️ 고객 알림톡 발송 실패:', error)
       }
 
       return NextResponse.json(

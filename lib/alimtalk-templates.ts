@@ -25,6 +25,16 @@ export const ALIMTALK_TEMPLATES = {
 
   // 상담 취소 - 파트너에게 발송
   PARTNER_INQUIRY_CANCELLED: 'ppur_2025121002302950432485683',
+
+  // ===== 고객용 알림톡 =====
+
+  // 고객 문의 접수 완료 - 고객에게 발송
+  // (변수 없음)
+  CUSTOMER_INQUIRY_RECEIVED: 'ppur_2025121218170211178696594',
+
+  // 고객 예약 안내 - 고객에게 발송 (바로 예약하기 버튼 포함)
+  // (변수 없음, 버튼 URL: https://blooom.kr/book)
+  CUSTOMER_RESERVATION_GUIDE: 'ppur_2025121218400211178799658',
 } as const
 
 export type AlimtalkTemplateType = keyof typeof ALIMTALK_TEMPLATES

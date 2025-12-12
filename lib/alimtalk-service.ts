@@ -13,6 +13,7 @@ import {
   getPartnerNewInquiryVariables,
   getPartnerContractSuccessVariables,
   getPartnerInquiryCancelledVariables,
+  AlimtalkVariables,
 } from './alimtalk-templates'
 
 /**
@@ -139,5 +140,69 @@ export async function sendPartnerInquiryCancelledAlimtalk(
   } catch (error: any) {
     console.error('[Alimtalk] 상담 취소 알림톡 발송 실패:', error.message)
     return { success: false, error: error.message }
+  }
+}
+
+// ===== 고객용 알림톡 =====
+
+/**
+ * 고객 문의 접수 완료 알림톡 발송
+ * - 문의한 고객에게 발송
+ * - "곧 연락 드릴게요" 안내
+ */
+export async function sendCustomerInquiryReceivedAlimtalk(
+  phoneNumber: string
+): Promise<SendResult> {
+  const templateCode = ALIMTALK_TEMPLATES.CUSTOMER_INQUIRY_RECEIVED
+
+  try {
+    const variables: AlimtalkVariables = {}
+    const result = await sendAlimtalkToOne(templateCode, phoneNumber, variables)
+    return { success: true, messageKey: result.messageKey }
+  } catch (error: any) {
+    console.error('[Alimtalk] 고객 문의 접수 알림톡 발송 실패:', error.message)
+    return { success: false, error: error.message }
+  }
+}
+
+/**
+ * 고객 예약 안내 알림톡 발송
+ * - 문의한 고객에게 발송
+ * - "바로 예약하기" 버튼 포함 (https://blooom.kr/book)
+ */
+export async function sendCustomerReservationGuideAlimtalk(
+  phoneNumber: string
+): Promise<SendResult> {
+  const templateCode = ALIMTALK_TEMPLATES.CUSTOMER_RESERVATION_GUIDE
+
+  try {
+    const variables: AlimtalkVariables = {}
+    const result = await sendAlimtalkToOne(templateCode, phoneNumber, variables)
+    return { success: true, messageKey: result.messageKey }
+  } catch (error: any) {
+    console.error('[Alimtalk] 고객 예약 안내 알림톡 발송 실패:', error.message)
+    return { success: false, error: error.message }
+  }
+}
+
+/**
+ * 고객 문의 접수 시 알림톡 일괄 발송
+ * - 1) 문의 접수 완료 알림
+ * - 2) 예약 안내 알림 (바로 예약하기 버튼)
+ * 두 알림톡을 순서대로 발송
+ */
+export async function sendCustomerInquiryAlimtalks(
+  phoneNumber: string
+): Promise<{ inquiry: SendResult; reservation: SendResult }> {
+  // 1. 문의 접수 완료 알림톡
+  const inquiryResult = await sendCustomerInquiryReceivedAlimtalk(phoneNumber)
+
+  // 2. 예약 안내 알림톡 (약간의 딜레이 후 발송)
+  await new Promise(resolve => setTimeout(resolve, 1000)) // 1초 대기
+  const reservationResult = await sendCustomerReservationGuideAlimtalk(phoneNumber)
+
+  return {
+    inquiry: inquiryResult,
+    reservation: reservationResult,
   }
 }
