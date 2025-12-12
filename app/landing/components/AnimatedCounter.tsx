@@ -45,9 +45,10 @@ export default function AnimatedCounter({
       const now = Date.now();
       const progress = Math.min((now - startTime) / duration, 1);
 
-      // easeOutExpo for smooth deceleration
-      const easeOutExpo = 1 - Math.pow(2, -10 * progress);
-      const currentValue = Math.floor(startValue + (end - startValue) * easeOutExpo);
+      // 커스텀 이징: 처음엔 빠르게, 끝에 가까워질수록 점점 느려짐
+      // easeOutQuart보다 더 극적인 감속
+      const easeOutQuint = 1 - Math.pow(1 - progress, 5);
+      const currentValue = Math.floor(startValue + (end - startValue) * easeOutQuint);
 
       setCount(currentValue);
 

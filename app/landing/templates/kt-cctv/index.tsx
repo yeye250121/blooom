@@ -26,7 +26,7 @@ const getContactUrl = (marketerCode: string, template: string, subtype: string) 
 const AnimatedHeroTitle = () => (
   <div className="flex flex-col items-center">
     <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
-      <AnimatedCounter end={1000000} duration={2000} suffix="+" />
+      <AnimatedCounter end={1000000} duration={2500} suffix="+" />
     </div>
     <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
   </div>
