@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Script from 'next/script';
 import {
   Footer,
@@ -286,51 +286,44 @@ const ComparisonSection = () => (
   </section>
 );
 
-// 리뷰 아이템 컴포넌트 (아코디언)
-const ReviewItem = ({ review }: { review: { id: string; content: string } }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const previewLength = 30;
-  const preview = review.content.length > previewLength
-    ? review.content.slice(0, previewLength) + '...'
-    : review.content;
+// 마퀴 리뷰 카드 컴포넌트
+const MarqueeReviewCard = ({ review }: { review: { id: string; content: string } }) => (
+  <div className="flex-shrink-0 w-[320px] bg-white rounded-2xl p-6 shadow-sm">
+    <p className="text-sm font-medium text-blue-600 mb-3">{review.id}</p>
+    <p className="text-gray-700 leading-relaxed text-[15px]">{review.content}</p>
+  </div>
+);
+
+// 마퀴 리뷰 섹션 컴포넌트 (무한 스크롤)
+const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[] }) => {
+  // 무한 루프를 위해 리뷰 복제
+  const duplicatedReviews = [...reviews, ...reviews, ...reviews];
 
   return (
-    <div
-      className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer"
-      onClick={() => setIsOpen(!isOpen)}
-    >
-      <div className="p-5 flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-blue-600 mb-1">{review.id}</p>
-          <p className={`text-gray-700 ${isOpen ? '' : 'truncate'}`}>
-            {isOpen ? review.content : preview}
-          </p>
-        </div>
-        <div className={`ml-4 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+    <section className="relative py-16 lg:py-24 bg-gray-50 overflow-hidden">
+      <div className="max-w-4xl mx-auto px-5 relative z-10">
+        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 text-center mb-4">
+          먼저 사용한 고객님들의<br />솔직한 후기예요
+        </h2>
+      </div>
+
+      {/* 마퀴 컨테이너 */}
+      <div className="mt-10 relative">
+        {/* 좌측 그라데이션 페이드 */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+        {/* 우측 그라데이션 페이드 */}
+        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+
+        {/* 마퀴 트랙 */}
+        <div className="flex gap-5 animate-marquee hover:pause-animation">
+          {duplicatedReviews.map((review, index) => (
+            <MarqueeReviewCard key={index} review={review} />
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
-
-// 리뷰 섹션 컴포넌트
-const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[] }) => (
-  <section className="relative py-16 lg:py-24 px-5 bg-gray-50 overflow-hidden">
-    <div className="max-w-4xl mx-auto relative z-10">
-      <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 text-center mb-4">
-        먼저 사용한 고객님들의<br />솔직한 후기예요
-      </h2>
-      <div className="mt-10 space-y-3">
-        {reviews.map((review, index) => (
-          <ReviewItem key={index} review={review} />
-        ))}
-      </div>
-    </div>
-  </section>
-);
 
 /**
  * KT CCTV 랜딩페이지 템플릿
@@ -497,6 +490,23 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
 
         .animate-fade-in-up {
           animation: fade-in-up 0.7s ease-out forwards;
+        }
+
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.333%);
+          }
+        }
+
+        .animate-marquee {
+          animation: marquee 25s linear infinite;
+        }
+
+        .animate-marquee:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </>
