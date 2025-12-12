@@ -203,9 +203,9 @@ const ktCctvContent2 = {
   },
 };
 
-// 비교 섹션 컴포넌트 (타이틀 + 비교 테이블 + 이미지)
+// 비교 섹션 컴포넌트 (타이틀 + 비교 테이블)
 const ComparisonSection = () => (
-  <section className="relative bg-[#e8f3ff] pt-16 lg:pt-24 pb-48 lg:pb-56 overflow-hidden">
+  <section className="relative bg-[#e8f3ff] pt-16 lg:pt-24 pb-16 lg:pb-24 overflow-hidden">
     <div className="max-w-[1100px] mx-auto px-6">
       {/* 타이틀 */}
       <div className="text-center animate-on-scroll opacity-0 translate-y-12 transition-all duration-700 mb-12 lg:mb-16">
@@ -279,15 +279,6 @@ const ComparisonSection = () => (
           * 월 4만원 기준 예상 금액
         </p>
       </div>
-    </div>
-
-    {/* 폰 보는 사람 이미지 */}
-    <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-10 flex items-end">
-      <img
-        src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
-        alt="폰을 보는 사람"
-        className="w-56 h-56 lg:w-72 lg:h-72 object-contain object-bottom"
-      />
     </div>
   </section>
 );
@@ -483,6 +474,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           description={ktCctvContent1.cta.description}
           ctaText={ktCctvContent1.cta.ctaText}
           ctaHref={contactUrl}
+          imageSrc="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
+          imageAlt="폰을 보는 사람"
         />
         <Footer />
       </div>
