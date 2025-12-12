@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import Script from 'next/script';
+import Link from 'next/link';
 import {
-  ReservationForm,
-  ConsultationForm,
   HowToParticipate,
   SpecialBenefits,
   Hero,
@@ -23,6 +22,10 @@ interface KtCctvLandingProps {
   subtype: string;
 }
 
+// Contact 페이지 URL 생성 헬퍼
+const getContactUrl = (marketerCode: string, template: string, subtype: string) =>
+  `/${marketerCode}/${template}/contact?from=${subtype}`;
+
 // KT CCTV 랜딩 subtype 2 전용 콘텐츠
 const ktCctvContent = {
   hero: {
@@ -33,7 +36,6 @@ const ktCctvContent = {
     ),
     subtitle: 'KT 텔레캅이 든든하게 막아드릴게요.',
     ctaText: '무료로 상담받기',
-    ctaHref: '#consultation-form',
     // 네비게이션 숨김 (단일 랜딩 페이지용)
     hideNav: true,
   },
@@ -109,7 +111,6 @@ const ktCctvContent = {
     ),
     description: '상담사에게 궁금한 점을 편하게 물어보세요.',
     ctaText: '30초 만에 상담 신청하기',
-    ctaHref: '#consultation-form',
   },
 };
 
@@ -148,6 +149,9 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
     return () => observerRef.current?.disconnect();
   }, [subtype]);
 
+  // Contact 페이지 URL
+  const contactUrl = getContactUrl(marketerCode, template, subtype);
+
   // subtype 2: KT CCTV 홈캠 전환 유도 랜딩
   if (subtype === '2') {
     return (
@@ -168,7 +172,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             title={ktCctvContent.hero.title}
             subtitle={ktCctvContent.hero.subtitle}
             ctaText={ktCctvContent.hero.ctaText}
-            ctaHref={ktCctvContent.hero.ctaHref}
+            ctaHref={contactUrl}
             hideNavButtons={true}
             hideLogo={true}
             logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
@@ -190,16 +194,20 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
             title={ktCctvContent.cta.title}
             description={ktCctvContent.cta.description}
             ctaText={ktCctvContent.cta.ctaText}
-            ctaHref={ktCctvContent.cta.ctaHref}
+            ctaHref={contactUrl}
           />
-          {/* 상담 신청 폼 */}
-          <div id="consultation-form">
-            <ReservationForm
-              marketerCode={marketerCode}
-              landingTemplate={template}
-              landingSubtype={subtype}
-            />
-          </div>
+          {/* 상담 신청 CTA */}
+          <section className="py-16 bg-gray-50">
+            <div className="max-w-lg mx-auto px-5 text-center">
+              <p className="text-gray-600 mb-6">전문 상담사가 친절하게 안내해 드릴게요</p>
+              <Link
+                href={contactUrl}
+                className="inline-block w-full max-w-xs bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-4 px-8 rounded-xl transition-colors shadow-lg shadow-blue-500/25"
+              >
+                무료 상담 신청하기
+              </Link>
+            </div>
+          </section>
           <Footer />
         </div>
 
@@ -241,12 +249,23 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
       <Script src="/config.js" strategy="beforeInteractive" />
 
       <main>
-        {/* subtype 1은 상담 신청 전용 폼 사용 */}
-        <ConsultationForm
-          marketerCode={marketerCode}
-          landingTemplate={template}
-          landingSubtype={subtype}
-        />
+        {/* 상담 신청 CTA 섹션 */}
+        <section className="bg-gradient-to-b from-blue-500 to-blue-600 py-12 px-5">
+          <div className="max-w-lg mx-auto text-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">
+              KT CCTV 무료 상담
+            </h1>
+            <p className="text-blue-100 mb-8">
+              전문 상담사가 친절하게 안내해 드릴게요
+            </p>
+            <Link
+              href={contactUrl}
+              className="inline-block w-full max-w-xs bg-white hover:bg-gray-50 text-blue-600 text-lg font-semibold py-4 px-8 rounded-xl transition-colors shadow-lg"
+            >
+              30초 만에 상담 신청하기
+            </Link>
+          </div>
+        </section>
         <section className="hero-image">
           <img
             src={config.heroImage.src}
@@ -257,6 +276,20 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         <SpecialBenefits />
         <Hero />
         <Features />
+        {/* 하단 CTA */}
+        <section className="py-12 px-5 bg-gray-50">
+          <div className="max-w-lg mx-auto text-center">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              지금 바로 상담 받아보세요
+            </h2>
+            <Link
+              href={contactUrl}
+              className="inline-block w-full max-w-xs bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-4 px-8 rounded-xl transition-colors shadow-lg shadow-blue-500/25"
+            >
+              무료 상담 신청하기
+            </Link>
+          </div>
+        </section>
         <Footer />
       </main>
     </>
