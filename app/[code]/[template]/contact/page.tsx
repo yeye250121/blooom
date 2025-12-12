@@ -251,7 +251,7 @@ export default function ContactPage() {
               className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 font-medium"
             >
               <ChevronLeftIcon className="w-5 h-5" />
-              랜딩페이지로 돌아가기
+              돌아가기
             </Link>
           </div>
         </div>

@@ -91,3 +91,16 @@ export function getPartnerContractSuccessVariables(): AlimtalkVariables {
 export function getPartnerInquiryCancelledVariables(): AlimtalkVariables {
   return {}
 }
+
+/**
+ * 예약 페이지 URL 생성
+ * @param inquiryId - 문의 UUID (선택)
+ * @returns 예약 페이지 전체 URL
+ */
+export function getReservationUrl(inquiryId?: string): string {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://blooom.kr'
+  if (inquiryId) {
+    return `${baseUrl}/book/${inquiryId}`
+  }
+  return `${baseUrl}/book`
+}
