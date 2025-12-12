@@ -242,7 +242,7 @@ const ComparisonSection = () => (
           </div>
 
           {/* 오른쪽: KT 텔레캅 (크게, 강조) */}
-          <div className="flex-1 scale-105 shadow-xl rounded-xl z-10">
+          <div className="flex-1 scale-110 shadow-xl rounded-xl z-10">
             <div className="bg-white text-center py-4 rounded-t-xl border-b border-gray-100">
               <img
                 src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
