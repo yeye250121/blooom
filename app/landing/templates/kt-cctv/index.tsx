@@ -25,38 +25,27 @@ const getContactUrl = (marketerCode: string, template: string, subtype: string) 
 // 애니메이션 히어로 타이틀 컴포넌트
 const AnimatedHeroTitle = () => {
   const [showLogo, setShowLogo] = useState(false);
-  const [expandLogo, setExpandLogo] = useState(false);
 
   useEffect(() => {
     // 카운터 애니메이션 완료 후 로고 표시 (2500ms + 약간의 딜레이)
-    const timer1 = setTimeout(() => {
+    const timer = setTimeout(() => {
       setShowLogo(true);
     }, 2700);
-
-    // 로고 표시 후 확대 애니메이션 (로고 등장 + 0.5초 후)
-    const timer2 = setTimeout(() => {
-      setExpandLogo(true);
-    }, 3400);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="flex flex-col items-center">
-      {/* 숫자 - 로고 확대 시 작아짐 */}
-      <div className={`font-bold text-white tracking-tight transition-all duration-700 ease-out ${expandLogo ? 'text-3xl lg:text-4xl' : 'text-5xl lg:text-7xl'}`}>
+      <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
         <AnimatedCounter end={1000000} duration={2500} suffix="+" />
       </div>
-      <p className={`text-white/80 mt-2 transition-all duration-700 ease-out ${expandLogo ? 'text-base lg:text-lg' : 'text-xl lg:text-2xl'}`}>명의 선택</p>
-      {/* KT 로고 - 카운터 완료 후 플로트 인, 이후 확대 */}
+      <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
+      {/* KT 로고 - 카운터 완료 후 플로트 인 */}
       <div className={`mt-6 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <img
           src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
           alt="KT 텔레캅"
-          className={`brightness-0 invert transition-all duration-700 ease-out ${expandLogo ? 'h-16 lg:h-20' : 'h-10 lg:h-12'}`}
+          className="h-10 lg:h-12 brightness-0 invert"
         />
       </div>
     </div>
