@@ -281,8 +281,8 @@ const ComparisonTable = () => (
 
 // 리뷰 섹션 컴포넌트
 const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[] }) => (
-  <section className="py-16 lg:py-24 px-5 bg-gray-50">
-    <div className="max-w-4xl mx-auto">
+  <section className="relative py-16 lg:py-24 px-5 bg-gray-50 overflow-hidden">
+    <div className="max-w-4xl mx-auto relative z-10">
       <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 text-center mb-4">
         먼저 사용한 고객님들의<br />솔직한 후기예요
       </h2>
@@ -297,6 +297,14 @@ const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[
           </div>
         ))}
       </div>
+    </div>
+    {/* 폰 보는 사람 이미지 */}
+    <div className="absolute -bottom-4 -right-8 lg:right-10 opacity-30 lg:opacity-50">
+      <img
+        src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
+        alt="폰을 보는 사람"
+        className="w-48 h-48 lg:w-64 lg:h-64 object-contain"
+      />
     </div>
   </section>
 );
@@ -433,6 +441,7 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
         <PartnersSupport
           title={ktCctvContent1.support.title}
           description={ktCctvContent1.support.description}
+          imageSrc=""
         />
         {/* 비교 테이블 */}
         <ComparisonTable />
