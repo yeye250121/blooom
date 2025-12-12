@@ -29,6 +29,10 @@ export interface PartnersHeroProps {
   warningImageAlt?: string;
   /** 헤더 로고 클릭 비활성화 */
   disableLogoLink?: boolean;
+  /** 서브타이틀 숨기기 */
+  hideSubtitle?: boolean;
+  /** CTA 버튼 숨기기 */
+  hideCta?: boolean;
 }
 
 const defaultProps: PartnersHeroProps = {
@@ -74,6 +78,8 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
     warningImageUrl,
     warningImageAlt,
     disableLogoLink,
+    hideSubtitle,
+    hideCta,
   } = { ...defaultProps, ...props };
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -159,7 +165,7 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
 
       {/* Hero Content */}
       <div className="flex-1 flex items-center">
-        <div className="max-w-[1100px] mx-auto px-6 py-12 lg:py-16 text-center w-full">
+        <div className="max-w-[1100px] mx-auto px-6 py-16 lg:py-24 text-center w-full">
           <div className="animate-on-scroll opacity-0 translate-y-12 transition-all duration-700">
             {!hideLogo && (
               <Image
@@ -197,18 +203,22 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-8">
               {title}
             </h1>
-            <p className="text-white/70 text-lg lg:text-xl max-w-2xl mx-auto mb-12">
-              {subtitle}
-            </p>
-            <Link
-              href={ctaHref!}
-              className="inline-flex items-center gap-2 bg-[#3182f6] hover:bg-[#1b64da] text-white text-lg font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105"
-            >
-              {ctaText}
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+            {!hideSubtitle && (
+              <p className="text-white/70 text-lg lg:text-xl max-w-2xl mx-auto mb-12">
+                {subtitle}
+              </p>
+            )}
+            {!hideCta && (
+              <Link
+                href={ctaHref!}
+                className="inline-flex items-center gap-2 bg-[#3182f6] hover:bg-[#1b64da] text-white text-lg font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105"
+              >
+                {ctaText}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
           </div>
         </div>
       </div>

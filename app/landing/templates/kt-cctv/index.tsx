@@ -21,50 +21,81 @@ interface KtCctvLandingProps {
 const getContactUrl = (marketerCode: string, template: string, subtype: string) =>
   `/${marketerCode}/${template}/contact?from=${subtype}`;
 
-// 애니메이션 히어로 타이틀 컴포넌트
-const AnimatedHeroTitle = () => (
-  <div className="flex flex-col items-center">
-    <div className="text-5xl lg:text-7xl font-bold text-white tracking-tight">
-      <AnimatedCounter end={1000000} duration={2500} suffix="+" />
-    </div>
-    <p className="text-xl lg:text-2xl text-white/80 mt-2">명의 선택</p>
-  </div>
-);
-
-// 애니메이션 서브타이틀 컴포넌트 (로고 + 텍스트)
-const AnimatedSubtitle = () => {
+// 애니메이션 히어로 타이틀 컴포넌트 (subtype 1용)
+const AnimatedHeroTitle = ({ ctaHref }: { ctaHref: string }) => {
+  const [showSubtitle, setShowSubtitle] = useState(false);
+  const [showLine, setShowLine] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const [showScrollGuide, setShowScrollGuide] = useState(false);
 
   useEffect(() => {
-    // 카운터 애니메이션 완료 후 로고 표시 (2500ms + 약간의 딜레이)
-    const timer = setTimeout(() => {
-      setShowLogo(true);
-    }, 2700);
-    return () => clearTimeout(timer);
+    // 순차적 애니메이션 타이밍
+    const subtitleTimer = setTimeout(() => setShowSubtitle(true), 2700);
+    const lineTimer = setTimeout(() => setShowLine(true), 3300);
+    const logoTimer = setTimeout(() => setShowLogo(true), 3700);
+    const textTimer = setTimeout(() => setShowText(true), 4100);
+    const buttonTimer = setTimeout(() => setShowButton(true), 4800);
+    const scrollTimer = setTimeout(() => setShowScrollGuide(true), 5400);
+    return () => {
+      clearTimeout(subtitleTimer);
+      clearTimeout(lineTimer);
+      clearTimeout(logoTimer);
+      clearTimeout(textTimer);
+      clearTimeout(buttonTimer);
+      clearTimeout(scrollTimer);
+    };
   }, []);
 
   return (
-    <div className="flex flex-col items-center">
-      {/* KT 로고 - 카운터 완료 후 플로트 인 */}
-      <div className={`mb-3 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <img
-          src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
-          alt="KT 텔레캅"
-          className="h-12 lg:h-14 brightness-0 invert"
-        />
+    <div className="flex flex-col items-center min-h-[75vh] lg:min-h-0 justify-center relative pb-6">
+      {/* 100만명 선택 */}
+      <div className="text-6xl lg:text-8xl font-bold text-white tracking-tight">
+        <AnimatedCounter end={1000000} duration={2500} suffix="+" />
       </div>
-      <span>대한민국 1등 보안기업, KT 텔레캅</span>
+      <p className={`text-xl lg:text-3xl text-white/80 mt-4 mb-6 transition-all duration-700 ease-out ${showSubtitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>명의 선택</p>
+
+      {/* 세로선 */}
+      <div className={`w-[2px] h-20 lg:h-28 bg-white/40 mb-4 transition-all duration-700 ease-out ${showLine ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}`} style={{ transformOrigin: 'top' }} />
+
+      {/* KT 로고 */}
+      <img
+        src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
+        alt="KT 텔레캅"
+        className={`h-10 lg:h-12 brightness-0 invert mb-4 transition-all duration-700 ease-out ${showLogo ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+      />
+
+      {/* 대한민국 1등 보안기업 */}
+      <p className={`text-lg lg:text-xl text-white/70 mb-6 transition-all duration-700 ease-out ${showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        대한민국 1등 보안기업
+      </p>
+
+      {/* CTA 버튼 */}
+      <a
+        href={ctaHref}
+        className={`inline-flex items-center gap-2 bg-[#3182f6] hover:bg-[#1b64da] text-white text-base lg:text-lg font-semibold px-6 lg:px-8 py-3 lg:py-4 rounded-xl transition-all duration-700 ease-out hover:scale-105 ${showButton ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+      >
+        프로모션 받기
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+
+      {/* 스크롤 가이드 아이콘 */}
+      <div className={`mt-8 lg:mt-12 transition-all duration-500 ${showScrollGuide ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="animate-bounce">
+          <svg className="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 };
 
 // KT CCTV 랜딩 subtype 1 전용 콘텐츠 (가성비/신뢰 컨셉)
 const ktCctvContent1 = {
-  hero: {
-    title: <AnimatedHeroTitle />,
-    subtitle: <AnimatedSubtitle />,
-    ctaText: '프로모션 받기',
-  },
   benefits: {
     sectionTitle: (
       <>
@@ -410,14 +441,13 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
       />
 
       <div className="min-h-screen bg-white">
-        {/* Hero: KT 로고 + 신뢰 메시지 */}
+        {/* Hero: 대한민국 100만명 선택 */}
         <PartnersHero
-          title={ktCctvContent1.hero.title}
-          subtitle={ktCctvContent1.hero.subtitle}
-          ctaText={ktCctvContent1.hero.ctaText}
-          ctaHref={contactUrl}
+          title={<AnimatedHeroTitle ctaHref={contactUrl} />}
           hideNavButtons={true}
           hideLogo={true}
+          hideSubtitle={true}
+          hideCta={true}
           disableLogoLink={true}
           logoWithTextUrl="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
         />
