@@ -322,14 +322,6 @@ const ReviewsSection = ({ reviews }: { reviews: { id: string; content: string }[
         ))}
       </div>
     </div>
-    {/* 폰 보는 사람 이미지 */}
-    <div className="absolute -bottom-4 -right-8 lg:right-10 opacity-30 lg:opacity-50">
-      <img
-        src="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
-        alt="폰을 보는 사람"
-        className="w-48 h-48 lg:w-64 lg:h-64 object-contain"
-      />
-    </div>
   </section>
 );
 
@@ -484,6 +476,8 @@ export default function KtCctvLanding({ marketerCode, template, subtype }: KtCct
           description={ktCctvContent1.cta.description}
           ctaText={ktCctvContent1.cta.ctaText}
           ctaHref={contactUrl}
+          imageSrc="https://hvwgs4k77hcs8ntu.public.blob.vercel-storage.com/blooom_a_man_looking_phone_icon_v02.png"
+          imageAlt="폰을 보는 사람"
         />
         <Footer />
       </div>

@@ -5,6 +5,8 @@ export interface PartnersCTAProps {
   description?: React.ReactNode;
   ctaText?: string;
   ctaHref?: string;
+  imageSrc?: string;
+  imageAlt?: string;
 }
 
 const defaultProps: PartnersCTAProps = {
@@ -19,11 +21,21 @@ const defaultProps: PartnersCTAProps = {
 };
 
 export default function PartnersCTA(props: PartnersCTAProps = {}) {
-  const { title, description, ctaText, ctaHref } = { ...defaultProps, ...props };
+  const { title, description, ctaText, ctaHref, imageSrc, imageAlt } = { ...defaultProps, ...props };
 
   return (
-    <section className="bg-[#191f28] pt-32 lg:pt-40 pb-24 lg:pb-32">
-      <div className="max-w-[1100px] mx-auto px-6 text-center">
+    <section className="relative bg-[#191f28] pt-32 lg:pt-40 pb-24 lg:pb-32 overflow-hidden">
+      {/* 배경 이미지 */}
+      {imageSrc && (
+        <div className="absolute -bottom-4 -right-8 lg:right-10 opacity-20 lg:opacity-30">
+          <img
+            src={imageSrc}
+            alt={imageAlt || ''}
+            className="w-48 h-48 lg:w-64 lg:h-64 object-contain"
+          />
+        </div>
+      )}
+      <div className="max-w-[1100px] mx-auto px-6 text-center relative z-10">
         <div className="animate-on-scroll opacity-0 translate-y-12 transition-all duration-700">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             {title}
