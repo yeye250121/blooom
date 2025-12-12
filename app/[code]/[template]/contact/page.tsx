@@ -286,12 +286,21 @@ export default function ContactPage() {
 
           {/* 우측: 폼 영역 */}
           <div className="lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-sm lg:border lg:border-gray-100">
-            {/* 로고 - 모바일 */}
-            <img
-              src={ktLogoUrl}
-              alt="KT 텔레캅"
-              className="h-8 mb-6 ml-1 lg:hidden"
-            />
+            {/* 로고 + 타이틀 - 모바일 */}
+            <div className="lg:hidden mb-8">
+              <img
+                src={ktLogoUrl}
+                alt="KT 텔레캅"
+                className="h-8 mb-4 ml-1"
+              />
+              <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-2">
+                전화번호를 남겨주시면<br />
+                연락드릴게요
+              </h1>
+              <p className="text-base text-gray-600">
+                <span className="text-blue-500 font-semibold">평균 1일</span> 이내로 연락드려요!
+              </p>
+            </div>
 
             {/* 에러 메시지 */}
             {error && (
