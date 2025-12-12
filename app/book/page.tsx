@@ -88,7 +88,7 @@ export default function ReservationEntryPage() {
           <div className="max-w-md mx-auto lg:max-w-none lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-lg">
             {/* 헤더 */}
             <div className="text-center mb-10">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">예약 정보 등록</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">다이렉트 예약하기</h1>
               <p className="text-base text-gray-600">
                 상담 신청 시 입력하신 전화번호를<br />입력해주세요
               </p>
