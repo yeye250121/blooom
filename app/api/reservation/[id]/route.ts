@@ -150,7 +150,7 @@ export async function PATCH(
     if (body.documentsSubmitted) {
       updateData.status = 'documents_submitted';
     } else if (body.reservationDate) {
-      updateData.status = 'reservation_pending';
+      updateData.status = 'scheduled'; // 예약 일정 등록됨
     }
 
     const { data: updatedInquiry, error: updateError } = await supabaseAdmin
