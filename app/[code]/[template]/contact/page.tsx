@@ -259,20 +259,27 @@ export default function ContactPage() {
     );
   }
 
+  // KT 텔레캅 로고 URL
+  const ktLogoUrl = 'https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg';
+
   return (
     <div className="min-h-screen bg-white">
-      {/* 모바일 헤더 - lg 이상에서 숨김 */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 lg:hidden">
-        <div className="max-w-lg mx-auto px-5 h-16 flex items-center">
+      {/* 공통 헤더 - KT 텔레캅 로고 */}
+      <header className="sticky top-0 z-10 bg-white border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
           <Link
             href={`/${marketerCode}/${template}/${fromSubtype}`}
-            className="w-10 h-10 -ml-2 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 lg:gap-1 text-gray-500 hover:text-gray-700"
           >
-            <ChevronLeftIcon className="w-6 h-6 text-gray-700" />
+            <ChevronLeftIcon className="w-5 h-5" />
+            <span className="hidden lg:inline text-sm">돌아가기</span>
           </Link>
-          <h1 className="flex-1 text-center text-lg font-semibold text-gray-900 pr-8">
-            상담 신청
-          </h1>
+          <img
+            src={ktLogoUrl}
+            alt="KT 텔레캅"
+            className="h-8 lg:h-10"
+          />
+          <div className="w-10 lg:w-16" /> {/* 좌우 균형용 빈 공간 */}
         </div>
       </header>
 
@@ -280,20 +287,13 @@ export default function ContactPage() {
       <main className="max-w-6xl mx-auto px-5 py-8 lg:py-20">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
           {/* 좌측: 타이틀 영역 (데스크탑에서만 표시) */}
-          <div className="hidden lg:block lg:sticky lg:top-20">
-            <Link
-              href={`/${marketerCode}/${template}/${fromSubtype}`}
-              className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-sm mb-8"
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-              돌아가기
-            </Link>
+          <div className="hidden lg:block lg:sticky lg:top-24">
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
               전화번호를 남겨주시면<br />
               연락드릴게요
             </h1>
             <p className="text-xl text-gray-600">
-              평균 1일 내 <span className="text-blue-500 font-semibold">1688-2298</span>로 연락드려요!
+              <span className="text-blue-500 font-semibold">평균 1일</span> 이내로 연락드려요!
             </p>
           </div>
 
