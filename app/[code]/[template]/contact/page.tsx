@@ -273,7 +273,7 @@ export default function ContactPage() {
             <img
               src={ktLogoUrl}
               alt="KT 텔레캅"
-              className="h-10 mb-8"
+              className="h-10 mb-8 ml-1"
             />
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
               전화번호를 남겨주시면<br />
@@ -290,7 +290,7 @@ export default function ContactPage() {
             <img
               src={ktLogoUrl}
               alt="KT 텔레캅"
-              className="h-8 mb-6 lg:hidden"
+              className="h-8 mb-6 ml-1 lg:hidden"
             />
 
             {/* 에러 메시지 */}
