@@ -260,9 +260,9 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <div className="min-h-screen bg-white">
+      {/* 모바일 헤더 - lg 이상에서 숨김 */}
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-100 lg:hidden">
         <div className="max-w-lg mx-auto px-5 h-16 flex items-center">
           <Link
             href={`/${marketerCode}/${template}/${fromSubtype}`}
@@ -276,150 +276,161 @@ export default function ContactPage() {
         </div>
       </header>
 
-      {/* 폼 */}
-      <main className="max-w-lg mx-auto px-5 py-8">
-        {/* 에러 메시지 */}
-        {error && (
-          <div className="mb-6 bg-red-50 text-red-600 rounded-xl p-4 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* 문의 유형 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              문의 유형
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, inquiryType: 'new' }))}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  formData.inquiryType === 'new'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }`}
-              >
-                <span className="font-medium">신규 상담</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, inquiryType: 'as' }))}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  formData.inquiryType === 'as'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }`}
-              >
-                <span className="font-medium">A/S 문의</span>
-              </button>
-            </div>
+      {/* 메인 컨텐츠 - 데스크탑 2컬럼, 모바일 1컬럼 */}
+      <main className="max-w-6xl mx-auto px-5 py-8 lg:py-20">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
+          {/* 좌측: 타이틀 영역 (데스크탑에서만 표시) */}
+          <div className="hidden lg:block lg:sticky lg:top-20">
+            <Link
+              href={`/${marketerCode}/${template}/${fromSubtype}`}
+              className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 text-sm mb-8"
+            >
+              <ChevronLeftIcon className="w-4 h-4" />
+              돌아가기
+            </Link>
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
+              전화번호를 남겨주시면<br />
+              연락드릴게요
+            </h1>
+            <p className="text-xl text-gray-600">
+              평균 1일 내 <span className="text-blue-500 font-semibold">1688-2298</span>로 연락드려요!
+            </p>
           </div>
 
-          {/* 전화번호 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              전화번호 <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="tel"
-              inputMode="numeric"
-              placeholder="010-1234-5678"
-              value={formData.phoneNumber}
-              onChange={(e) => {
-                const formatted = formatPhoneNumber(e.target.value);
-                setFormData((prev) => ({ ...prev, phoneNumber: formatted }));
-              }}
-              className="w-full h-14 px-4 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-          </div>
-
-          {/* 설치 희망 지역 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              설치 희망 지역 <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="예: 서울시 강남구"
-              value={formData.installRegion}
-              onChange={(e) => setFormData((prev) => ({ ...prev, installRegion: e.target.value }))}
-              className="w-full h-14 px-4 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-          </div>
-
-          {/* 설치 대수 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              설치 예상 대수 <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              placeholder="예: 4"
-              value={formData.installCount}
-              onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, '');
-                setFormData((prev) => ({ ...prev, installCount: value }));
-              }}
-              className="w-full h-14 px-4 bg-white border border-gray-200 rounded-xl text-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            />
-            <p className="mt-1 text-sm text-gray-500">정확하지 않아도 괜찮아요</p>
-          </div>
-
-          {/* 개인정보 동의 */}
-          <label className="flex items-start gap-3 cursor-pointer p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
-            <div className="relative mt-0.5">
-              <input
-                type="checkbox"
-                checked={formData.privacyConsent}
-                onChange={(e) => setFormData(prev => ({ ...prev, privacyConsent: e.target.checked }))}
-                className="sr-only"
-              />
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
-                formData.privacyConsent ? 'bg-blue-500' : 'bg-gray-200'
-              }`}>
-                {formData.privacyConsent && <CheckIcon className="w-4 h-4 text-white" />}
+          {/* 우측: 폼 영역 */}
+          <div className="lg:bg-white lg:rounded-2xl lg:p-8 lg:shadow-sm lg:border lg:border-gray-100">
+            {/* 에러 메시지 */}
+            {error && (
+              <div className="mb-6 bg-red-50 text-red-600 rounded-xl p-4 text-sm">
+                {error}
               </div>
-            </div>
-            <span className="text-gray-700">
-              <a
-                href="/landing/policies"
-                target="_blank"
-                className="text-blue-500 underline"
-                onClick={(e) => e.stopPropagation()}
-              >
-                개인정보 처리방침
-              </a>
-              에 동의합니다 <span className="text-red-500">*</span>
-            </span>
-          </label>
-
-          {/* 제출 버튼 */}
-          <button
-            type="submit"
-            disabled={!isFormValid || isSubmitting}
-            className="w-full h-14 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white text-lg font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25"
-          >
-            {isSubmitting ? (
-              <>
-                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                신청 중...
-              </>
-            ) : (
-              '상담 신청하기'
             )}
-          </button>
-        </form>
 
-        {/* 안내 문구 */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          전문상담사가 빠르게 연락드릴게요
-        </p>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* 문의 유형 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  문의형태
+                </label>
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="inquiryType"
+                      checked={formData.inquiryType === 'new'}
+                      onChange={() => setFormData(prev => ({ ...prev, inquiryType: 'new' }))}
+                      className="w-5 h-5 text-blue-500 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">신규 상담문의</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="inquiryType"
+                      checked={formData.inquiryType === 'as'}
+                      onChange={() => setFormData(prev => ({ ...prev, inquiryType: 'as' }))}
+                      className="w-5 h-5 text-blue-500 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">AS 문의</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* 전화번호 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  전화번호
+                </label>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder=""
+                  value={formData.phoneNumber}
+                  onChange={(e) => {
+                    const formatted = formatPhoneNumber(e.target.value);
+                    setFormData((prev) => ({ ...prev, phoneNumber: formatted }));
+                  }}
+                  className="w-full h-12 px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                />
+              </div>
+
+              {/* 설치 희망 지역 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  설치 희망 지역
+                </label>
+                <input
+                  type="text"
+                  placeholder="예: 서울시 강남구"
+                  value={formData.installRegion}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, installRegion: e.target.value }))}
+                  className="w-full h-12 px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                />
+              </div>
+
+              {/* 설치 대수 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  설치 예상 대수
+                </label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="예: 4"
+                  value={formData.installCount}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    setFormData((prev) => ({ ...prev, installCount: value }));
+                  }}
+                  className="w-full h-12 px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                />
+              </div>
+
+              {/* 개인정보 동의 */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <div className="relative mt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={formData.privacyConsent}
+                    onChange={(e) => setFormData(prev => ({ ...prev, privacyConsent: e.target.checked }))}
+                    className="w-5 h-5 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                </div>
+                <span className="text-sm text-gray-600">
+                  [필수]{' '}
+                  <a
+                    href="/landing/policies"
+                    target="_blank"
+                    className="text-blue-500 underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    개인정보 수집 및 이용
+                  </a>
+                  에 동의합니다. 상담 외 다른 목적으로 사용되지 않아요.
+                </span>
+              </label>
+
+              {/* 제출 버튼 */}
+              <button
+                type="submit"
+                disabled={!isFormValid || isSubmitting}
+                className="w-full h-14 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white text-lg font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    신청 중...
+                  </>
+                ) : (
+                  '상담신청하기'
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
       </main>
     </div>
   );
