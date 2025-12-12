@@ -435,7 +435,7 @@ export default function ContactPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDownIcon className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <ChevronDownIcon className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
           </div>
 
