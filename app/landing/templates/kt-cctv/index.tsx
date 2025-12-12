@@ -51,7 +51,7 @@ const AnimatedSubtitle = () => {
         <img
           src="https://i.namu.wiki/i/g-8tEhqgrMv-DLrASvSM-7pgsPos9qX1Lpx3VVOGRYTTZpgtUnWbMEsw7DLDuU7ecjtrkl6nqnCrFqxepgRU1A.svg"
           alt="KT 텔레캅"
-          className="h-12 lg:h-14 brightness-0 invert"
+          className="h-12 lg:h-14"
         />
       </div>
       <span>대한민국 1등 보안기업, KT 텔레캅</span>

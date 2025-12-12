@@ -76,7 +76,7 @@ export default function PartnersHero(props: PartnersHeroProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <section className="bg-gradient-to-b from-[#191f28] to-[#3b4a5a] min-h-[600px] flex flex-col">
+    <section className="bg-gradient-to-b from-[#2d3a4a] to-[#5a6a7a] min-h-[600px] flex flex-col">
       {/* Navigation - hideNav가 true면 숨김 */}
       {!hideNav && (
         <nav className="relative">
