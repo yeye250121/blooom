@@ -73,11 +73,11 @@ export default function ReservationEntryPage() {
       <main className="max-w-6xl mx-auto px-5 py-8 lg:py-20">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
           {/* 좌측: 타이틀 영역 */}
-          <div className="mb-8 lg:mb-0 lg:sticky lg:top-20">
+          <div className="mb-8 lg:mb-0 lg:sticky lg:top-20 text-center lg:text-left">
             <img
               src={LOGO_URL}
               alt="KT 텔레캅"
-              className="h-8 lg:h-10 mb-4 lg:mb-8 ml-1"
+              className="h-8 lg:h-10 mb-4 lg:mb-8 lg:ml-1 inline-block"
             />
             <h1 className="hidden lg:block text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
               예약 정보를<br />확인해주세요
